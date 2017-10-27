@@ -26,6 +26,7 @@ class Meeting(models.Model):
     related_name='meetingsAuthor',
     null=True
   )
+  title = models.CharField(max_length=64)
   description = models.TextField()
   location = models.CharField(max_length=64)
   max_member = models.IntegerField()

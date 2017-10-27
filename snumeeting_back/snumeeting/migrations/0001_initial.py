@@ -43,6 +43,7 @@ class Migration(migrations.Migration):
             name='Meeting',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('title', models.CharField(max_length=64)),
                 ('description', models.TextField()),
                 ('location', models.CharField(max_length=64)),
                 ('max_member', models.IntegerField()),
