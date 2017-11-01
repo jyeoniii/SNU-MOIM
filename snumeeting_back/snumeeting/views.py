@@ -18,6 +18,7 @@ def signup(request):
     user = User.objects.create_user(username=username, password=password, email=email)
     user.ex_User.college = req_data['college']
     user.ex_User.subjects = req_data['subjects']
+    user.ex_User.save()
     return HttpResponse(status=201)
   else:
     return HttpResponseNotAllowed(['POST'])
@@ -156,8 +157,7 @@ def meetingDetail(request, meeting_id):
 def meetingComment(request, meeting_id):
   meeting_id = int(meeting_id)
   if request.method == 'GET':
-    meeting = Meeting.objects.get(id=meeting_id)
-    return JsonResponse(list(Comment.objects.all().values().filter(meeting=meeting)), safe=False)
+    return JsonResponse(list(Meeting.objects.get(id=meeting_id).commentsMeeting.all().values()), safe=False)
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())
     author = des_req['author']

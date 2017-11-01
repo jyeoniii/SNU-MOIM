@@ -9,7 +9,11 @@ class Subject(models.Model):
   name = models.CharField(max_length=64)
 
 class Ex_User(models.Model):
-  user = models.OneToOneField(User, on_delete=models.CASCADE)
+  user = models.OneToOneField(
+    User,
+    on_delete=models.CASCADE,
+    related_name = 'extendedUser',
+  )
   college = models.ForeignKey(
     College,
     related_name = 'usersCollege',
