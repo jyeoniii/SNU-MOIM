@@ -4,20 +4,20 @@ from django.contrib.auth.models import User
 class College(models.Model):
   name = models.CharField(max_length=64)
 
+class Subject(models.Model):
+  interest = models.CharField(max_length=64)
+  name = models.CharField(max_length=64)
+
 class Ex_User(models.Model):
   user = models.OneToOneField(User, on_delete=models.CASCADE)
   college = models.ForeignKey(
     College,
-    related_name = 'users',
+    related_name = 'usersCollege',
     null=True
   )
-
-class Subject(models.Model):
-  interest = models.CharField(max_length=64)
-  name = models.CharField(max_length=64)
-  users = models.ManyToManyField(
-    Ex_User,
-    related_name = 'subjects',
+  subjects = models.ManyToManyField(
+    Subject,
+    related_name = 'usersSubjects',
   )
 
 class Meeting(models.Model):
