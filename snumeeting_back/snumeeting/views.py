@@ -1,11 +1,10 @@
-
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.http import HttpResponseNotFound, JsonResponse
 from django.forms.models import model_to_dict
 from .models import Ex_User, Meeting, Comment, Subject, College
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
 import json
 
@@ -22,7 +21,6 @@ def signup(request):
   else:
     return HttpResponseNotAllowed(['POST'])
 
-
 @ensure_csrf_cookie
 def token(request):
   if request.method == 'GET':
@@ -36,7 +34,7 @@ def signin(request):
     req_data = json.loads(request.body.decode())
     email = req_data['mySNU']
     password = req_data['password']
-    user = authenticate(email=emial,password=password)
+    user = authenticate(request, email=email, password=password)
     if user is not None:
       login(request, user)
       return HttpResponse(status=200)
@@ -54,7 +52,7 @@ def signout(request):
     return response
   else:
     return HttpResponseNotAllowed(['GET'])
-"""
+
 # url: /user/:id
 def userDetail(request, user_id):
   user_id = int(user_id)
@@ -72,14 +70,14 @@ def userDetail(request, user_id):
     college = des_req['college']
     try:
       user = User.objects.get(id=user_id)
-      user.username = username
-      user.password = password
-      user.email = email
-      user.ex_User.college = college
-      user.ex_User.save()
-      user.save()
     except User.DoesNotExist:
       return HttpResponseNotFound()
+    user.username = username
+    user.password = password
+    user.email = email
+    user.ex_User.college = college
+    user.ex_User.save()
+    user.save()
     return HttpResponse(status=204)
   elif request.method == 'DELETE':
     try:
@@ -120,100 +118,188 @@ def meetingDetail(request, meeting_id):
       return HttpResponseNotFound()
     return JsonResponse(model_to_dict(meeting))
   elif request.method == 'PUT':
-
+    des_req = json.loads(request.body.decode()) # Deserialized request
+    author = des_req['author']
+    title = des_req['title']
+    description = des_req['location']
+    location = des_req['location']
+    max_member = des_req['max_member']
+    members = des_req['members']
+    subject = des_req['subject']
+    try:
+      meeting = Meeting.objects.get(id=meeting_id)
+    except Meeting.DoesNotExist:
+      return HttpResponseNotFound()
+    meeting.author = author
+    meeting.title = title
+    meeting.description = description
+    meeting.location = location
+    meeting.max_member = max_member
+    meeting.members = members
+    meeting.subject = subject
+    meeting.save()
+    return HttpResponse(status=204)
   elif request.method == 'DELETE':
-
+    try:
+      meeting = Meeting.objects.get(id=meeting_id)
+    except Meeting.DoesNotExist:
+      return HttpResponseNotFound()
+    meeting.delete()
+    return HttpResponse(status=204)
   else:
     return HttpResponseNotAllowed(['GET'],['PUT'],['DELETE'])
 
 # url: /meeting/:id/comment
 def meetingComment(request, meeting_id):
+  meeting_id = int(meeting_id)
   if request.method == 'GET':
-
+    meeting = Meeting.objects.get(id=meeting_id)
+    return JsonResponse(list(Comment.objects.all().values().filter(meeting=meeting)), safe=False)
   elif request.method == 'POST':
-    
-  elif request.method == 'PUT':
-
-  elif request.method == 'DELETE':
-
+    des_req = json.loads(request.body.decode())
+    author = des_req['author']
+    meeting = Meeting.objects.get(id=meeting_id)
+    content = des_req['content']
+    new_comment = Comment(author=author, meeting=meeting, content=content)
+    new_comment.save()
+    return HttpResponse(status=201)
   else:
-    return HttpResponseNotAllowed(['GET'],['POST'],['PUT'],['DELETE'])
+    return HttpResponseNotAllowed(['GET'],['POST'])
 
 # url: /comment
 def commentList(request):
   if request.method == 'GET':
-
+    return JsonResponse(list(Comment.objects.all().values()), safe=False)
   elif request.method == 'POST':
-    
-  elif request.method == 'PUT':
-
-  elif request.method == 'DELETE':
-
+    des_req = json.loads(request.body.decode())
+    author = des_req['author']
+    meeting = des_req['meeting']
+    content = des_req['content']
+    publicity = des_req['publicity']
+    new_comment = Comment(author=author, meeting=meeting, content=content, publicity=publicity)
+    new_comment.save()
   else:
-    return HttpResponseNotAllowed(['GET'],['POST'],['PUT'],['DELETE'])
+    return HttpResponseNotAllowed(['GET'],['POST'])
 
 # url: /comment/:id
 def commentDetail(request, comment_id):
+  comment_id = int(comment_id)
   if request.method == 'GET':
-
-  elif request.method == 'POST':
-    
+    try:
+      comment = Comment.objects.get(id=comment_id)
+    except Comment.DoesNotExist:
+      return HttpResponseNotFound()
+    return JsonResponse(model_to_dict(comment))
   elif request.method == 'PUT':
-
+    des_req = json.loads(request.body.decode())
+    author = des_req['author']
+    meeting = des_req['meeting']
+    content = des_req['content']
+    publicity = des_req['publicity']
+    try:
+      comment = Comment.objects.get(id=comment_id)
+    except Comment.DoesNotExist:
+      return HttpResponseNotFound()
+    comment.author = author
+    comment.meeting = meeting
+    comment.content = content
+    comment.publicity = publicity
+    comment.save()
+    return HttpResponse(status=204)
   elif request.method == 'DELETE':
-
+    try:
+      comment = Comment.objects.get(id=comment_id)
+    except Comment.DoesNotExist:
+      return HttpResponseNotFound()
+    comment.delete()
+    return HttpResponse(status=204)
   else:
-    return HttpResponseNotAllowed(['GET'],['POST'],['PUT'],['DELETE'])
+    return HttpResponseNotAllowed(['GET'],['PUT'],['DELETE'])
 
 # url: /subject
 def subjectList(request):
   if request.method == 'GET':
-
+    return JsonResponse(list(Subject.objects.all().values()), safe=False)
   elif request.method == 'POST':
-    
-  elif request.method == 'PUT':
-
-  elif request.method == 'DELETE':
-
+    des_req = json.loads(request.body.decode())
+    interest = des_req['interest']
+    name = des_req['name']
+    users = des_req['users']
+    new_subject = Subject(interest=interest, name=name, users=users)
+    new_subject.save()
   else:
-    return HttpResponseNotAllowed(['GET'],['POST'],['PUT'],['DELETE'])
+    return HttpResponseNotAllowed(['GET'],['POST'])
 
 # url: /subject/:id
 def subjectDetail(request, subject_id):
+  subject_id = int(subject_id)
   if request.method == 'GET':
-
-  elif request.method == 'POST':
-    
+    try:
+      subject = Subject.objects.get(id=subject_id)
+    except Subject.DoesNotEXist:
+      return HttpResponseNotFound()
+    return JsonResonse(model_to_dict(subject))
   elif request.method == 'PUT':
-
+    des_req = json.loads(request.body.decode())
+    interest = des_req['interest']
+    name = des_req['name']
+    users = des_req['users']
+    try:
+      subject = Subject.objects.get(id=subject_id)
+    except Subject.DoesNotExist:
+      return HttpResponseNotFound()
+    subject.interest = interest
+    subject.name = name
+    subject.users = users
+    subject.save()
+    return HttpResponse(status=204)
   elif request.method == 'DELETE':
-
+    try:
+      subject = Subject.objects.get(id=subject_id)
+    except Subject.DoesNotExist:
+      return HttpResponseNotFound()
+    subject.delete()
+    return HttpResponse(status=204)
   else:
-    return HttpResponseNotAllowed(['GET'],['POST'],['PUT'],['DELETE'])
+    return HttpResponseNotAllowed(['GET'],['PUT'],['DELETE'])
 
 # url: /college
 def collegeList(request):
   if request.method == 'GET':
-
+    return JsonResponse(list(College.objects.all().values()), safe=False)
   elif request.method == 'POST':
-    
-  elif request.method == 'PUT':
-
-  elif request.method == 'DELETE':
-
+    des_req = json.loads(request.body.decode())
+    name = des_req['name']
+    new_college = College(name=name)
+    new_college.save()
   else:
-    return HttpResponseNotAllowed(['GET'],['POST'],['PUT'],['DELETE'])
+    return HttpResponseNotAllowed(['GET'],['POST'])
 
 # url: /college/:id
 def collegeList(request, college_id):
+  college_id = int(college_id)
   if request.method == 'GET':
-
-  elif request.method == 'POST':
-    
+    try:
+      college = College.objects.get(id=college_id)
+    except College.DoesNotExist:
+      return HttpResponseNotFound()
+    return JsonResponse(model_to_dict(college))
   elif request.method == 'PUT':
-
+    des_req = json.loads(request.body.decode()) # Deserialized request
+    name = des_req['name']
+    try:
+      college = College.objects.get(id=college_id)
+    except College.DoesNotExist:
+      return HttpResponseNotFound()
+    college.name = name
+    college.save()
+    return HttpResponse(status=204)
   elif request.method == 'DELETE':
-
+    try:
+      college = College.objects.get(id=college_id)
+    except College.DoesNotExist:
+      return HttpResponseNotFound()
+    college.delete()
+    return HttpResponse(status=204)
   else:
-    return HttpResponseNotAllowed(['GET'],['POST'],['PUT'],['DELETE'])
-"""
+    return HttpResponseNotAllowed(['GET'],['PUT'],['DELETE'])
