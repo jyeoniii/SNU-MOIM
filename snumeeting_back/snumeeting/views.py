@@ -17,6 +17,7 @@ def signup(request):
     email = req_data['mySNU']
     user = User.objects.create_user(username=username, password=password, email=email)
     user.ex_User.college = req_data['college']
+    user.ex_User.subjects = req_data['subjects']
     return HttpResponse(status=201)
   else:
     return HttpResponseNotAllowed(['POST'])
@@ -68,6 +69,7 @@ def userDetail(request, user_id):
     password = des_req['password']
     email = des_req['mySNU']
     college = des_req['college']
+    subjects = des_req['subjects']
     try:
       user = User.objects.get(id=user_id)
     except User.DoesNotExist:
@@ -76,6 +78,7 @@ def userDetail(request, user_id):
     user.password = password
     user.email = email
     user.ex_User.college = college
+    user.ex_User.subjects = subjects
     user.ex_User.save()
     user.save()
     return HttpResponse(status=204)
@@ -224,8 +227,7 @@ def subjectList(request):
     des_req = json.loads(request.body.decode())
     interest = des_req['interest']
     name = des_req['name']
-    users = des_req['users']
-    new_subject = Subject(interest=interest, name=name, users=users)
+    new_subject = Subject(interest=interest, name=name)
     new_subject.save()
   else:
     return HttpResponseNotAllowed(['GET'],['POST'])
@@ -243,14 +245,12 @@ def subjectDetail(request, subject_id):
     des_req = json.loads(request.body.decode())
     interest = des_req['interest']
     name = des_req['name']
-    users = des_req['users']
     try:
       subject = Subject.objects.get(id=subject_id)
     except Subject.DoesNotExist:
       return HttpResponseNotFound()
     subject.interest = interest
     subject.name = name
-    subject.users = users
     subject.save()
     return HttpResponse(status=204)
   elif request.method == 'DELETE':
@@ -276,7 +276,7 @@ def collegeList(request):
     return HttpResponseNotAllowed(['GET'],['POST'])
 
 # url: /college/:id
-def collegeList(request, college_id):
+def collegeDetail(request, college_id):
   college_id = int(college_id)
   if request.method == 'GET':
     try:
