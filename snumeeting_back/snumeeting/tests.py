@@ -61,7 +61,7 @@ class SnuMeetingTestCase(TestCase):
     client = Client(enforce_csrf_checks=True)
     response = client.post(
       '/api/signup',
-      json.dumps({'name': 'test', 'password':'test', 'mySNU':'test@snu.ac.kr', 'college_id':0, 'subject_ids':[0]}),
+      json.dumps({'name':'test', 'password':'test', 'mySNU':'test@snu.ac.kr', 'college_id':0, 'subject_ids':[0]}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 403) # Request without csrf token returns 403 response
@@ -72,7 +72,7 @@ class SnuMeetingTestCase(TestCase):
 
     response = client.post(
       '/api/signup',
-      json.dumps({'name': 'test', 'password':'test', 'mySNU':'test@snu.ac.kr', 'college_id':0, 'subject_ids':[0]}),
+      json.dumps({'name':'test', 'password':'test', 'mySNU':'test@snu.ac.kr', 'college_id':0, 'subject_ids':[0]}),
       content_type='application/json',
       HTTP_X_CSRFTOKEN=csrftoken
     )
@@ -88,16 +88,14 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 405)
 
   def test_signup(self):
-    client = Client()
-
     # GET
     response = self.client.get('/api/signup')
     self.assertEqual(response.status_code, 405)
 
     # POST
-    response = client.post(
+    response = self.client.post(
       '/api/signup',
-      json.dumps({'name': 'test', 'password':'test', 'mySNU':'test@snu.ac.kr', 'college_id':0, 'subject_ids':[0]}),
+      json.dumps({'name':'test', 'password':'test', 'mySNU':'test@snu.ac.kr', 'college_id':0, 'subject_ids':[0]}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 201)
@@ -110,4 +108,67 @@ class SnuMeetingTestCase(TestCase):
     response = self.client.delete('/api/signup')
     self.assertEqual(response.status_code, 405)
 
+  def test_signin(self):
+    # GET
+    response = self.client.get('/api/signin')
+    self.assertEqual(response.status_code, 405)
 
+    # POST
+    response = self.client.post( # Making fake user
+      '/api/signup',
+      json.dumps({'name':'test', 'password':'test', 'mySNU':'test@snu.ac.kr', 'college_id':0, 'subject_ids':[0]}),
+      content_type='application/json',
+    )
+    response = self.client.post( # Correct email & password
+      '/api/signin',
+      json.dumps({'password':'test', 'mySNU':'test@snu.ac.kr'}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 200)
+    response = self.client.post( # Wrong password
+      '/api/signin',
+      json.dumps({'password':'wrong', 'mySNU':'test@snu.ac.kr'}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 401)
+    response = self.client.post( # Wrong email
+      '/api/signin',
+      json.dumps({'password':'test', 'mySNU':'wrong@snu.ac.kr'}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 401)
+
+    # PUT
+    response = self.client.put('/api/signin')
+    self.assertEqual(response.status_code, 405)
+
+    # DELETE
+    response = self.client.delete('/api/signin')
+    self.assertEqual(response.status_code, 405)
+
+  def test_signout(self):
+    # GET
+    response = self.client.post( # Making fake user
+      '/api/signup',
+      json.dumps({'name':'test', 'password':'test', 'mySNU':'test@snu.ac.kr', 'college_id':0, 'subject_ids':[0]}),
+      content_type='application/json',
+    )
+    response = self.client.post( # Correct email & password
+      '/api/signin',
+      json.dumps({'password':'test', 'mySNU':'test@snu.ac.kr'}),
+      content_type='application/json',
+    )
+    response = self.client.get('/api/signout')
+    self.assertEqual(response.status_code, 200)
+
+    # POST
+    response = self.client.post('/api/signout')
+    self.assertEqual(response.status_code, 405)
+
+    # PUT
+    response = self.client.put('/api/signout')
+    self.assertEqual(response.status_code, 405)
+
+    # DELETE
+    response = self.client.delete('/api/signout')
+    self.assertEqual(response.status_code, 405)

@@ -41,8 +41,13 @@ def signin(request):
   if request.method == 'POST':
     req_data = json.loads(request.body.decode())
     email = req_data['mySNU']
+    user = User.objects.filter(email=email).first()
+    if user is not None:
+      username = user.username
+    else:
+      username = ''
     password = req_data['password']
-    user = authenticate(request, email=email, password=password)
+    user = authenticate(request, username=username, password=password)
     if user is not None:
       login(request, user)
       return HttpResponse(status=200)
@@ -55,9 +60,7 @@ def signin(request):
 def signout(request):
   if request.method == 'GET':
     logout(request)
-    response = redirect('signin')
-    response.delete_cookie('user_location')
-    return response
+    return HttpResponse(status=200)
   else:
     return HttpResponseNotAllowed(['GET'])
 
