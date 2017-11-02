@@ -224,3 +224,141 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 204)
     response = self.client.delete('/api/user/0') # Delete None-existing User
     self.assertEqual(response.status_code, 404)
+
+  def test_subject_list(self):
+    # GET
+    response = self.client.get('/api/subject')
+    data = json.loads(response.content.decode())
+    self.assertEqual(data[0]['name'], 'English')
+    self.assertEqual(data[0]['interest'], 'study')
+    self.assertEqual(len(data), 3)
+    self.assertEqual(response.status_code, 200)
+
+    # POST
+    response = self.client.post(
+      '/api/subject',
+      json.dumps({'name':'Dance', 'interest':'performance'}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 201)
+
+    response = self.client.get('/api/subject') # Check the object is created
+    data = json.loads(response.content.decode())
+    self.assertEqual(data[3]['name'], 'Dance')
+    self.assertEqual(data[3]['interest'], 'performance')
+
+    # PUT
+    response = self.client.put('/api/subject')
+    self.assertEqual(response.status_code, 405)
+
+    # DELETE
+    response = self.client.delete('/api/subject')
+    self.assertEqual(response.status_code, 405)
+
+  def test_subject_detail(self):
+    # GET
+    response = self.client.get('/api/subject/0')
+    data = json.loads(response.content.decode())
+    self.assertEqual(data['name'], 'English')
+    self.assertEqual(data['interest'], 'study')
+    self.assertEqual(response.status_code, 200)
+
+    response = self.client.get('/api/subject/20') # Get None-existing College
+    self.assertEqual(response.status_code, 404)
+
+    # POST
+    response = self.client.post('/api/subject/0')
+    self.assertEqual(response.status_code, 405)
+
+    # PUT
+    response = self.client.put(
+      '/api/subject/0',
+      json.dumps({'name':'Dance', 'interest':'performance'}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 204)
+
+    response = self.client.get('/api/subject/0') # Check the object is editted
+    data = json.loads(response.content.decode())
+    self.assertEqual(data['name'], 'Dance')
+    self.assertEqual(data['interest'], 'performance')
+
+    response = self.client.put( # Edit None-existing College
+      '/api/subject/20',
+      json.dumps({'name':'Dance', 'interest':'performance'}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 404)
+
+    # DELETE
+    response = self.client.delete('/api/subject/0')
+    self.assertEqual(response.status_code, 204)
+    response = self.client.delete('/api/subject/0') # Delete None-existing College
+    self.assertEqual(response.status_code, 404)
+
+  def test_college_list(self):
+    # GET
+    response = self.client.get('/api/college')
+    data = json.loads(response.content.decode())
+    self.assertEqual(data[0]['name'], 'Engineering')
+    self.assertEqual(len(data), 2)
+    self.assertEqual(response.status_code, 200)
+
+    # POST
+    response = self.client.post(
+      '/api/college',
+      json.dumps({'name':'Literature'}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 201)
+
+    response = self.client.get('/api/college') # Check the object is created
+    data = json.loads(response.content.decode())
+    self.assertEqual(data[2]['name'], 'Literature')
+
+    # PUT
+    response = self.client.put('/api/college')
+    self.assertEqual(response.status_code, 405)
+
+    # DELETE
+    response = self.client.delete('/api/college')
+    self.assertEqual(response.status_code, 405)
+
+  def test_college_detail(self):
+    # GET
+    response = self.client.get('/api/college/0')
+    data = json.loads(response.content.decode())
+    self.assertEqual(data['name'], 'Engineering')
+    self.assertEqual(response.status_code, 200)
+
+    response = self.client.get('/api/college/20') # Get None-existing College
+    self.assertEqual(response.status_code, 404)
+
+    # POST
+    response = self.client.post('/api/college/0')
+    self.assertEqual(response.status_code, 405)
+
+    # PUT
+    response = self.client.put(
+      '/api/college/0',
+      json.dumps({'name':'Literature'}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 204)
+
+    response = self.client.get('/api/college/0') # Check the object is editted
+    data = json.loads(response.content.decode())
+    self.assertEqual(data['name'], 'Literature')
+
+    response = self.client.put( # Edit None-existing College
+      '/api/college/20',
+      json.dumps({'name':'Literature'}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 404)
+
+    # DELETE
+    response = self.client.delete('/api/college/0')
+    self.assertEqual(response.status_code, 204)
+    response = self.client.delete('/api/college/0') # Delete None-existing College
+    self.assertEqual(response.status_code, 404)

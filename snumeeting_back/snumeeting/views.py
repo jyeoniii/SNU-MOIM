@@ -193,6 +193,7 @@ def commentList(request):
     publicity = des_req['publicity']
     new_comment = Comment(author=author, meeting=meeting, content=content, publicity=publicity)
     new_comment.save()
+    return HttpResponse(status=201)
   else:
     return HttpResponseNotAllowed(['GET'],['POST'])
 
@@ -241,6 +242,7 @@ def subjectList(request):
     name = des_req['name']
     new_subject = Subject(interest=interest, name=name)
     new_subject.save()
+    return HttpResponse(status=201)
   else:
     return HttpResponseNotAllowed(['GET'],['POST'])
 
@@ -250,9 +252,9 @@ def subjectDetail(request, subject_id):
   if request.method == 'GET':
     try:
       subject = Subject.objects.get(id=subject_id)
-    except Subject.DoesNotEXist:
+    except Subject.DoesNotExist:
       return HttpResponseNotFound()
-    return JsonResonse(model_to_dict(subject))
+    return JsonResponse(model_to_dict(subject))
   elif request.method == 'PUT':
     des_req = json.loads(request.body.decode())
     interest = des_req['interest']
@@ -284,6 +286,7 @@ def collegeList(request):
     name = des_req['name']
     new_college = College(name=name)
     new_college.save()
+    return HttpResponse(status=201)
   else:
     return HttpResponseNotAllowed(['GET'],['POST'])
 
