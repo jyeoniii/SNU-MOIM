@@ -74,12 +74,14 @@ def userDetail(request, user_id):
       return HttpResponseNotFound()
     return JsonResponse(model_to_dict(user))
   elif request.method == 'PUT':
-    des_req = json.loads(request.body.decode()) # Deserialized request
-    username = des_req['name']
-    password = des_req['password']
-    email = des_req['mySNU']
-    college = des_req['college']
-    subjects = des_req['subjects']
+    req_data = json.loads(request.body.decode())
+    username = req_data['name']
+    password = req_data['password']
+    email = req_data['mySNU']
+    college_id = req_data['college_id'] # instead of getting object, gets id first
+    college = College.objects.get(id=college_id) # gets the object by id
+    subject_ids = req_data['subject_ids']
+    subjects = Subject.objects.filter(id__in=subject_ids) # gets the objects by ids
     try:
       user = User.objects.get(id=user_id)
     except User.DoesNotExist:
@@ -88,7 +90,8 @@ def userDetail(request, user_id):
     user.password = password
     user.email = email
     user.extendedUser.college = college
-    user.extendedUser.subjects = subjects
+    user.extendedUser.subjects.clear()
+    user.extendedUser.subjects.add(*subjects)
     user.extendedUser.save()
     user.save()
     return HttpResponse(status=204)

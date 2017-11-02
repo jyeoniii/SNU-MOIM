@@ -103,7 +103,7 @@
 <p id="t9" class="pln">  <span class="nam">url</span><span class="op">(</span><span class="str">r'^signup$'</span><span class="op">,</span> <span class="nam">signup</span><span class="op">,</span> <span class="nam">name</span><span class="op">=</span><span class="str">'singup'</span><span class="op">)</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t10" class="pln">  <span class="nam">url</span><span class="op">(</span><span class="str">r'^signin$'</span><span class="op">,</span> <span class="nam">signin</span><span class="op">,</span> <span class="nam">name</span><span class="op">=</span><span class="str">'singin'</span><span class="op">)</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t11" class="pln">  <span class="nam">url</span><span class="op">(</span><span class="str">r'^signout$'</span><span class="op">,</span> <span class="nam">signout</span><span class="op">,</span> <span class="nam">name</span><span class="op">=</span><span class="str">'singout'</span><span class="op">)</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
-<p id="t12" class="pln">  <span class="nam">url</span><span class="op">(</span><span class="str">r'^user/()$'</span><span class="op">,</span> <span class="nam">userDetail</span><span class="op">,</span> <span class="nam">name</span><span class="op">=</span><span class="str">'userDetail'</span><span class="op">)</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t12" class="pln">  <span class="nam">url</span><span class="op">(</span><span class="str">r'^user/(?P&lt;user_id>[0-9]+)$'</span><span class="op">,</span> <span class="nam">userDetail</span><span class="op">,</span> <span class="nam">name</span><span class="op">=</span><span class="str">'userDetail'</span><span class="op">)</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t13" class="pln">  <span class="nam">url</span><span class="op">(</span><span class="str">r'^meeting$'</span><span class="op">,</span> <span class="nam">meetingList</span><span class="op">,</span> <span class="nam">name</span><span class="op">=</span><span class="str">'meetingList'</span><span class="op">)</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t14" class="pln">  <span class="nam">url</span><span class="op">(</span><span class="str">r'^meeting/(?P&lt;meeting_id>[0-9]+)$'</span><span class="op">,</span> <span class="nam">meetingDetail</span><span class="op">,</span> <span class="nam">name</span><span class="op">=</span><span class="str">'meetingDetail'</span><span class="op">)</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t15" class="pln">  <span class="nam">url</span><span class="op">(</span><span class="str">r'^meeting/(?P&lt;meeting_id>[0-9]+)/comment$'</span><span class="op">,</span> <span class="nam">meetingComment</span><span class="op">,</span> <span class="nam">name</span><span class="op">=</span><span class="str">'meetingComment'</span><span class="op">)</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
@@ -124,7 +124,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.4.1</a>,
-            created at 2017-11-02 13:06
+            created at 2017-11-03 01:53
         </p>
     </div>
 </div>

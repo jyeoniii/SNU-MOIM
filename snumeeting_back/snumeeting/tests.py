@@ -172,3 +172,55 @@ class SnuMeetingTestCase(TestCase):
     # DELETE
     response = self.client.delete('/api/signout')
     self.assertEqual(response.status_code, 405)
+
+  def test_user_detail(self):
+    # GET
+    college = College.objects.get(id=0)
+    subjects = list(Subject.objects.filter(id=0).all().values())
+    response = self.client.get('/api/user/0')
+    data = json.loads(response.content.decode())
+    self.assertEqual(data['username'], 'fake1')
+    self.assertEqual(data['password'], '1234')
+    self.assertEqual(data['email'], 'fake1@snu.ac.kr')
+    self.assertEqual(Ex_User.objects.get(id=data['id']).college, college)
+    self.assertEqual(list(Ex_User.objects.get(id=data['id']).subjects.all().values()), subjects)
+    self.assertEqual(response.status_code, 200)
+
+    response = self.client.get('/api/user/20') # Getting None-existing User
+    self.assertEqual(response.status_code, 404)
+
+    # POST
+    response = self.client.post('/api/user/0')
+    self.assertEqual(response.status_code, 405)
+
+    # PUT
+    response = self.client.put( # Editting user/0
+      '/api/user/0',
+      json.dumps({'name':'edit_test', 'password':'edit_test', 'mySNU':'test@snu.ac.kr', 'college_id':1, 'subject_ids':[1, 2]}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 204)
+
+    college = College.objects.get(id=1) # Test whether User and following Ex_User are updated
+    subjects = list(Subject.objects.filter(id__in=[1, 2]).all().values())
+    response = self.client.get('/api/user/0')
+    data = json.loads(response.content.decode())
+    self.assertEqual(data['username'], 'edit_test')
+    self.assertEqual(data['password'], 'edit_test')
+    self.assertEqual(data['email'], 'test@snu.ac.kr')
+    self.assertEqual(Ex_User.objects.get(id=data['id']).college, college)
+    self.assertEqual(list(Ex_User.objects.get(id=data['id']).subjects.all().values()), subjects)
+    self.assertEqual(response.status_code, 200)
+
+    response = self.client.put( # Editting None-existing User
+      '/api/user/20',
+      json.dumps({'name':'edit_test', 'password':'edit_test', 'mySNU':'test@snu.ac.kr', 'college_id':1, 'subject_ids':[1, 2]}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 404)
+
+    # DELETE
+    response = self.client.delete('/api/user/0') # Delete Existing User
+    self.assertEqual(response.status_code, 204)
+    response = self.client.delete('/api/user/0') # Delete None-existing User
+    self.assertEqual(response.status_code, 404)
