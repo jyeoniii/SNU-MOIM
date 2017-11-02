@@ -2,8 +2,10 @@ from django.conf.urls import url, include
 from .views import signup, signin, signout, userDetail
 from .views import meetingList, meetingDetail, meetingComment, commentList, commentDetail
 from .views import subjectList, subjectDetail, collegeList, collegeDetail
+from .views import token
 
 urlpatterns = [
+  url('^token$', token, name='token'),
   url(r'^signup$', signup, name='singup'),
   url(r'^signin$', signin, name='singin'),
   url(r'^signout$', signout, name='singout'),

@@ -15,10 +15,16 @@ def signup(request):
     username = req_data['name']
     password = req_data['password']
     email = req_data['mySNU']
+    college_id = req_data['college_id'] # instead of getting object, gets id first
+    college = College.objects.get(id=college_id) # gets the object by id
+    subject_ids = req_data['subject_ids']
+    subjects = Subject.objects.filter(id__in=subject_ids) # gets the objects by ids
     user = User.objects.create_user(username=username, password=password, email=email)
-    user.ex_User.college = req_data['college']
-    user.ex_User.subjects = req_data['subjects']
-    user.ex_User.save()
+    user.save()
+    ex_User = Ex_User.objects.create(user=user, college=college) # create first, m2m later
+    ex_User.save()
+    ex_User.subjects.add(*subjects) # adding many-to-many at once
+    ex_User.save()
     return HttpResponse(status=201)
   else:
     return HttpResponseNotAllowed(['POST'])
@@ -78,9 +84,9 @@ def userDetail(request, user_id):
     user.username = username
     user.password = password
     user.email = email
-    user.ex_User.college = college
-    user.ex_User.subjects = subjects
-    user.ex_User.save()
+    user.extendedUser.college = college
+    user.extendedUser.subjects = subjects
+    user.extendedUser.save()
     user.save()
     return HttpResponse(status=204)
   elif request.method == 'DELETE':
