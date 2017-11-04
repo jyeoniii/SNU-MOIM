@@ -12,4 +12,7 @@ export class EditProfileComponent implements OnInit {
   ngOnInit() {
   }
 
+  editProfile() {
+    console.log('edit profile');
+  }
 }

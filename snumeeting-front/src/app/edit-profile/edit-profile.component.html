@@ -1,3 +1,98 @@
-<p>
-  edit-profile works!
-</p>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<h2 class="text-center">Edit Profile</h2>
+
+<form class="form-horizontal">
+  <div class="form-group">
+    <label class="col-sm-2 control-label">mySNU ID</label>
+    <div class="col-sm-8">
+      <p class="form-control-static">username</p>
+    </div>
+  </div>
+</form>
+
+<form class="form-horizontal">
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Password</label>
+    <div class="col-sm-8">
+      <input type="password" class="form-control" placeholder="Enter Password" #password>
+    </div>
+  </div>
+</form>
+
+<form class="form-horizontal">
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Password Check</label>
+    <div class="col-sm-8">
+      <input type="password" class="form-control" placeholder="Re-Enter Password" #password>
+    </div>
+  </div>
+</form>
+
+<form class="form-horizontal">
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Name</label>
+    <div class="col-sm-8">
+      <input class="form-control" placeholder="Enter Name" #password>
+    </div>
+  </div>
+</form>
+
+<form class="form-horizontal">
+  <div class="form-group">
+    <label class="col-sm-2 control-label">College</label>
+    <div class="col-sm-8">
+      <select class="form-control">
+        <option>Engineering</option>
+        <option>Education</option>
+        <option>Human Ecology</option>
+        <option>Humanities</option>
+        <option>Social Sciences</option>
+        <option>Natural Sciences</option>
+      </select>
+    </div>
+  </div>
+</form>
+
+<form class="form-horizontal">
+  <div class="form-group">
+    <label class="col-sm-2 control-label">Interest</label>
+    <div class="col-sm-8">
+      <div class="checkbox">
+        <label class="col-sm-2 checkbox-inline">
+          <input type="checkbox" id="interest_study" value="option1">Study
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="subject_study_1" value="option2">1
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="subject_study_2" value="option3">2
+        </label>
+      </div>
+      <div class="checkbox">
+        <label class="col-sm-2 checkbox-inline">
+          <input type="checkbox" id="interest_club" value="option1">Club
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="subject_club_1" value="option2">1
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="subject_club_2" value="option3">2
+        </label>
+      </div>
+      <div class="checkbox">
+        <label class="col-sm-2 checkbox-inline">
+          <input type="checkbox" id="interest_perf" value="option1">Performance
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="subject_perf_1" value="option2">1
+        </label>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="subject" value="option3">2
+        </label>
+      </div>
+    </div>
+  </div>
+</form>
+
+<button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="editProfile()">Edit Profile</button>
