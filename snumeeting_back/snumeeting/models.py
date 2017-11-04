@@ -26,7 +26,7 @@ class Ex_User(models.Model):
 
 class Meeting(models.Model):
   author = models.ForeignKey(
-    Ex_User,
+    User,
     related_name='meetingsAuthor',
     null=True
   )
@@ -35,7 +35,7 @@ class Meeting(models.Model):
   location = models.CharField(max_length=64)
   max_member = models.IntegerField()
   members = models.ManyToManyField(
-    Ex_User,
+    User,
     related_name = 'meetingsMembers',
   )
   subject = models.ForeignKey(
@@ -46,7 +46,7 @@ class Meeting(models.Model):
 
 class Comment(models.Model):
   author = models.ForeignKey(
-    Ex_User,
+    User,
     related_name='commentsAuthor',
     null=True
   )

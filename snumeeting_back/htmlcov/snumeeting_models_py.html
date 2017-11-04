@@ -157,7 +157,7 @@
 <p id="t26" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t27" class="stm run hide_run"><span class="key">class</span> <span class="nam">Meeting</span><span class="op">(</span><span class="nam">models</span><span class="op">.</span><span class="nam">Model</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t28" class="stm run hide_run">  <span class="nam">author</span> <span class="op">=</span> <span class="nam">models</span><span class="op">.</span><span class="nam">ForeignKey</span><span class="op">(</span><span class="strut">&nbsp;</span></p>
-<p id="t29" class="pln">    <span class="nam">Ex_User</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t29" class="pln">    <span class="nam">User</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t30" class="pln">    <span class="nam">related_name</span><span class="op">=</span><span class="str">'meetingsAuthor'</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t31" class="pln">    <span class="nam">null</span><span class="op">=</span><span class="key">True</span><span class="strut">&nbsp;</span></p>
 <p id="t32" class="pln">  <span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -166,7 +166,7 @@
 <p id="t35" class="stm run hide_run">  <span class="nam">location</span> <span class="op">=</span> <span class="nam">models</span><span class="op">.</span><span class="nam">CharField</span><span class="op">(</span><span class="nam">max_length</span><span class="op">=</span><span class="num">64</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t36" class="stm run hide_run">  <span class="nam">max_member</span> <span class="op">=</span> <span class="nam">models</span><span class="op">.</span><span class="nam">IntegerField</span><span class="op">(</span><span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t37" class="stm run hide_run">  <span class="nam">members</span> <span class="op">=</span> <span class="nam">models</span><span class="op">.</span><span class="nam">ManyToManyField</span><span class="op">(</span><span class="strut">&nbsp;</span></p>
-<p id="t38" class="pln">    <span class="nam">Ex_User</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t38" class="pln">    <span class="nam">User</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t39" class="pln">    <span class="nam">related_name</span> <span class="op">=</span> <span class="str">'meetingsMembers'</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t40" class="pln">  <span class="op">)</span><span class="strut">&nbsp;</span></p>
 <p id="t41" class="stm run hide_run">  <span class="nam">subject</span> <span class="op">=</span> <span class="nam">models</span><span class="op">.</span><span class="nam">ForeignKey</span><span class="op">(</span><span class="strut">&nbsp;</span></p>
@@ -177,7 +177,7 @@
 <p id="t46" class="pln"><span class="strut">&nbsp;</span></p>
 <p id="t47" class="stm run hide_run"><span class="key">class</span> <span class="nam">Comment</span><span class="op">(</span><span class="nam">models</span><span class="op">.</span><span class="nam">Model</span><span class="op">)</span><span class="op">:</span><span class="strut">&nbsp;</span></p>
 <p id="t48" class="stm run hide_run">  <span class="nam">author</span> <span class="op">=</span> <span class="nam">models</span><span class="op">.</span><span class="nam">ForeignKey</span><span class="op">(</span><span class="strut">&nbsp;</span></p>
-<p id="t49" class="pln">    <span class="nam">Ex_User</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
+<p id="t49" class="pln">    <span class="nam">User</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t50" class="pln">    <span class="nam">related_name</span><span class="op">=</span><span class="str">'commentsAuthor'</span><span class="op">,</span><span class="strut">&nbsp;</span></p>
 <p id="t51" class="pln">    <span class="nam">null</span><span class="op">=</span><span class="key">True</span><span class="strut">&nbsp;</span></p>
 <p id="t52" class="pln">  <span class="op">)</span><span class="strut">&nbsp;</span></p>
@@ -198,7 +198,7 @@
     <div class="content">
         <p>
             <a class="nav" href="index.html">&#xab; index</a> &nbsp; &nbsp; <a class="nav" href="https://coverage.readthedocs.io">coverage.py v4.4.1</a>,
-            created at 2017-11-02 13:06
+            created at 2017-11-03 04:31
         </p>
     </div>
 </div>

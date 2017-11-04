@@ -108,17 +108,28 @@ def userDetail(request, user_id):
 # url: /meeting
 def meetingList(request):
   if request.method == 'GET':
-    return JsonResponse(list(Meeting.objects.all().values()), safe=False)
+    meetings = Meeting.objects.all()
+    dict_meetings = []
+    for meeting in meetings:
+      d = model_to_dict(meeting)
+      d['members']=list(meeting.members.all().values())
+      dict_meetings.append(d)
+    return JsonResponse(dict_meetings, safe=False)
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())
-    author = des_req['author']
+    author_id = des_req['author_id']
+    author = User.objects.get(id=author_id)
     title = des_req['title']
     description = des_req['description']
     location = des_req['location']
     max_member = des_req['max_member']
-    members = des_req['members']
-    subject = des_req['subject']
-    new_meeting = Meeting(author=author, title=title, description=description, location=location, max_member=max_member, members=members, subject=subject)
+    member_ids = des_req['member_ids']
+    members = User.objects.filter(id__in=member_ids)
+    subject_id = des_req['subject_id']
+    subject = Subject.objects.get(id=subject_id)
+    new_meeting = Meeting(author=author, title=title, description=description, location=location, max_member=max_member, subject=subject)
+    new_meeting.save()
+    new_meeting.members.add(*members)
     new_meeting.save()
     return HttpResponse(status=201)
   else:
@@ -130,18 +141,23 @@ def meetingDetail(request, meeting_id):
   if request.method == 'GET':
     try:
       meeting = Meeting.objects.get(id=meeting_id)
+      dict_meeting = model_to_dict(meeting)
+      dict_meeting['members']=list(meeting.members.all().values())
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
-    return JsonResponse(model_to_dict(meeting))
+    return JsonResponse(dict_meeting)
   elif request.method == 'PUT':
-    des_req = json.loads(request.body.decode()) # Deserialized request
-    author = des_req['author']
+    des_req = json.loads(request.body.decode())
+    author_id = des_req['author_id']
+    author = User.objects.get(id=author_id)
     title = des_req['title']
-    description = des_req['location']
+    description = des_req['description']
     location = des_req['location']
     max_member = des_req['max_member']
-    members = des_req['members']
-    subject = des_req['subject']
+    member_ids = des_req['member_ids']
+    members = User.objects.filter(id__in=member_ids)
+    subject_id = des_req['subject_id']
+    subject = Subject.objects.get(id=subject_id)
     try:
       meeting = Meeting.objects.get(id=meeting_id)
     except Meeting.DoesNotExist:
@@ -151,7 +167,8 @@ def meetingDetail(request, meeting_id):
     meeting.description = description
     meeting.location = location
     meeting.max_member = max_member
-    meeting.members = members
+    meeting.members.clear()
+    meeting.members.add(*members)
     meeting.subject = subject
     meeting.save()
     return HttpResponse(status=204)
@@ -172,10 +189,12 @@ def meetingComment(request, meeting_id):
     return JsonResponse(list(Meeting.objects.get(id=meeting_id).commentsMeeting.all().values()), safe=False)
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())
-    author = des_req['author']
+    author_id = des_req['author_id']
+    author = User.objects.get(id=author_id)
     meeting = Meeting.objects.get(id=meeting_id)
     content = des_req['content']
-    new_comment = Comment(author=author, meeting=meeting, content=content)
+    publicity = des_req['publicity']
+    new_comment = Comment(author=author, meeting=meeting, content=content, publicity=publicity)
     new_comment.save()
     return HttpResponse(status=201)
   else:
@@ -187,8 +206,10 @@ def commentList(request):
     return JsonResponse(list(Comment.objects.all().values()), safe=False)
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())
-    author = des_req['author']
-    meeting = des_req['meeting']
+    author_id = des_req['author_id']
+    author = User.objects.get(id=author_id)
+    meeting_id = des_req['meeting_id']
+    meeting = Meeting.objects.get(id=meeting_id)
     content = des_req['content']
     publicity = des_req['publicity']
     new_comment = Comment(author=author, meeting=meeting, content=content, publicity=publicity)
@@ -208,8 +229,10 @@ def commentDetail(request, comment_id):
     return JsonResponse(model_to_dict(comment))
   elif request.method == 'PUT':
     des_req = json.loads(request.body.decode())
-    author = des_req['author']
-    meeting = des_req['meeting']
+    author_id = des_req['author_id']
+    author = User.objects.get(id=author_id)
+    meeting_id = des_req['meeting_id']
+    meeting = Meeting.objects.get(id=meeting_id)
     content = des_req['content']
     publicity = des_req['publicity']
     try:
