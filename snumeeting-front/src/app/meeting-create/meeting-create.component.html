@@ -1,0 +1,69 @@
+<button (click)=signOut() class="sign-out-button">sign out</button>
+
+<head>
+  <h1>Create Meeting</h1>
+</head>
+<body>
+<br>
+
+<div>
+  <ul>
+    <li (click)="showWritingTap()" class="write_tap">write</li>
+    <li (click)="showPreviewTap" class="preview_tap">preview</li>
+  </ul>
+
+  <div *ngIf="isWriting">
+    <label>Title: </label>
+    <input type="text" [(ngModel)]="meeting.title" placeholder="title" cols="50"><br><br>
+
+    <label>Interest & Subject: </label>
+    <select name="interest">
+      <optgroup label="select your interest"></optgroup>
+      <optgroup label="Study">
+        <option value="eng">English</option>
+        <option value="math">Mathematics</option>
+        <option value="chem">Chemistry</option>
+        <option value="phy">Physics</option>
+        <option value="bio">Biology</option>
+        <option value="chi">Chinese</option>
+        <option value="com">Computer</option>
+      </optgroup>
+      <optgroup label="Activity">
+        <option value="band">Band</option>
+        <option value="dance">Dance</option>
+        <option value="sport">Sport</option>
+      </optgroup>
+{#      <option value="" disabled selected hidden>Please select your interested field</option>#}
+    </select>
+    <br><br>
+
+    <label>Description: </label><br>
+    <textarea [(ngModel)]="meeting.description" placeholder="description" rows="15"></textarea><br><br>
+
+    <select name="location">
+      <option value="" disabled selected hidden>Select a location you want to meet</option>
+      <option value="snu">SNU</option>
+      <option value="nsd">Nak Seong Dae</option>
+      <option value="snu_stn">SNU station</option>
+      <option value="etc">etc</option>
+    </select>
+    <br><br>
+
+    <p>If select etc, please specify below</p>
+    <label>etc:</label><input type="text" placeholder="specify the place"><br><br>
+
+    <label>Number of member: </label>
+    <input type="text" [(ngModel)]="meeting.max_number"><br><br>
+
+    <button (click)=create() class="create-button">create</button>
+
+  </div>
+
+  <div *ngIf="!isWriting">
+    <h2 class="meeting-title">{{ meeting.title }}</h2>
+    <p class="meeting-description">{{ meeting.description }}</p>
+  </div>
+
+</div>
+
+</body>
