@@ -9,11 +9,12 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
-import {MeetingDetailComponent} from './meeting-detail/meeting-detail.component';
+import { MeetingDetailComponent} from './meeting-detail/meeting-detail.component';
+import { MeetingCreateComponent } from './meeting-create/meeting-create.component';
 
 import { UserService } from './user-service';
-import {MeetingService} from './meeting.service';
-import {CommentService} from './comment.service';
+import { MeetingService } from './meeting.service';
+import { CommentService } from './comment.service';
 
 import { AppRoutingModule } from './app.routing.module';
 
@@ -25,7 +26,8 @@ import { AppRoutingModule } from './app.routing.module';
     SignUpComponent,
     ProfileComponent,
     EditProfileComponent,
-    MeetingDetailComponent
+    MeetingDetailComponent,
+    MeetingCreateComponent
   ],
   imports: [
     BrowserModule,
