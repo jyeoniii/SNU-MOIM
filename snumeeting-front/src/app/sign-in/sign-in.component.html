@@ -6,7 +6,7 @@
   <div class="form-group">
     <label class="col-sm-2 control-label">mySNU ID</label>
     <div class="col-sm-8">
-      <input class="form-control" placeholder="Enter mySNU ID" #mySNU_id>
+      <input class="form-control" placeholder="Enter mySNU ID" #username>
     </div>
   </div>
 </form>
@@ -21,7 +21,7 @@
 </form>
 
 <div>
-  <button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="signIn(mySNU_id.value, password.value)">Sign In</button>
+  <button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="signIn(username.value, password.value)">Sign In</button>
 </div>
 <div>
   <label class="col-sm-offset-5 col-sm-2 text-center">OR</label>

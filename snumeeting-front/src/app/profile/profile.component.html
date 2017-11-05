@@ -7,7 +7,7 @@
   <div class="form-group">
     <label class="col-sm-6 control-label">mySNU ID</label>
     <div class="col-sm-6">
-      <p class="form-control-static">username</p>
+      <p class="form-control-static">{{user.username}}</p>
     </div>
   </div>
 </form>
@@ -16,7 +16,7 @@
   <div class="form-group">
     <label class="col-sm-6 control-label">Name</label>
     <div class="col-sm-6">
-      <p class="form-control-static">name</p>
+      <p class="form-control-static">{{user.name}}</p>
     </div>
   </div>
 </form>
@@ -25,7 +25,7 @@
   <div class="form-group">
     <label class="col-sm-6 control-label">College</label>
     <div class="col-sm-6">
-      <p class="form-control-static">Engineering</p>
+      <p class="form-control-static">{{user.college.name}}</p>
     </div>
   </div>
 </form>
@@ -33,12 +33,12 @@
 <form class="form-horizontal">
   <div class="form-group">
     <label class="col-sm-6 control-label">Interest</label>
-    <div class="col-sm-6">
-      <p class="form-control-static">
-        Study : English, Computer<br>
-        Volunteering: Teaching<br>
-        Performance: Musical
-      </p>
+    <div class="col-sm-2">
+      <div *ngFor="let subject of user.subjects">
+        <li class="list-group-item">
+          {{subject.name}}
+        </li>
+      </div>
     </div>
   </div>
 </form>

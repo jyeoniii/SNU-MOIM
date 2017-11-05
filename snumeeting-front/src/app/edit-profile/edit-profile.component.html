@@ -6,7 +6,7 @@
   <div class="form-group">
     <label class="col-sm-2 control-label">mySNU ID</label>
     <div class="col-sm-8">
-      <p class="form-control-static">username</p>
+      <p class="form-control-static">{{user.username}}</p>
     </div>
   </div>
 </form>
@@ -43,12 +43,7 @@
     <label class="col-sm-2 control-label">College</label>
     <div class="col-sm-8">
       <select class="form-control">
-        <option>Engineering</option>
-        <option>Education</option>
-        <option>Human Ecology</option>
-        <option>Humanities</option>
-        <option>Social Sciences</option>
-        <option>Natural Sciences</option>
+          <option *ngFor="let college of colleges" [selected]="college.id == user.college.id">{{college.name}}</option>
       </select>
     </div>
   </div>

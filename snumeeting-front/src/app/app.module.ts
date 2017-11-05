@@ -10,6 +10,7 @@ import { SignUpComponent } from './sign-up/sign-up.component';
 import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 
+import { UserService } from './user-service';
 import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
@@ -27,8 +28,14 @@ import { AppRoutingModule } from './app-routing.module';
     AppRoutingModule
   ],
   providers: [
-    {provide: APP_BASE_HREF, useValue : '/' }
-    ],
+    UserService,
+    {
+      provide: APP_BASE_HREF,
+      useValue : '/'
+    }
+  ],
   bootstrap: [AppComponent]
-})
+}
+)
+
 export class AppModule { }

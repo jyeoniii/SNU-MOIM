@@ -4,11 +4,18 @@ from django.contrib.auth.models import User
 class College(models.Model):
   name = models.CharField(max_length=64)
 
+  def __str__(self):
+    return self.name
+
 class Subject(models.Model):
   interest = models.CharField(max_length=64)
   name = models.CharField(max_length=64)
 
+  def __str__(self):
+    return self.name
+
 class Ex_User(models.Model):
+  name = models.CharField(max_length=64)
   user = models.OneToOneField(
     User,
     on_delete=models.CASCADE,
@@ -23,6 +30,9 @@ class Ex_User(models.Model):
     Subject,
     related_name = 'usersSubjects',
   )
+
+  def __str__(self):
+    return self.name
 
 class Meeting(models.Model):
   author = models.ForeignKey(
@@ -44,6 +54,9 @@ class Meeting(models.Model):
     null=True
   )
 
+  def __str__(self):
+    return self.title
+
 class Comment(models.Model):
   author = models.ForeignKey(
     User,
@@ -57,3 +70,6 @@ class Comment(models.Model):
   )
   content = models.CharField(max_length=64)
   publicity = models.BooleanField()
+
+  def __str__(self):
+    return self.content

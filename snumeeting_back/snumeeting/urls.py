@@ -6,9 +6,9 @@ from .views import token
 
 urlpatterns = [
   url('^token$', token, name='token'),
-  url(r'^signup$', signup, name='singup'),
-  url(r'^signin$', signin, name='singin'),
-  url(r'^signout$', signout, name='singout'),
+  url(r'^signup$', signup, name='signup'),
+  url(r'^signin$', signin, name='signin'),
+  url(r'^signout$', signout, name='signout'),
   url(r'^user/(?P<user_id>[0-9]+)$', userDetail, name='userDetail'),
   url(r'^meeting$', meetingList, name='meetingList'),
   url(r'^meeting/(?P<meeting_id>[0-9]+)$', meetingDetail, name='meetingDetail'),

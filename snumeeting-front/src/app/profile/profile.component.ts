@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 
+import { User } from '../user';
+import { UserService } from '../user-service';
+
 import 'rxjs/add/operator/switchMap';
 
 @Component({
@@ -12,17 +15,20 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private userService: UserService
   ) { }
 
-  id = 1;
+  user: User;
 
   ngOnInit() {
-
+    this.route.paramMap
+      .switchMap((params: ParamMap) => this.userService.getUserInfo(+params.get('id')))
+      .subscribe(user => this.user = user);
   }
 
   editProfile() {
-    this.router.navigate(['/profile', this.id, 'edit']);
+    this.router.navigate(['/user', this.user.id, 'edit']);
   }
 
 }

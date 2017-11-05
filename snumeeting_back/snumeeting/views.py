@@ -12,16 +12,17 @@ import json
 def signup(request):
   if request.method == 'POST':
     req_data = json.loads(request.body.decode())
-    username = req_data['name']
+    name = req_data['name']
+    username = req_data['username']
     password = req_data['password']
-    email = req_data['mySNU']
+    email = req_data['username'] + '@snu.ac.kr'
     college_id = req_data['college_id'] # instead of getting object, gets id first
     college = College.objects.get(id=college_id) # gets the object by id
     subject_ids = req_data['subject_ids']
     subjects = Subject.objects.filter(id__in=subject_ids) # gets the objects by ids
     user = User.objects.create_user(username=username, password=password, email=email)
     user.save()
-    ex_User = Ex_User.objects.create(user=user, college=college) # create first, m2m later
+    ex_User = Ex_User.objects.create(name=name, user=user, college=college) # create first, m2m later
     ex_User.save()
     ex_User.subjects.add(*subjects) # adding many-to-many at once
     ex_User.save()
@@ -40,17 +41,17 @@ def token(request):
 def signin(request):
   if request.method == 'POST':
     req_data = json.loads(request.body.decode())
-    email = req_data['mySNU']
-    user = User.objects.filter(email=email).first()
-    if user is not None:
-      username = user.username
-    else:
-      username = ''
+    username = req_data['username']
     password = req_data['password']
     user = authenticate(request, username=username, password=password)
     if user is not None:
       login(request, user)
-      return HttpResponse(status=200)
+      ex_user = Ex_User.objects.get(user=user)
+      dict_user = model_to_dict(user)
+      dict_user['name'] = ex_user.name
+      dict_user['college'] = model_to_dict(ex_user.college)
+      dict_user['subjects'] = list(ex_user.subjects.all().values())
+      return JsonResponse(dict_user, safe = False)
     else:
       return HttpResponse(status=401)
   else:
@@ -70,14 +71,20 @@ def userDetail(request, user_id):
   if request.method == 'GET':
     try:
       user = User.objects.get(id=user_id)
+      ex_user = Ex_User.objects.get(user=user)
+      dict_user = model_to_dict(user)
+      dict_user['name'] = ex_user.name
+      dict_user['college'] = model_to_dict(ex_user.college)
+      dict_user['subjects'] = list(ex_user.subjects.all().values())
     except User.DoesNotExist:
       return HttpResponseNotFound()
-    return JsonResponse(model_to_dict(user))
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+    return JsonResponse(dict_user, safe = False)
   elif request.method == 'PUT':
     req_data = json.loads(request.body.decode())
-    username = req_data['name']
+    name = req_data['name']
     password = req_data['password']
-    email = req_data['mySNU']
     college_id = req_data['college_id'] # instead of getting object, gets id first
     college = College.objects.get(id=college_id) # gets the object by id
     subject_ids = req_data['subject_ids']
@@ -86,9 +93,8 @@ def userDetail(request, user_id):
       user = User.objects.get(id=user_id)
     except User.DoesNotExist:
       return HttpResponseNotFound()
-    user.username = username
     user.password = password
-    user.email = email
+    user.extendedUser.name = name
     user.extendedUser.college = college
     user.extendedUser.subjects.clear()
     user.extendedUser.subjects.add(*subjects)

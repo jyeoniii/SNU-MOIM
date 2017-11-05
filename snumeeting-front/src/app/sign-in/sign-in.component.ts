@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { UserService } from '../user-service';
+
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
@@ -9,14 +11,21 @@ import { Router } from '@angular/router';
 export class SignInComponent implements OnInit {
 
   constructor(
+    private userService: UserService,
     private router: Router
   ) {}
 
   ngOnInit() {
   }
 
-  signIn(mySNU_id: string, password: string) {
-    console.log('mySNU ID: ' + mySNU_id + ', password: ' + password);
+  signIn(username: string, password: string) {
+    this.userService.signIn(username, password).then(user => {
+      if (user.id > 0) {
+        this.router.navigate(['/user/', user.id]);
+      } else {
+        alert('Please check your ID or password.');
+      }
+    });
   }
 
   signUp() {

@@ -6,9 +6,9 @@
   <div class="form-group">
     <label class="col-sm-2 control-label">mySNU ID</label>
     <div class="col-sm-8">
-      <input class="col-sm-9 form-control" placeholder="Enter mySNU ID" #mySNU_id>
+      <input class="col-sm-9 form-control" placeholder="Enter mySNU ID" #username>
     </div>
-    <button class="btn btn-primary" (click)="duplicateCheck(mySNU_id.value)">Check</button>
+    <button class="btn btn-primary" (click)="duplicateCheck(username.value)">Check</button>
   </div>
 </form>
 
@@ -25,7 +25,7 @@
   <div class="form-group">
     <label class="col-sm-2 control-label">Password Check</label>
     <div class="col-sm-8">
-      <input type="password" class="form-control" placeholder="Re-Enter Password" #password>
+      <input type="password" class="form-control" placeholder="Re-Enter Password" #passwordCheck>
     </div>
   </div>
 </form>
@@ -34,7 +34,7 @@
   <div class="form-group">
     <label class="col-sm-2 control-label">Name</label>
     <div class="col-sm-8">
-      <input class="form-control" placeholder="Enter Name" #password>
+      <input class="form-control" placeholder="Enter Name" #name>
     </div>
   </div>
 </form>
@@ -43,13 +43,10 @@
   <div class="form-group">
     <label class="col-sm-2 control-label">College</label>
     <div class="col-sm-8">
-      <select class="form-control">
-        <option>Engineering</option>
-        <option>Education</option>
-        <option>Human Ecology</option>
-        <option>Humanities</option>
-        <option>Social Sciences</option>
-        <option>Natural Sciences</option>
+      <select class="form-control" #college>
+        <option *ngFor="let college of colleges">
+          {{college.name}}
+        </option>
       </select>
     </div>
   </div>
@@ -60,37 +57,11 @@
     <label class="col-sm-2 control-label">Interest</label>
     <div class="col-sm-8">
         <div class="checkbox">
+          <div *ngFor="let subject of subjects">
           <label class="col-sm-2 checkbox-inline">
-            <input type="checkbox" id="interest_study" value="option1">Study
+            <input type="checkbox" id="interest_study" value="option1">{{subject.name}}
           </label>
-          <label class="checkbox-inline">
-            <input type="checkbox" id="subject_study_1" value="option2">1
-          </label>
-          <label class="checkbox-inline">
-            <input type="checkbox" id="subject_study_2" value="option3">2
-          </label>
-        </div>
-        <div class="checkbox">
-          <label class="col-sm-2 checkbox-inline">
-            <input type="checkbox" id="interest_club" value="option1">Club
-          </label>
-          <label class="checkbox-inline">
-            <input type="checkbox" id="subject_club_1" value="option2">1
-          </label>
-          <label class="checkbox-inline">
-            <input type="checkbox" id="subject_club_2" value="option3">2
-          </label>
-        </div>
-        <div class="checkbox">
-          <label class="col-sm-2 checkbox-inline">
-            <input type="checkbox" id="interest_perf" value="option1">Performance
-          </label>
-          <label class="checkbox-inline">
-            <input type="checkbox" id="subject_perf_1" value="option2">1
-          </label>
-          <label class="checkbox-inline">
-            <input type="checkbox" id="subject_perf_2" value="option3">2
-          </label>
+          </div>
       </div>
     </div>
   </div>
