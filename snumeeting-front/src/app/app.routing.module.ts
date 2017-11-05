@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { MeetingDetailComponent } from './meeting-detail/meeting-detail.component';
 
 import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { MeetingDetailComponent } from './meeting-detail/meeting-detail.component';
+import { MeetingCreateComponent } from './meeting-create/meeting-create.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/sign_in', pathMatch: 'full' },
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'sign_up', component: SignUpComponent },
   { path: 'user/:id', component: ProfileComponent },
   { path: 'user/:id/edit', component: EditProfileComponent },
+  { path: 'meeting/create', component: MeetingCreateComponent },
   { path: 'meeting/:id', component: MeetingDetailComponent },
   { path: '**', redirectTo: '/sign_in' },
 ];

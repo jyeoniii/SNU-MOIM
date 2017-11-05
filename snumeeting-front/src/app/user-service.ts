@@ -5,7 +5,7 @@ import 'rxjs/add/operator/toPromise';
 
 import { User } from './user';
 import { College } from './college';
-import { Subject } from './Subject';
+import { Subject } from './subject';
 
 @Injectable()
 export class UserService {
