@@ -13,9 +13,8 @@ export class UserService {
 
   private headers = new Headers({'Content-Type': 'application/json'});
 
-  constructor(
-    private http: Http
-  ) { }
+  constructor(private http: Http) {
+  }
 
   user: User = new User();
   loginedUser: User = new User();
@@ -28,8 +27,23 @@ export class UserService {
       .catch(this.handleError);
   }
 
-  signUp(user: User) {
+  signUp(user: User): Promise<void> {
+    var subjectIDList: number[] = [];
+    for (let subject of user.subjects) {
+      subjectIDList.push(subject.id);
+    }
 
+    return this.http.post('/api/signup', JSON.stringify({
+        username: user.username,
+        password: user.password,
+        name: user.name,
+        college_id: user.college.id,
+        subject_ids: subjectIDList
+      }),
+      {headers: this.headers})
+      .toPromise()
+      .then(() => null)
+      .catch(this.handleError);
   }
 
   getUserInfo(id: number): Promise<User> {
@@ -39,10 +53,35 @@ export class UserService {
       .catch(this.handleError);
   }
 
+  editUserInfo(user: User): Promise<void> {
+    var subjectIDList: number[] = [];
+    for (let subject of user.subjects) {
+      subjectIDList.push(subject.id);
+    }
+
+    return this.http.put(`${this.userUrl}/${user.id}`, JSON.stringify({
+        password: user.password,
+        name: user.name,
+        college_id: user.college.id,
+        subject_ids: subjectIDList
+      }),
+      {headers: this.headers})
+      .toPromise()
+      .then(() => null)
+      .catch(this.handleError);
+  }
+
   getCollegeList(): Promise<College[]> {
     return this.http.get('/api/college')
       .toPromise()
       .then(response => response.json() as College[])
+      .catch(this.handleError);
+  }
+
+  getInterestList(): Promise<string[]> {
+    return this.http.get('/api/interest')
+      .toPromise()
+      .then(response => response.json() as string[])
       .catch(this.handleError);
   }
 

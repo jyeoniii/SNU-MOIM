@@ -93,13 +93,15 @@ def userDetail(request, user_id):
       user = User.objects.get(id=user_id)
     except User.DoesNotExist:
       return HttpResponseNotFound()
+    ex_user=Ex_User.objects.get(user=user)
     user.password = password
-    user.extendedUser.name = name
-    user.extendedUser.college = college
-    user.extendedUser.subjects.clear()
-    user.extendedUser.subjects.add(*subjects)
-    user.extendedUser.save()
     user.save()
+    ex_user.user = user
+    ex_user.name = name
+    ex_user.college = college
+    ex_user.subjects.clear()
+    ex_user.subjects.add(*subjects)
+    ex_user.save()
     return HttpResponse(status=204)
   elif request.method == 'DELETE':
     try:
@@ -297,6 +299,18 @@ def subjectList(request):
     return HttpResponse(status=201)
   else:
     return HttpResponseNotAllowed(['GET'],['POST'])
+
+    # url: /interest
+def interestList(request):
+  if request.method == 'GET':
+    intList = []
+    for subject in Subject.objects.all():
+      intList.append(subject.interest)
+    intSet = set(intList)
+    intSet = list(intSet)
+    return JsonResponse(intSet, safe=False)
+  else:
+    return HttpResponseNotAllowed(['GET'])
 
 # url: /subject/:id
 def subjectDetail(request, subject_id):
