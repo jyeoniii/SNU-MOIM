@@ -1,0 +1,46 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<h2 class="text-center">View Profile</h2>
+
+
+<form class="form-horizontal">
+  <div class="form-group">
+    <label class="col-sm-6 control-label">mySNU ID</label>
+    <div class="col-sm-6">
+      <p class="form-control-static">{{user.username}}</p>
+    </div>
+  </div>
+</form>
+
+<form class="form-horizontal">
+  <div class="form-group">
+    <label class="col-sm-6 control-label">Name</label>
+    <div class="col-sm-6">
+      <p class="form-control-static">{{user.name}}</p>
+    </div>
+  </div>
+</form>
+
+<form class="form-horizontal">
+  <div class="form-group">
+    <label class="col-sm-6 control-label">College</label>
+    <div class="col-sm-6">
+      <p class="form-control-static">{{user.college.name}}</p>
+    </div>
+  </div>
+</form>
+
+<form class="form-horizontal">
+  <div class="form-group">
+    <label class="col-sm-6 control-label">Interest</label>
+    <div class="col-sm-2">
+      <div *ngFor="let subject of user.subjects">
+        <li class="list-group-item">
+          {{subject.name}}
+        </li>
+      </div>
+    </div>
+  </div>
+</form>
+
+<button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="editProfile()">Edit Profile</button>
