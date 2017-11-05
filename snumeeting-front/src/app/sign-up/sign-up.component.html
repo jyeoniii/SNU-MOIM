@@ -43,8 +43,8 @@
   <div class="form-group">
     <label class="col-sm-2 control-label">College</label>
     <div class="col-sm-8">
-      <select class="form-control" #college>
-        <option *ngFor="let college of colleges">
+      <select class="form-control" [(ngModel)]="selectedCollege" [ngModelOptions]="{standalone: true}">
+        <option *ngFor="let college of colleges" [ngValue]="college">
           {{college.name}}
         </option>
       </select>
@@ -55,16 +55,18 @@
 <form class="form-horizontal">
   <div class="form-group">
     <label class="col-sm-2 control-label">Interest</label>
-    <div class="col-sm-8">
-        <div class="checkbox">
-          <div *ngFor="let subject of subjects">
-          <label class="col-sm-2 checkbox-inline">
-            <input type="checkbox" id="interest_study" value="option1">{{subject.name}}
-          </label>
+        <div class="checkbox checkbox-inline">
+          <div *ngFor="let interest of interests">
+            <input type="checkbox" class="checkbox-inline" (click)="interestCheck(interest)">{{interest}}
+              <div *ngFor="let subject of subjects">
+                <div class="col-sm-offset-1" *ngIf="subject.interest === interest && interestChecked[interest]">
+                  <input type="checkbox" class="checkbox-inline">{{subject.name}}
+                </div>
+              </div>
           </div>
-      </div>
-    </div>
+        </div>
   </div>
 </form>
 
-<p><p><button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="signUp()">Sign Up</button>
+<p><p><button class="col-sm-offset-5 col-sm-2 btn btn-primary"
+              (click)="signUp(username.value, password.value, passwordCheck.value, name.value)">Sign Up</button>
