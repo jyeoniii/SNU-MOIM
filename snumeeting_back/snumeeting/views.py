@@ -227,7 +227,11 @@ def meetingComment(request, meeting_id):
     # TODO: replace author -> request.user 
     new_comment = Comment(author=author, meeting=meeting, content=content, publicity=publicity)
     new_comment.save()
-    return HttpResponse(status=201)
+
+    comment_resp = model_to_dict(new_comment)
+    author_front = convert_userinfo_for_front(author_id) 
+    comment_resp['author'] = author_front
+    return JsonResponse(comment_resp, status=201)
   else:
     return HttpResponseNotAllowed(['GET'],['POST'])
 

@@ -2,9 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Meeting } from '../meeting';
 import { Comment } from '../comment';
-import { Subject } from '../subject';
 import { User } from '../user';
-import { College } from '../college';
 import { MeetingService } from '../meeting.service';
 import {CommentService} from '../comment.service';
 
@@ -29,7 +27,7 @@ export class MeetingDetailComponent implements OnInit {
 
   private selectedComment: Comment = null;   // Comment to be edited
 
-  @Input() private newComment: Comment = null;
+  @Input() private newComment: string = null;
 
   ngOnInit() {
     this.route.params.subscribe(params => {

@@ -38,7 +38,7 @@ export class CommentService {
       {author_id: author.id, content: content, publicity: publicity}),
       { headers: this.headers })
       .toPromise()
-      .then(response => response.json().data as Comment)
+      .then(response => response.json() as Comment)
       .catch(this.handleError);
   }
 
@@ -51,13 +51,15 @@ export class CommentService {
     const url = `${this.commentsUrl}/${id}`;
     return this.http.get(url)
       .toPromise()
-      .then(response => response.json().data as Comment[])
+      .then(response => response.json() as Comment[])
       .catch(this.handleError);
   }
 
   editComment(editedComment: Comment): Promise<Comment> {
     const url = `${this.commentsUrl}/${editedComment.id}`;
-    return this.http.put(url, JSON.stringify(editedComment), { headers: this.headers })
+    return this.http.put(url,
+                         JSON.stringify({content: editedComment.content, publicity: editedComment.publicity}),
+                 { headers: this.headers })
       .toPromise()
       .then(() => editedComment)
       .catch(this.handleError);
