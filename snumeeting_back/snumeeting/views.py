@@ -94,7 +94,7 @@ def userDetail(request, user_id):
     except User.DoesNotExist:
       return HttpResponseNotFound()
     ex_user=Ex_User.objects.get(user=user)
-    user.password = password
+    user.set_password(password)
     user.save()
     ex_user.user = user
     ex_user.name = name
