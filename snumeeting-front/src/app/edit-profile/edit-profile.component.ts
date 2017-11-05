@@ -5,7 +5,7 @@ import { User } from '../user';
 import { College } from '../college';
 import { Subject } from '../subject';
 
-import { UserService } from '../user-service';
+import { UserService } from '../user.service';
 
 
 @Component({

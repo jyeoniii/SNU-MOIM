@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from "@angular/common";
 
-import { UserService } from "../user-service";
+import { UserService } from "../user.service";
 //import user service
 import { MeetingService } from "../meeting.service";
 //import meeting service

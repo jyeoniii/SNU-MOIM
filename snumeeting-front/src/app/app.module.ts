@@ -12,7 +12,7 @@ import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { MeetingDetailComponent} from './meeting-detail/meeting-detail.component';
 import { MeetingCreateComponent } from './meeting-create/meeting-create.component';
 
-import { UserService } from './user-service';
+import { UserService } from './user.service';
 import { MeetingService } from './meeting.service';
 import { CommentService } from './comment.service';
 
