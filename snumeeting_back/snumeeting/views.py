@@ -121,13 +121,7 @@ def meetingList(request):
       d = model_to_dict(meeting)
 
       author_id = d['author']
-      ex_user = Ex_User.objects.get(id=author_id)
-      user['id'] = ex_user.id
-      user['mySNU_id'] = ex_user.user.username
-      user['password'] = ex_user.user.password
-      #user['name'] = ex_user.name
-      user['college'] = model_to_dict(ex_user.college)
-      user['interest'] = list(ex_user.subjects.all().values())
+      user = convert_userinfo_for_front(author_id)
       d['author'] = user
 
       subject_id = d['subject']
@@ -163,18 +157,11 @@ def meetingDetail(request, meeting_id):
   meeting_id = int(meeting_id)
   if request.method == 'GET':
     try:
-      user = {}
       meeting = Meeting.objects.get(id=meeting_id)
       dict_meeting = model_to_dict(meeting)
 
       author_id = dict_meeting['author']
-      ex_user = Ex_User.objects.get(id=author_id)
-      user['id'] = ex_user.id
-      user['mySNU_id'] = ex_user.user.username
-      user['password'] = ex_user.user.password
-      #user['name'] = ex_user.name
-      user['college'] = model_to_dict(ex_user.college)
-      user['interest'] = list(ex_user.subjects.all().values())
+      user = convert_userinfo_for_front(author_id)
       dict_meeting['author'] = user
 
       dict_meeting['members']=list(meeting.members.all().values())
@@ -224,14 +211,20 @@ def meetingComment(request, meeting_id):
         meeting = Meeting.objects.get(id=meeting_id)
     except Meeting.DoesNotExist:
         return HttpResponseNotFound()
-    return JsonResponse(list(meeting.commentsMeeting.all().values()), safe=False)
+    commentsList = list(meeting.commentsMeeting.all().values())
+    for comment in commentsList:
+        user = convert_userinfo_for_front(comment['author_id'])
+        comment.pop('author_id')
+        comment['author'] = user 
+    return JsonResponse(commentsList, safe=False)
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())
     author_id = des_req['author_id']
-    author = User.objects.get(id=author_id)
+    author = Ex_User.objects.get(id=author_id)
     meeting = Meeting.objects.get(id=meeting_id)
     content = des_req['content']
     publicity = des_req['publicity']
+    # TODO: replace author -> request.user 
     new_comment = Comment(author=author, meeting=meeting, content=content, publicity=publicity)
     new_comment.save()
     return HttpResponse(status=201)
@@ -262,23 +255,21 @@ def commentDetail(request, comment_id):
   if request.method == 'GET':
     try:
       comment = Comment.objects.get(id=comment_id)
+      user = convert_userinfo_for_front(comment.author_id)
+      comment_dict = model_to_dict(comment)
+      #comment_dict.pop('author_id')
+      comment_dict['author'] = user
     except Comment.DoesNotExist:
       return HttpResponseNotFound()
-    return JsonResponse(model_to_dict(comment))
+    return JsonResponse(comment_dict)
   elif request.method == 'PUT':
     des_req = json.loads(request.body.decode())
-    author_id = des_req['author_id']
-    author = User.objects.get(id=author_id)
-    meeting_id = des_req['meeting_id']
-    meeting = Meeting.objects.get(id=meeting_id)
     content = des_req['content']
     publicity = des_req['publicity']
     try:
       comment = Comment.objects.get(id=comment_id)
     except Comment.DoesNotExist:
       return HttpResponseNotFound()
-    comment.author = author
-    comment.meeting = meeting
     comment.content = content
     comment.publicity = publicity
     comment.save()
@@ -379,3 +370,18 @@ def collegeDetail(request, college_id):
     return HttpResponse(status=204)
   else:
     return HttpResponseNotAllowed(['GET'],['PUT'],['DELETE'])
+
+
+
+def convert_userinfo_for_front(user_id):
+      user = {}
+      ex_user = Ex_User.objects.get(id=user_id)
+      user['id'] = ex_user.id
+      user['mySNU_id'] = ex_user.user.username
+      user['password'] = ex_user.user.password
+      #user['name'] = ex_user.name
+      user['college'] = model_to_dict(ex_user.college)
+      user['interest'] = list(ex_user.subjects.all().values())
+
+      return user
+

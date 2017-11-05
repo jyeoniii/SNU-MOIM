@@ -9,9 +9,14 @@ import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import {MeetingDetailComponent} from './meeting-detail/meeting-detail.component';
 
 import { UserService } from './user-service';
-import { AppRoutingModule } from './app-routing.module';
+import {MeetingService} from './meeting.service';
+import {CommentService} from './comment.service';
+
+import { AppRoutingModule } from './app.routing.module';
+
 
 @NgModule({
   declarations: [
@@ -19,7 +24,8 @@ import { AppRoutingModule } from './app-routing.module';
     SignInComponent,
     SignUpComponent,
     ProfileComponent,
-    EditProfileComponent
+    EditProfileComponent,
+    MeetingDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -28,6 +34,8 @@ import { AppRoutingModule } from './app-routing.module';
     AppRoutingModule
   ],
   providers: [
+    MeetingService,
+    CommentService,
     UserService,
     {
       provide: APP_BASE_HREF,

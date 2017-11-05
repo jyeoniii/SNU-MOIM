@@ -59,7 +59,7 @@ class Meeting(models.Model):
 
 class Comment(models.Model):
   author = models.ForeignKey(
-    User,
+    Ex_User,
     related_name='commentsAuthor',
     null=True
   )

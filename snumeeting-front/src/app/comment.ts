@@ -4,7 +4,7 @@ import { Meeting } from './meeting';
 export class Comment {
   id: number;
   author: User;
-  meeting: Meeting;
+  meeting_id: number;
   content: string;
   publicity = true;
 }

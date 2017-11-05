@@ -1,5 +1,6 @@
 import { Subject } from './subject';
 import { User } from './user';
+import { Comment } from './comment';
 
 export class Meeting {
   id: number;

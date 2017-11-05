@@ -1,0 +1,48 @@
+<div style="margin-left: 30px; margin-top: 30px">
+  <h2>Meeting Detail</h2><br>
+
+  <h3>Meeting</h3>
+  <div *ngIf="selectedMeeting">
+    TITLE: {{ selectedMeeting.title }}<br>
+    AUTHOR: {{ selectedMeeting.author.name }}<br>
+    DESCRIPTION: {{ selectedMeeting.description }}<br>
+    LOCATION: {{ selectedMeeting.location }}<br>
+    PARTICIPATION: {{ selectedMeeting.members.length }} / {{ selectedMeeting.max_member}}
+  </div>
+  <br>
+  <!--Comments-->
+  <h3>Comments</h3>
+  <div *ngIf="comments">
+    <!--Create comment-->
+    <input [(ngModel)]="newComment" style="width:500px;">
+    <button (click)="createComment(newComment)" class="btn btn-primary btn-sm" id="create-comment-button">CREATE</button>
+    <li *ngFor="let comment of comments">
+      <!--Author of the comment-->
+      <span style="font-weight:bold">{{ comment.author.mySNU_id }}</span>
+      <!--Content of the comment-->
+      :
+      <span *ngIf="selectedComment!==comment;else edit_mode">
+        {{comment.content}}
+        <!--Edit / Delete button-->
+      <span *ngIf="currentUser && (currentUser.id===comment.author.id)">
+        <button (click)="toEditMode(comment)" class="btn btn-primary btn-sm" style="margin-left:20px;" id="edit-comment-button">EDIT</button>
+        <button (click)="deleteComment(comment)" class="btn btn-primary btn-sm" id="delete-comment-button">DELETE</button>
+      </span>
+    </span>
+
+      <ng-template #edit_mode>
+        <input [(ngModel)]="comment.content">
+        <button (click)="editComment(comment)" class="btn btn-primary btn-sm" id="update-button">UPDATE</button>
+        <button (click)="cancleEditMode(comment)" class="btn btn-primary btn-sm" id="cancle-edit-button">CANCLE</button>
+      </ng-template>
+    </li>
+  </div><br>
+
+
+  <span *ngIf="isOwner()">
+  <button (click)="edit()" class="btn btn-primary btn-sm" id="edit-button" >EDIT</button>
+  <button (click)="delete()" class="btn btn-primary btn-sm" id="delete-button">DELETE</button>
+</span>
+  <button (click)="goBack()" class="btn btn-primary btn-sm" id="back-button">BACK</button>
+
+</div>
