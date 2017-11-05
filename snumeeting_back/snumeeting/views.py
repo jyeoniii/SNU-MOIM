@@ -117,25 +117,36 @@ def meetingList(request):
     meetings = Meeting.objects.all()
     dict_meetings = []
     for meeting in meetings:
+      user = {}
       d = model_to_dict(meeting)
+
+      author_id = d['author']
+      user = convert_userinfo_for_front(author_id)
+      d['author'] = user
+
+      subject_id = d['subject']
+      d['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
       d['members']=list(meeting.members.all().values())
       dict_meetings.append(d)
     return JsonResponse(dict_meetings, safe=False)
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())
+
     author_id = des_req['author_id']
-    author = User.objects.get(id=author_id)
+    author = Ex_User.objects.get(id=int(author_id))
     title = des_req['title']
     description = des_req['description']
     location = des_req['location']
     max_member = des_req['max_member']
-    member_ids = des_req['member_ids']
-    members = User.objects.filter(id__in=member_ids)
+#    member_ids = des_req['member_ids']
+#    members = User.objects.filter(id__in=member_ids)
     subject_id = des_req['subject_id']
     subject = Subject.objects.get(id=subject_id)
+
+    # TODO: replace author -> request.user 
     new_meeting = Meeting(author=author, title=title, description=description, location=location, max_member=max_member, subject=subject)
     new_meeting.save()
-    new_meeting.members.add(*members)
+    new_meeting.members.add(author)
     new_meeting.save()
     return HttpResponse(status=201)
   else:
@@ -148,33 +159,37 @@ def meetingDetail(request, meeting_id):
     try:
       meeting = Meeting.objects.get(id=meeting_id)
       dict_meeting = model_to_dict(meeting)
+
+      author_id = dict_meeting['author']
+      user = convert_userinfo_for_front(author_id)
+      dict_meeting['author'] = user
+
       dict_meeting['members']=list(meeting.members.all().values())
+      subject_id = dict_meeting['subject']
+      dict_meeting['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
     return JsonResponse(dict_meeting)
   elif request.method == 'PUT':
     des_req = json.loads(request.body.decode())
-    author_id = des_req['author_id']
-    author = User.objects.get(id=author_id)
     title = des_req['title']
     description = des_req['description']
     location = des_req['location']
     max_member = des_req['max_member']
-    member_ids = des_req['member_ids']
-    members = User.objects.filter(id__in=member_ids)
+#    member_ids = des_req['member_ids']
+#    members = User.objects.filter(id__in=member_ids)
     subject_id = des_req['subject_id']
     subject = Subject.objects.get(id=subject_id)
     try:
       meeting = Meeting.objects.get(id=meeting_id)
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
-    meeting.author = author
     meeting.title = title
     meeting.description = description
     meeting.location = location
     meeting.max_member = max_member
-    meeting.members.clear()
-    meeting.members.add(*members)
+#    meeting.members.clear()
+#    meeting.members.add(*members)
     meeting.subject = subject
     meeting.save()
     return HttpResponse(status=204)
@@ -192,14 +207,24 @@ def meetingDetail(request, meeting_id):
 def meetingComment(request, meeting_id):
   meeting_id = int(meeting_id)
   if request.method == 'GET':
-    return JsonResponse(list(Meeting.objects.get(id=meeting_id).commentsMeeting.all().values()), safe=False)
+    try:
+        meeting = Meeting.objects.get(id=meeting_id)
+    except Meeting.DoesNotExist:
+        return HttpResponseNotFound()
+    commentsList = list(meeting.commentsMeeting.all().values())
+    for comment in commentsList:
+        user = convert_userinfo_for_front(comment['author_id'])
+        comment.pop('author_id')
+        comment['author'] = user 
+    return JsonResponse(commentsList, safe=False)
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())
     author_id = des_req['author_id']
-    author = User.objects.get(id=author_id)
+    author = Ex_User.objects.get(id=author_id)
     meeting = Meeting.objects.get(id=meeting_id)
     content = des_req['content']
     publicity = des_req['publicity']
+    # TODO: replace author -> request.user 
     new_comment = Comment(author=author, meeting=meeting, content=content, publicity=publicity)
     new_comment.save()
     return HttpResponse(status=201)
@@ -230,23 +255,21 @@ def commentDetail(request, comment_id):
   if request.method == 'GET':
     try:
       comment = Comment.objects.get(id=comment_id)
+      user = convert_userinfo_for_front(comment.author_id)
+      comment_dict = model_to_dict(comment)
+      #comment_dict.pop('author_id')
+      comment_dict['author'] = user
     except Comment.DoesNotExist:
       return HttpResponseNotFound()
-    return JsonResponse(model_to_dict(comment))
+    return JsonResponse(comment_dict)
   elif request.method == 'PUT':
     des_req = json.loads(request.body.decode())
-    author_id = des_req['author_id']
-    author = User.objects.get(id=author_id)
-    meeting_id = des_req['meeting_id']
-    meeting = Meeting.objects.get(id=meeting_id)
     content = des_req['content']
     publicity = des_req['publicity']
     try:
       comment = Comment.objects.get(id=comment_id)
     except Comment.DoesNotExist:
       return HttpResponseNotFound()
-    comment.author = author
-    comment.meeting = meeting
     comment.content = content
     comment.publicity = publicity
     comment.save()
@@ -347,3 +370,18 @@ def collegeDetail(request, college_id):
     return HttpResponse(status=204)
   else:
     return HttpResponseNotAllowed(['GET'],['PUT'],['DELETE'])
+
+
+
+def convert_userinfo_for_front(user_id):
+      user = {}
+      ex_user = Ex_User.objects.get(id=user_id)
+      user['id'] = ex_user.id
+      user['mySNU_id'] = ex_user.user.username
+      user['password'] = ex_user.user.password
+      #user['name'] = ex_user.name
+      user['college'] = model_to_dict(ex_user.college)
+      user['interest'] = list(ex_user.subjects.all().values())
+
+      return user
+

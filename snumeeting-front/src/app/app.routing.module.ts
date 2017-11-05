@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { MeetingDetailComponent } from './meeting-detail/meeting-detail.component';
 
 import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
@@ -12,7 +13,8 @@ const routes: Routes = [
   { path: 'sign_up', component: SignUpComponent },
   { path: 'user/:id', component: ProfileComponent },
   { path: 'user/:id/edit', component: EditProfileComponent },
-  { path: '**', redirectTo: '/sign_in' }
+  { path: 'meeting/:id', component: MeetingDetailComponent },
+  { path: '**', redirectTo: '/sign_in' },
 ];
 
 @NgModule({
