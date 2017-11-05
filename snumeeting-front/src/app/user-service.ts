@@ -18,6 +18,7 @@ export class UserService {
   ) { }
 
   user: User = new User();
+  loginedUser: User = new User();
 
   signIn(username: string, password: string): Promise<User> {
     return this.http.post('/api/signin', JSON.stringify({username: username, password: password}),

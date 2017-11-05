@@ -20,11 +20,14 @@ export class ProfileComponent implements OnInit {
   ) { }
 
   user: User;
+  loginedUser: User;
 
   ngOnInit() {
     this.route.paramMap
       .switchMap((params: ParamMap) => this.userService.getUserInfo(+params.get('id')))
       .subscribe(user => this.user = user);
+
+    this.loginedUser = this.userService.loginedUser;
   }
 
   editProfile() {

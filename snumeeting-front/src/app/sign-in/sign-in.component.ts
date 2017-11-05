@@ -21,6 +21,7 @@ export class SignInComponent implements OnInit {
   signIn(username: string, password: string) {
     this.userService.signIn(username, password).then(user => {
       if (user.id > 0) {
+        this.userService.loginedUser = user;
         this.router.navigate(['/user/', user.id]);
       } else {
         alert('Please check your ID or password.');
