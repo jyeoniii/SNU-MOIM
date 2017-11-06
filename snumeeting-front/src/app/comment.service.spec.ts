@@ -1,12 +1,13 @@
 import { TestBed, async, inject } from '@angular/core/testing';
-import { HttpModule, Http } from '@angular/http';
+import { HttpModule, Http, XHRBackend, Response, ResponseOptions } from '@angular/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import {FormsModule} from '@angular/forms';
-
-import { InMemoryDataService } from './in-memory-data.service';
-import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
+import { MockBackend, MockConnection } from '@angular/http/testing';
 
 import { CommentService } from './comment.service';
+import { makeCommentData } from './mock-data';
+
+import { Comment } from './comment';
 
 describe('CommentService', () => {
   beforeEach(() => {
@@ -15,9 +16,10 @@ describe('CommentService', () => {
         HttpModule,
         RouterTestingModule,
         FormsModule,
-        InMemoryWebApiModule.forRoot(InMemoryDataService, { delay: 0 }),
       ],
-      providers: [CommentService]
+      providers: [CommentService,
+        { provide: XHRBackend, useClass: MockBackend }
+      ]
     });
   });
 
@@ -37,15 +39,24 @@ describe('CommentService', () => {
       expect(service instanceof CommentService).toBe(true, 'new service should be ok');
     }));
 
-  it('Should invoke handleError() when an error occured while handling data',
-    async(inject([CommentService], (service: CommentService) => {
-      // Invalid article id -> This should raise an error
-      service.getComment(-1).catch(reason => expect(reason).not.toBeUndefined());
-    })));
-
+  it('can provide the mockBackend as XHRBackend', inject([XHRBackend], (backend: MockBackend) => {
+    expect(backend).not.toBeNull('backend should be provided');
+  }));
 
   describe('when getCommentsOnMeeting', () => {
+    let backend: MockBackend;
+    let fakeComment: Comment[];
+    let response: Response;
+
+    beforeEach(inject([XHRBackend], (be: MockBackend) => {
+      backend = be;
+      fakeComment = makeCommentData();
+      const options = new ResponseOptions({status: 200, body: fakeComment});
+      response = new Response(options);
+    }));
+
     it('should have expected fake comments', async(inject([CommentService], (service: CommentService) => {
+      backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
         service.getCommentsOnMeeting(2)
           .then(comments => {
             console.log(comments);
@@ -56,25 +67,38 @@ describe('CommentService', () => {
     );
 
     it('should be ok returning no comments', async(inject([CommentService], (service: CommentService) => {
-        service.getCommentsOnMeeting(4)
-          .then(comments => {
-            console.log(comments);
-            expect(comments).not.toBeUndefined('returned comments should not be null');
-            expect(comments.length).toBe(0);
-          });
+      backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
+      service.getCommentsOnMeeting(4)
+        .then(comments => {
+          console.log(comments);
+          expect(comments).not.toBeUndefined('returned comments should not be null');
+          expect(comments.length).toBe(0);
+        });
       }))
     );
   });
 
   describe('when getComment', () => {
+    let backend: MockBackend;
+    let fakeComment: Comment[];
+    let response: Response;
+
+    beforeEach(inject([XHRBackend], (be: MockBackend) => {
+      backend = be;
+      fakeComment = makeCommentData();
+      const options = new ResponseOptions({status: 200, body: fakeComment});
+      response = new Response(options);
+    }));
+
     it('should have expected fake meeting', async(inject([CommentService], (service: CommentService) => {
+      backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
       service.getComment(2)
         .then(comment => {
           console.log(comment);
           expect(comment).not.toBeUndefined('returned comments should not be null');
           expect(comment.content).toBe('Hello');
           expect(comment.author.name).toBe('name');
-          expect(comment.meeting.id).toBe(2);
+          expect(comment.meeting_id).toBe(2);
         });
     })));
 
@@ -86,7 +110,19 @@ describe('CommentService', () => {
   });
 
   describe('when ediComment', () => {
+    let backend: MockBackend;
+    let fakeComment: Comment[];
+    let response: Response;
+
+    beforeEach(inject([XHRBackend], (be: MockBackend) => {
+      backend = be;
+      fakeComment = makeCommentData();
+      const options = new ResponseOptions({status: 200, body: fakeComment});
+      response = new Response(options);
+    }));
+
     it('should successfully update backend data', async(inject([CommentService], (service: CommentService) => {
+      backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
       service.getComment(3)
         .then(comment => {
           comment.content = 'New content';
@@ -100,7 +136,19 @@ describe('CommentService', () => {
   });
 
   describe('when deleteComment', () => {
+    let backend: MockBackend;
+    let fakeComment: Comment[];
+    let response: Response;
+
+    beforeEach(inject([XHRBackend], (be: MockBackend) => {
+      backend = be;
+      fakeComment = makeCommentData();
+      const options = new ResponseOptions({status: 200, body: fakeComment});
+      response = new Response(options);
+    }));
+
     it('should successfully delete selected comment on backend', async(inject([CommentService], (service: CommentService) => {
+      backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
       service.deleteComment(2)
         .then(deletedMeeting => {
           expect(deletedMeeting).toBeNull();
