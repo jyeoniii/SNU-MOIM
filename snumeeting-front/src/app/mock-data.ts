@@ -1,3 +1,4 @@
+
 import { User } from './user';
 import { College } from './college';
 import { Subject } from './subject';
@@ -48,4 +49,3 @@ export const makeInterestData = () => interest as string[];
 export const makeMeetingData = () => meeting as Meeting[];
 export const makeCommentData = () => comment as Comment[];
 export const makeSubjectData = () => subject as Subject[];
-
