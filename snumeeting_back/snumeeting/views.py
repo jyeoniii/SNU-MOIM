@@ -78,8 +78,6 @@ def userDetail(request, user_id):
       dict_user['subjects'] = list(ex_user.subjects.all().values())
     except User.DoesNotExist:
       return HttpResponseNotFound()
-    except Ex_User.DoesNotExist:
-      return HttpResponseNotFound()
     return JsonResponse(dict_user, safe = False)
   elif request.method == 'PUT':
     req_data = json.loads(request.body.decode())
@@ -135,7 +133,7 @@ def meetingList(request):
     des_req = json.loads(request.body.decode())
 
     author_id = des_req['author_id']
-    author = Ex_User.objects.get(id=int(author_id))
+    author = Ex_User.objects.get(user_id=int(author_id))
     title = des_req['title']
     description = des_req['description']
     location = des_req['location']
@@ -222,7 +220,7 @@ def meetingComment(request, meeting_id):
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())
     author_id = des_req['author_id']
-    author = Ex_User.objects.get(id=author_id)
+    author = Ex_User.objects.get(user_id=author_id)
     meeting = Meeting.objects.get(id=meeting_id)
     content = des_req['content']
     publicity = des_req['publicity']
@@ -244,7 +242,7 @@ def commentList(request):
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())
     author_id = des_req['author_id']
-    author = User.objects.get(id=author_id)
+    author = Ex_User.objects.get(user_id=author_id)
     meeting_id = des_req['meeting_id']
     meeting = Meeting.objects.get(id=meeting_id)
     content = des_req['content']
@@ -392,8 +390,9 @@ def collegeDetail(request, college_id):
 
 
 def convert_userinfo_for_front(user_id):
+      user_id = int(user_id)
       user = {}
-      ex_user = Ex_User.objects.get(id=user_id)
+      ex_user = Ex_User.objects.get(user_id=user_id)
       user['id'] = ex_user.id
       user['mySNU_id'] = ex_user.user.username
       user['password'] = ex_user.user.password
