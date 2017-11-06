@@ -1,10 +1,7 @@
 from django.test import TestCase, Client
-from django.core import serializers
 from django.contrib.auth.models import User
 from .models import Ex_User, Meeting, Comment, Subject, College
-from django.forms.models import model_to_dict
 import json
-import jsonpickle
 
 class SnuMeetingTestCase(TestCase):
   def setUp(self):
@@ -53,6 +50,7 @@ class SnuMeetingTestCase(TestCase):
 
     self.client = Client()
 
+  '''
   def test_csrf(self):
     # By default, csrf checks are disabled in test client
     # To test csrf protection we enforce csrf checks here
@@ -61,7 +59,7 @@ class SnuMeetingTestCase(TestCase):
     client = Client(enforce_csrf_checks=True)
     response = client.post(
       '/api/signup',
-      json.dumps({'name':'test', 'password':'test', 'mySNU':'test@snu.ac.kr', 'college_id':0, 'subject_ids':[0]}),
+      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':0, 'subject_ids':[0]}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 403) # Request without csrf token returns 403 response
@@ -72,7 +70,7 @@ class SnuMeetingTestCase(TestCase):
 
     response = client.post(
       '/api/signup',
-      json.dumps({'name':'test', 'password':'test', 'mySNU':'test@snu.ac.kr', 'college_id':0, 'subject_ids':[0]}),
+      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':0, 'subject_ids':[0]}),
       content_type='application/json',
       HTTP_X_CSRFTOKEN=csrftoken
     )
@@ -86,6 +84,34 @@ class SnuMeetingTestCase(TestCase):
 
     response = client.delete('/api/token', HTTP_X_CSRFTOKEN=csrftoken)
     self.assertEqual(response.status_code, 405)
+    '''
+
+  def test_token(self):
+    response = self.client.get('/api/token')
+    self.assertEqual(response.status_code, 204)
+
+    # Test token with wrong requests
+    response = self.client.put('/api/token')
+    self.assertEqual(response.status_code, 405)
+
+
+  def test_model_str(self):
+    # Test __str__ function of models
+    college = College.objects.get(id=1)
+    self.assertEqual(str(college), college.name)
+
+    subject = Subject.objects.get(id=1)
+    self.assertEqual(str(subject), subject.name)
+
+    ex_user = Ex_User.objects.get(id=1)
+    self.assertEqual(str(ex_user), ex_user.name)
+
+    meeting = Meeting.objects.get(id=1)
+    self.assertEqual(str(meeting), meeting.title)
+
+    comment = Comment.objects.get(id=1)
+    self.assertEqual(str(comment), comment.content)
+
 
   def test_signup(self):
     # GET
@@ -95,7 +121,7 @@ class SnuMeetingTestCase(TestCase):
     # POST
     response = self.client.post(
       '/api/signup',
-      json.dumps({'name':'test', 'password':'test', 'mySNU':'test@snu.ac.kr', 'college_id':0, 'subject_ids':[0]}),
+      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':0, 'subject_ids':[0]}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 201)
@@ -116,24 +142,24 @@ class SnuMeetingTestCase(TestCase):
     # POST
     response = self.client.post( # Making fake user
       '/api/signup',
-      json.dumps({'name':'test', 'password':'test', 'mySNU':'test@snu.ac.kr', 'college_id':0, 'subject_ids':[0]}),
+      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':0, 'subject_ids':[0]}),
       content_type='application/json',
     )
     response = self.client.post( # Correct email & password
       '/api/signin',
-      json.dumps({'password':'test', 'mySNU':'test@snu.ac.kr'}),
+      json.dumps({'password':'test', 'username':'test'}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 200)
     response = self.client.post( # Wrong password
       '/api/signin',
-      json.dumps({'password':'wrong', 'mySNU':'test@snu.ac.kr'}),
+      json.dumps({'password':'wrong', 'username':'test'}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 401)
     response = self.client.post( # Wrong email
       '/api/signin',
-      json.dumps({'password':'test', 'mySNU':'wrong@snu.ac.kr'}),
+      json.dumps({'password':'test', 'username':'wrong'}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 401)
@@ -150,12 +176,12 @@ class SnuMeetingTestCase(TestCase):
     # GET
     response = self.client.post( # Making fake user
       '/api/signup',
-      json.dumps({'name':'test', 'password':'test', 'mySNU':'test@snu.ac.kr', 'college_id':0, 'subject_ids':[0]}),
+      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':0, 'subject_ids':[0]}),
       content_type='application/json',
     )
     response = self.client.post( # Correct email & password
       '/api/signin',
-      json.dumps({'password':'test', 'mySNU':'test@snu.ac.kr'}),
+      json.dumps({'password':'test', 'username':'test'}),
       content_type='application/json',
     )
     response = self.client.get('/api/signout')
@@ -196,7 +222,7 @@ class SnuMeetingTestCase(TestCase):
     # PUT
     response = self.client.put( # Editting user/0
       '/api/user/0',
-      json.dumps({'name':'edit_test', 'password':'edit_test', 'mySNU':'test@snu.ac.kr', 'college_id':1, 'subject_ids':[1, 2]}),
+      json.dumps({'name':'edit_test', 'password':'edit_test', 'username':'test', 'college_id':1, 'subject_ids':[1, 2]}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 204)
@@ -214,7 +240,7 @@ class SnuMeetingTestCase(TestCase):
 
     response = self.client.put( # Editting None-existing User
       '/api/user/20',
-      json.dumps({'name':'edit_test', 'password':'edit_test', 'mySNU':'test@snu.ac.kr', 'college_id':1, 'subject_ids':[1, 2]}),
+      json.dumps({'name':'edit_test', 'password':'edit_test', 'username':'test', 'college_id':1, 'subject_ids':[1, 2]}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 404)
@@ -317,6 +343,9 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(data[0]['publicity'], True)
     self.assertEqual(len(data), 1)
     self.assertEqual(response.status_code, 200)
+
+    response = self.client.get('/api/meeting/20/comment') # Get None-existing Meeting Comment
+    self.assertEqual(response.status_code, 404)
 
     # POST
     response = self.client.post(
@@ -421,6 +450,18 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 204)
     response = self.client.delete('/api/comment/0') # Delete None-existing Comment
     self.assertEqual(response.status_code, 404)
+
+  def test_interest_list(self):
+    # GET
+    response = self.client.get('/api/interest')
+    data = json.loads(response.content.decode())
+    self.assertEqual(len(data), 2)
+    self.assertEqual(response.status_code, 200)
+
+    # wrong request
+    response = self.client.post('/api/interest')
+    self.assertEqual(response.status_code, 405)
+
 
   def test_subject_list(self):
     # GET
@@ -561,3 +602,4 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 204)
     response = self.client.delete('/api/college/0') # Delete None-existing College
     self.assertEqual(response.status_code, 404)
+
