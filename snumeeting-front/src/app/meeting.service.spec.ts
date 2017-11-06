@@ -1,20 +1,26 @@
 import { TestBed, inject, async } from '@angular/core/testing';
-import { HttpModule, Http } from '@angular/http';
+import { HttpModule, Http, XHRBackend, Response, ResponseOptions } from '@angular/http';
 import { RouterTestingModule } from '@angular/router/testing';
 import {FormsModule} from '@angular/forms';
 
-import { MeetingService } from './meeting.service';
+import { MockBackend, MockConnection } from '@angular/http/testing';
 
-/*
+import { MeetingService } from './meeting.service';
+import { Meeting } from './meeting';
+
+import { makeMeetingData } from './mock-data';
+
 describe('MeetingService', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
         HttpModule,
         RouterTestingModule,
-        FormsModule
+        FormsModule,
       ],
-      providers: [MeetingService]
+      providers: [MeetingService,
+        { provide: XHRBackend, useClass: MockBackend }
+      ]
     }).compileComponents();
   }));
 
@@ -34,21 +40,33 @@ describe('MeetingService', () => {
       expect(service instanceof MeetingService).toBe(true, 'new service should be ok');
     }));
 
-  it('Should invoke handleError() when an error occured while handling data',
-    async(inject([MeetingService], (service: MeetingService) => {
-      // Invalid article id -> This should raise an error
-      service.getMeeting(-1).catch(reason => expect(reason).not.toBeUndefined());
-    })));
+  it('can provide the mockBackend as XHRBackend', inject([XHRBackend], (backend: MockBackend) => {
+    expect(backend).not.toBeNull('backend should be provided');
+  }));
 
 
   describe('when getMeetings', () => {
-    it('should have expected fake meetings', async(inject([MeetingService], (service: MeetingService) => {
-        service.getMeetings()
-          .then(meetings => {
-            console.log(meetings);
-            expect(meetings).not.toBeUndefined('returned meetings should not be null');
-            expect(meetings.length).toBe(4);
-          });
+    let backend: MockBackend;
+    let fakeMeeting: Meeting[];
+    let service: MeetingService;
+    let response: Response;
+
+    beforeEach(inject([Http, XHRBackend], (http: Http, be: MockBackend) => {
+      backend = be;
+      service = new MeetingService(http);
+      fakeMeeting = makeMeetingData();
+      const options = new ResponseOptions({status: 200, body: fakeMeeting});
+      response = new Response(options);
+    }));
+
+    it('should have expected fake meetings', async(inject([], () => {
+      backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
+      service.getMeetings()
+        .then(meetings => {
+          console.log(meetings);
+          expect(meetings).not.toBeUndefined('returned meetings should not be null');
+          expect(meetings.length).toBe(4);
+        });
       }))
     );
   });
@@ -68,6 +86,12 @@ describe('MeetingService', () => {
     it('Should invoke handleError() when an error occured',
       async(inject([MeetingService], (service: MeetingService) => {
         // Invalid article id -> should raise an error
+        service.getMeeting(-1).catch(reason => expect(reason).not.toBeUndefined());
+      })));
+
+    it('Should invoke handleError() when an error occured while handling data',
+      async(inject([MeetingService], (service: MeetingService) => {
+        // Invalid article id -> This should raise an error
         service.getMeeting(-1).catch(reason => expect(reason).not.toBeUndefined());
       })));
   });
@@ -97,4 +121,5 @@ describe('MeetingService', () => {
 
   });
 });
-*/
+
+

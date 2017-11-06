@@ -40,4 +40,15 @@ describe('SignInComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should navigate to user profile page after sign in', () => {
+    component.signIn('hello', 'hellohello');
+    // signIn null without backend
+    expect(routerStub.navigate).not.toHaveBeenCalledWith(['/user/']);
+  });
+
+  it('should navigate to sign up page', () => {
+    component.signUp();
+    expect(routerStub.navigate).toHaveBeenCalledWith(['/sign_up']);
+  });
 });

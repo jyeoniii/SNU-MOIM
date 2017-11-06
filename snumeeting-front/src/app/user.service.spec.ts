@@ -7,7 +7,7 @@ import { College } from './college';
 import { Subject } from './subject';
 import { UserService } from './user.service';
 
-import { collegeData, subjectData, interestData, userData } from './mock.data';
+import { makeCollegeData, makeSubjectData, makeInterestData, makeUserData } from './mock-data';
 
 describe('UserService (mockBackend)', () => {
   beforeEach( async(() => {
@@ -47,12 +47,12 @@ describe('UserService (mockBackend)', () => {
     beforeEach(inject([Http, XHRBackend], (http: Http, be: MockBackend) => {
       backend = be;
       service = new UserService(http);
-      fakeUsers = userData;
+      fakeUsers = makeUserData();
     }));
 
     it('should get user data when user info is right',
       async(inject([], () => {
-        response = new Response(new ResponseOptions({status: 200, body: userData[0]}));
+        response = new Response(new ResponseOptions({status: 200, body: fakeUsers[0]}));
         backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
         service.signIn('hello', 'hellohello').then(user => expect(user).not.toBeNull());
       })));
@@ -74,7 +74,7 @@ describe('UserService (mockBackend)', () => {
     beforeEach(inject([Http, XHRBackend], (http: Http, be: MockBackend) => {
       backend = be;
       service = new UserService(http);
-      fakeUsers = userData;
+      fakeUsers = makeUserData();
     }));
 
     it('should get signed up',
@@ -94,7 +94,7 @@ describe('UserService (mockBackend)', () => {
     beforeEach(inject([Http, XHRBackend], (http: Http, be: MockBackend) => {
       backend = be;
       service = new UserService(http);
-      fakeUsers = userData;
+      fakeUsers = makeUserData();
     }));
 
     it('should get signed out',
@@ -114,24 +114,33 @@ describe('UserService (mockBackend)', () => {
     beforeEach(inject([Http, XHRBackend], (http: Http, be: MockBackend) => {
       backend = be;
       service = new UserService(http);
-      fakeUsers = userData;
+      fakeUsers = makeUserData();
+      response = new Response(new ResponseOptions({status: 200, body: fakeUsers[1]}));
+
     }));
 
     it('should get user info',
       async(inject([], () => {
-        response = new Response(new ResponseOptions({status: 200, body: fakeUsers[1]}));
         backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
         let fakeUser = fakeUsers.find(user => user.id === 2);
-        service.getUserInfo(2).then(response => expect(response).toBe(fakeUser));
+        service.getUserInfo(1).then(response => expect(response).toBe(fakeUser));
+      })));
+
+    it('should raise an error if user doesn\'t exist',
+      async(inject([], () => {
+        backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
+        service.getUserInfo(-1).then(reason => expect(reason).not.toBeUndefined());
       })));
 
     it('should be able to edit user info',
       async(inject([], () => {
-        response = new Response(new ResponseOptions({status: 200, body: fakeUsers[1]}));
         backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
         let fakeUser = fakeUsers.find(user => user.id === 2);
-        fakeUser.name = 'swpplove';
-        service.editUserInfo(fakeUser).then(response => expect(response).toBeNull);
+        fakeUser.name = 'swpp';
+        service.editUserInfo(fakeUser).then(response => {
+          expect(response).toBeNull;
+          expect(fakeUser.name).toBe('swpp');
+        });
       })));
   });
 
@@ -146,86 +155,31 @@ describe('UserService (mockBackend)', () => {
     beforeEach(inject([Http, XHRBackend], (http: Http, be: MockBackend) => {
       backend = be;
       service = new UserService(http);
-      fakeColleges = collegeData;
-      fakeSubjects = subjectData;
-      fakeInterests = interestData;
+      fakeColleges = makeCollegeData();
+      fakeSubjects = makeSubjectData();
+      fakeInterests = makeInterestData();
     }));
 
     it('should get college data',
       async(inject([], () => {
         response = new Response(new ResponseOptions({status: 200, body: fakeColleges}));
         backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
-        service.getCollegeList().then(colleges => expect(colleges.length).toBe(4));
+        service.getCollegeList().then(colleges => expect(colleges.length).toBe(2));
       })));
 
     it('should get subject data',
       async(inject([], () => {
         response = new Response(new ResponseOptions({status: 200, body: fakeSubjects}));
         backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
-        service.getSubjectList().then(subjects => expect(subjects.length).toBe(5));
+        service.getSubjectList().then(subjects => expect(subjects.length).toBe(3));
       })));
 
     it('should get interest data',
       async(inject([], () => {
         response = new Response(new ResponseOptions({status: 200, body: fakeInterests}));
         backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
-        service.getInterestList().then(interests => expect(interests.length).toBe(3));
+        service.getInterestList().then(interests => expect(interests.length).toBe(2));
       })));
   });
 });
-/*
-    it('should be ok returning no comments', async(inject([UserService], (service: UserService) => {
-        service.getCommentsOnMeeting(4)
-          .then(comments => {
-            console.log(comments);
-            expect(comments).not.toBeUndefined('returned comments should not be null');
-            expect(comments.length).toBe(0);
-          });
-      }))
-    );
-  });
 
-  describe('when getComment', () => {
-    it('should have expected fake meeting', async(inject([UserService], (service: UserService) => {
-      service.getComment(2)
-        .then(comment => {
-          console.log(comment);
-          expect(comment).not.toBeUndefined('returned comments should not be null');
-          expect(comment.content).toBe('Hello');
-          expect(comment.author.name).toBe('name');
-          expect(comment.meeting_id).toBe(2);
-        });
-    })));
-
-    it('Should invoke handleError() when an error occured',
-      async(inject([UserService], (service: UserService) => {
-        // Invalid article id -> should raise an error
-        service.getComment(-1).catch(reason => expect(reason).not.toBeUndefined());
-      })));
-  });
-
-  describe('when ediComment', () => {
-    it('should successfully update backend data', async(inject([UserService], (service: UserService) => {
-      service.getComment(3)
-        .then(comment => {
-          comment.content = 'New content';
-          service.editComment(comment).then(modifiedComment => {
-            console.log(modifiedComment);
-            expect(modifiedComment.content).toBe('New content');
-          });
-        });
-    })));
-
-  });
-
-  describe('when deleteComment', () => {
-    it('should successfully delete selected comment on backend', async(inject([UserService], (service: UserService) => {
-      service.deleteComment(2)
-        .then(deletedMeeting => {
-          expect(deletedMeeting).toBeNull();
-          service.getComment(2).catch(reason => expect(reason).not.toBeUndefined());
-        });
-    })));
-  });
-});
-*/

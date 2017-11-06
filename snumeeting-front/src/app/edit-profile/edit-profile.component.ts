@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 import { User } from '../user';
 import { College } from '../college';
@@ -29,9 +29,9 @@ export class EditProfileComponent implements OnInit {
   subjectChecked = [];
 
   ngOnInit() {
-    this.route.paramMap
-      .switchMap((params: ParamMap) => this.userService.getUserInfo(+params.get('id')))
-      .subscribe(user => this.user = user);
+    this.route.params.subscribe(params => {
+      this.userService.getUserInfo(+params['id']).then(user => this.user = user);
+    });
 
     this.userService.getCollegeList().then(colleges => this.colleges = colleges);
     this.userService.getSubjectList().then(subjects => this.subjects = subjects);

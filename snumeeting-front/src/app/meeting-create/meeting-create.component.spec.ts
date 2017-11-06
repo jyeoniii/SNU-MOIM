@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { AppModule } from '../app.module';
 import { MeetingCreateComponent } from './meeting-create.component';
 
 describe('MeetingCreateComponent', () => {
@@ -8,9 +9,12 @@ describe('MeetingCreateComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MeetingCreateComponent ]
-    })
-    .compileComponents();
+      imports: [AppModule]
+    }).compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(MeetingCreateComponent);
+        component = fixture.componentInstance;
+      });
   }));
 
   beforeEach(() => {
@@ -19,9 +23,7 @@ describe('MeetingCreateComponent', () => {
     fixture.detectChanges();
   });
 
-  /*
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  */
 });
