@@ -4,7 +4,6 @@
 /dist
 /tmp
 /out-tsc
-*.pyc
 
 # dependencies
 /node_modules
@@ -29,6 +28,7 @@
 /.sass-cache
 /connect.lock
 /coverage
+/htmlcov
 /libpeerconnection.log
 npm-debug.log
 testem.log
@@ -41,3 +41,8 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# manually added
+*.pyc
+package-lock.json
+/snumeeting_back/htmlcov
