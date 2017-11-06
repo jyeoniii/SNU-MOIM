@@ -27,7 +27,7 @@ This project aims to create service that can help SNU students to find other stu
 | Sprint | Date | Content | Report |
 |--------|------|---------|--------|
 | 1 | 10/10-10/23 | [Requirements and Specifications](https://github.com/swsnu/swpp17-team9/wiki/Requirement-and-Specification) | [Sprint1 report](https://github.com/swsnu/swpp17-team9/wiki/Sprint-1-Progress-Report) |
-| 2 | 10/24-11/6 | Design and Planning | Sprint2 report |
+| 2 | 10/24-11/6 | Design and Planning | [Sprint2 report](https://github.com/swsnu/swpp17-team9/wiki/Sprint-2-Progress-Report) |
 | 3 | 11/7-11/20 | To be updated  | Sprint3 report |
 | 4 | 11/21-12/4 | To be updated  | Sprint4 report |
 | 5 | 12/5-12/18 | To be updated  | Sprint5 report |
