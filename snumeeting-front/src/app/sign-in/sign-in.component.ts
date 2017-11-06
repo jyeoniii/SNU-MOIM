@@ -20,7 +20,7 @@ export class SignInComponent implements OnInit {
 
   signIn(username: string, password: string) {
     this.userService.signIn(username, password).then(user => {
-      if (user.id > 0) {
+      if (user !== null) {
         this.userService.loginedUser = user;
         this.router.navigate(['/user/', user.id]);
       } else {

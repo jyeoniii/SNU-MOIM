@@ -109,7 +109,7 @@ describe('CommentService', () => {
       })));
   });
 
-  describe('when ediComment', () => {
+  describe('when editComment', () => {
     let backend: MockBackend;
     let fakeComment: Comment[];
     let response: Response;

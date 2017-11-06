@@ -1,23 +1,59 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import { HttpModule, Http, XHRBackend, Response, ResponseOptions } from '@angular/http';
+import { MockBackend, MockConnection } from '@angular/http/testing';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs/Rx';
 
+import { AppModule } from '../app.module';
 import { ProfileComponent } from './profile.component';
+
+import { User } from '../user';
+import { UserService } from '../user.service';
+import { makeUserData } from '../mock-data';
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
   let fixture: ComponentFixture<ProfileComponent>;
 
+  let backend: MockBackend;
+  let fakeUsers: User[];
+  let userService: UserService;
+  let response: Response;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProfileComponent ]
-    })
-    .compileComponents();
+      imports: [
+        AppModule,
+        HttpModule
+      ],
+      providers: [
+        UserService,
+        {
+          provide: XHRBackend,
+          useClass: MockBackend
+        },
+        { provide: ActivatedRoute,
+          useValue: {'params': Observable.from([{id: 1}])}
+        }
+      ]
+    }).compileComponents()
+      .then(() => {
+        fixture = TestBed.createComponent(ProfileComponent);
+        component = fixture.componentInstance;
+      });
   }));
 
-  beforeEach(() => {
+  beforeEach(inject([Http, XHRBackend], (http: Http, be: MockBackend) => {
     fixture = TestBed.createComponent(ProfileComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+
+    backend = be;
+    userService = new UserService(http);
+    fakeUsers = makeUserData();
+    response = new Response(new ResponseOptions({status: 200, body: fakeUsers[1]}));
+    backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
+  }));
 
   it('should create', () => {
     expect(component).toBeTruthy();

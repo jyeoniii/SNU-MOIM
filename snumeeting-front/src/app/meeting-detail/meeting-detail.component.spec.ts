@@ -7,12 +7,12 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule, Http, XHRBackend, Response, ResponseOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 
-import {MeetingService} from '../meeting.service';
-import {CommentService} from '../comment.service';
+import { MeetingService } from '../meeting.service';
+import { CommentService } from '../comment.service';
 
 import { Meeting } from '../meeting';
 
-import { MockBackend, MockConnection } from '@angular/http/testing';
+import { MockBackend } from '@angular/http/testing';
 
 import { makeMeetingData } from '../mock-data';
 

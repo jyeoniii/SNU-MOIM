@@ -8,12 +8,7 @@ import { MockBackend, MockConnection } from '@angular/http/testing';
 import { MeetingService } from './meeting.service';
 import { Meeting } from './meeting';
 
-import { makeMeetingData} from './mock-data';
-
-// import { InMemoryDataService } from './in-memory-data.service';
-// import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
-
-
+import { makeMeetingData } from './mock-data';
 
 describe('MeetingService', () => {
   beforeEach(async(() => {

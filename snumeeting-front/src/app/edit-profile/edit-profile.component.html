@@ -43,8 +43,10 @@
     <label class="col-sm-2 control-label">College</label>
     <div class="col-sm-8">
       <select class="form-control" [(ngModel)]="user.college" [ngModelOptions]="{standalone: true}">
-          <option *ngFor="let college of colleges" [ngValue]="college">{{college.name}}</option>
+          <option *ngFor="let college of colleges" [ngValue]="college"
+                  [selected]="college.id === user.college.id">{{college.name}}</option><br>
       </select>
+      <small class="text-muted">* Don't select college if you don't want to change.</small>
     </div>
   </div>
 </form>
