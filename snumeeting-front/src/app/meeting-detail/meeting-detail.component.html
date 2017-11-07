@@ -1,48 +1,51 @@
-<div style="margin-left: 30px; margin-top: 30px">
-  <h2>Meeting Detail</h2><br>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-  <h3>Meeting</h3>
-  <div *ngIf="selectedMeeting">
-    TITLE: {{ selectedMeeting.title }}<br>
-    AUTHOR: {{ selectedMeeting.author.name }}<br>
-    DESCRIPTION: {{ selectedMeeting.description }}<br>
-    LOCATION: {{ selectedMeeting.location }}<br>
-    PARTICIPATION: {{ selectedMeeting.members.length }} / {{ selectedMeeting.max_member}}
-  </div>
-  <br>
-  <!--Comments-->
-  <h3>Comments</h3>
-  <div *ngIf="comments">
-    <!--Create comment-->
-    <input [(ngModel)]="newComment" style="width:500px;">
-    <button (click)="createComment(newComment)" class="btn btn-primary btn-sm" id="create-comment-button">CREATE</button>
-    <li *ngFor="let comment of comments">
-      <!--Author of the comment-->
-      <span style="font-weight:bold">{{ comment.author.mySNU_id }}</span>
-      <!--Content of the comment-->
-      :
-      <span *ngIf="selectedComment!==comment;else edit_mode">
+
+<h2 class="text-center">Meeting Detail</h2><br>
+
+ <div class="container center-block" style="width:600px;">
+   <h3>Meeting</h3>
+   <div *ngIf="selectedMeeting">
+     <span style="font-weight: bold">title: </span> {{ selectedMeeting.title }}<br>
+     <span style="font-weight: bold">author: </span> {{ selectedMeeting.author.name }}<br>
+     <span style="font-weight: bold">location:</span> {{ selectedMeeting.location }}<br>
+     <span style="font-weight: bold">participation: </span>{{ selectedMeeting.members.length }} / {{ selectedMeeting.max_member}}<br>
+     <span style="font-weight: bold">description: <br></span>{{ selectedMeeting.description }}<br>
+   </div>
+   <br>
+   <!--Comments-->
+   <h3>Comments</h3>
+   <div *ngIf="comments">
+     <!--Create comment-->
+     <input [(ngModel)]="newComment" style="width:400px;">
+     <button (click)="createComment(newComment)" class="btn btn-primary btn-sm" id="create-comment-button">CREATE</button>
+     <li *ngFor="let comment of comments">
+       <!--Author of the comment-->
+       <span style="font-weight:bold">{{ comment.author.name }}</span>
+       <!--Content of the comment-->
+       :
+       <span *ngIf="selectedComment!==comment;else edit_mode">
         {{comment.content}}
-        <!--Edit / Delete button-->
+         <!--Edit / Delete button-->
       <span *ngIf="currentUser && (currentUser.id===comment.author.id)">
         <button (click)="toEditMode(comment)" class="btn btn-primary btn-sm" style="margin-left:20px;" id="edit-comment-button">EDIT</button>
         <button (click)="deleteComment(comment)" class="btn btn-primary btn-sm" id="delete-comment-button">DELETE</button>
       </span>
     </span>
 
-      <ng-template #edit_mode>
-        <input [(ngModel)]="comment.content">
-        <button (click)="editComment(comment)" class="btn btn-primary btn-sm" id="update-button">UPDATE</button>
-        <button (click)="cancleEditMode(comment)" class="btn btn-primary btn-sm" id="cancle-edit-button">CANCLE</button>
-      </ng-template>
-    </li>
-  </div><br>
+       <ng-template #edit_mode>
+         <input [(ngModel)]="comment.content">
+         <button (click)="editComment(comment)" class="btn btn-primary btn-sm" id="update-button">UPDATE</button>
+         <button (click)="cancleEditMode(comment)" class="btn btn-primary btn-sm" id="cancle-edit-button">CANCLE</button>
+       </ng-template>
+     </li>
+   </div><br>
 
 
-  <span *ngIf="isOwner()">
-  <button (click)="edit()" class="btn btn-primary btn-sm" id="edit-button" >EDIT</button>
-  <button (click)="delete()" class="btn btn-primary btn-sm" id="delete-button">DELETE</button>
-</span>
-  <button (click)="goBack()" class="btn btn-primary btn-sm" id="back-button">BACK</button>
+   <span *ngIf="isOwner()">
+    <button (click)="edit()" class="btn btn-primary btn-primary" id="edit-button" >EDIT</button>
+    <button (click)="delete()" class="btn btn-primary btn-primary" id="delete-button">DELETE</button>
+  </span>
+   <button (click)="goBack()" class="btn btn-primary btn-primary" id="back-button">BACK</button>
 
-</div>
+ </div>
