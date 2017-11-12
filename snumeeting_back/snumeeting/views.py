@@ -392,11 +392,11 @@ def collegeDetail(request, college_id):
 def convert_userinfo_for_front(user_id):
       user_id = int(user_id)
       user = {}
-      ex_user = Ex_User.objects.get(user_id=user_id)
+      ex_user = Ex_User.objects.get(id=user_id)
       user['id'] = ex_user.id
-      user['mySNU_id'] = ex_user.user.username
+      user['username'] = ex_user.user.username
       user['password'] = ex_user.user.password
-      #user['name'] = ex_user.name
+      user['name'] = ex_user.name
       user['college'] = model_to_dict(ex_user.college)
       user['interest'] = list(ex_user.subjects.all().values())
 
