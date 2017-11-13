@@ -7,9 +7,16 @@ class College(models.Model):
   def __str__(self):
     return self.name
 
-class Subject(models.Model):
-  interest = models.CharField(max_length=64)
+class Interest(models.Model):
   name = models.CharField(max_length=64)
+
+class Subject(models.Model):
+  name = models.CharField(max_length=64)
+  interest = models.ForeignKey(
+          Interest,
+          related_name='subjects',
+          null=False
+          )
 
   def __str__(self):
     return self.name
@@ -73,3 +80,4 @@ class Comment(models.Model):
 
   def __str__(self):
     return self.content
+

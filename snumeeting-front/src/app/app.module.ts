@@ -17,6 +17,7 @@ import { MeetingService } from './meeting.service';
 import { CommentService } from './comment.service';
 
 import { AppRoutingModule } from './app.routing.module';
+import {MetaDataService} from './meta-data-service';
 
 
 @NgModule({
@@ -39,6 +40,7 @@ import { AppRoutingModule } from './app.routing.module';
     MeetingService,
     CommentService,
     UserService,
+    MetaDataService,
     {
       provide: APP_BASE_HREF,
       useValue : '/'

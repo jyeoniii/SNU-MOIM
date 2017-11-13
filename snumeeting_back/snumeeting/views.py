@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.http import HttpResponseNotFound, JsonResponse
 from django.forms.models import model_to_dict
-from .models import Ex_User, Meeting, Comment, Subject, College
+from .models import Ex_User, Meeting, Comment, Subject, College, Interest
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -46,12 +46,8 @@ def signin(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
       login(request, user)
-      ex_user = Ex_User.objects.get(user=user)
-      dict_user = model_to_dict(user)
-      dict_user['name'] = ex_user.name
-      dict_user['college'] = model_to_dict(ex_user.college)
-      dict_user['subjects'] = list(ex_user.subjects.all().values())
-      return JsonResponse(dict_user, safe = False)
+      converted_user = convert_userinfo_for_front(user.id)
+      return JsonResponse(converted_user, safe = False)
     else:
       return HttpResponse(status=401)
   else:
@@ -69,16 +65,10 @@ def signout(request):
 def userDetail(request, user_id):
   user_id = int(user_id)
   if request.method == 'GET':
-    try:
-      user = User.objects.get(id=user_id)
-      ex_user = Ex_User.objects.get(user=user)
-      dict_user = model_to_dict(user)
-      dict_user['name'] = ex_user.name
-      dict_user['college'] = model_to_dict(ex_user.college)
-      dict_user['subjects'] = list(ex_user.subjects.all().values())
-    except User.DoesNotExist:
+    user = convert_userinfo_for_front(user_id)
+    if user is None:
       return HttpResponseNotFound()
-    return JsonResponse(dict_user, safe = False)
+    return JsonResponse(user, safe = False)
   elif request.method == 'PUT':
     req_data = json.loads(request.body.decode())
     name = req_data['name']
@@ -89,9 +79,9 @@ def userDetail(request, user_id):
     subjects = Subject.objects.filter(id__in=subject_ids) # gets the objects by ids
     try:
       user = User.objects.get(id=user_id)
+      ex_user=Ex_User.objects.get(user=user)
     except User.DoesNotExist:
       return HttpResponseNotFound()
-    ex_user=Ex_User.objects.get(user=user)
     user.set_password(password)
     user.save()
     ex_user.user = user
@@ -261,7 +251,7 @@ def commentDetail(request, comment_id):
       comment = Comment.objects.get(id=comment_id)
       user = convert_userinfo_for_front(comment.author_id)
       comment_dict = model_to_dict(comment)
-      #comment_dict.pop('author_id')
+      comment_dict.pop('author_id')
       comment_dict['author'] = user
     except Comment.DoesNotExist:
       return HttpResponseNotFound()
@@ -291,7 +281,14 @@ def commentDetail(request, comment_id):
 # url: /subject
 def subjectList(request):
   if request.method == 'GET':
-    return JsonResponse(list(Subject.objects.all().values()), safe=False)
+    subjects = Subject.objects.all()
+    dict_subjects = []
+    for subject in subjects:
+      d = model_to_dict(subject)
+      interest_id = d['interest']
+      d['interest'] = model_to_dict(Interest.objects.get(id=interest_id))
+      dict_subjects.append(d)
+    return JsonResponse(dict_subjects, safe=False)
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())
     interest = des_req['interest']
@@ -305,12 +302,13 @@ def subjectList(request):
     # url: /interest
 def interestList(request):
   if request.method == 'GET':
-    intList = []
-    for subject in Subject.objects.all():
-      intList.append(subject.interest)
-    intSet = set(intList)
-    intSet = list(intSet)
-    return JsonResponse(intSet, safe=False)
+    interests = Interest.objects.all()
+    dict_interests = []
+    for interest in interests:
+      d = model_to_dict(interest)
+      d['subjects'] = list(interest.subjects.all().values()) 
+      dict_interests.append(d)
+    return JsonResponse(dict_interests, safe=False)
   else:
     return HttpResponseNotAllowed(['GET'])
 
@@ -390,6 +388,7 @@ def collegeDetail(request, college_id):
 
 
 def convert_userinfo_for_front(user_id):
+    try:
       user_id = int(user_id)
       user = {}
       ex_user = Ex_User.objects.get(id=user_id)
@@ -398,7 +397,15 @@ def convert_userinfo_for_front(user_id):
       user['password'] = ex_user.user.password
       user['name'] = ex_user.name
       user['college'] = model_to_dict(ex_user.college)
-      user['interest'] = list(ex_user.subjects.all().values())
-
-      return user
+      user['subjects'] = list(ex_user.subjects.all().values())
+      dict_subjects = []
+      subjects = ex_user.subjects.all()
+      for subject in subjects:
+        d = model_to_dict(subject)
+        d['interest'] = subject.interest.name
+        dict_subjects.append(d)
+      user['subjects'] = dict_subjects 
+    except Ex_User.DoesNotExist:
+      return None
+    return user
 

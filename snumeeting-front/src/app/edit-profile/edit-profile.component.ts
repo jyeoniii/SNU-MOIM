@@ -4,8 +4,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { User } from '../user';
 import { College } from '../college';
 import { Subject } from '../subject';
+import { Interest } from '../interest';
 
 import { UserService } from '../user.service';
+import { MetaDataService } from '../meta-data-service';
 
 
 @Component({
@@ -17,6 +19,7 @@ export class EditProfileComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private metaDataService: MetaDataService,
     private route: ActivatedRoute,
     private userService: UserService
   ) { }
@@ -24,18 +27,24 @@ export class EditProfileComponent implements OnInit {
   user: User;
   colleges: College[];
   subjects: Subject[];
-  interests: string[];
+  interests: Interest[];
   interestChecked = [];
   subjectChecked = [];
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.userService.getUserInfo(+params['id']).then(user => this.user = user);
+      this.userService.getUserInfo(+params['id']).then(user => {
+        this.user = user;
+        for (const subject of user.subjects){
+          this.subjectChecked[subject.name] = true;
+          this.interestChecked[subject.interest] = true;
+        }
+      });
     });
 
-    this.userService.getCollegeList().then(colleges => this.colleges = colleges);
-    this.userService.getSubjectList().then(subjects => this.subjects = subjects);
-    this.userService.getInterestList().then(interests => this.interests = interests);
+    this.metaDataService.getCollegeList().then(colleges => this.colleges = colleges);
+    this.metaDataService.getSubjectList().then(subjects => this.subjects = subjects);
+    this.metaDataService.getInterestList().then(interests => this.interests = interests);
   }
 
   interestCheck(interest: string) {
