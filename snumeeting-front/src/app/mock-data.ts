@@ -12,9 +12,9 @@ const college = [
 ];
 
 const subject = [
-  {id: 1, name: 'English', interest: 'Study'},
-  {id: 2, name: 'Chinese', interest: 'Study'},
-  {id: 3, name: 'Band', interest: 'Performance'},
+  {id: 1, name: 'English', interest_id: 1},
+  {id: 2, name: 'Chinese', interest_id: 1},
+  {id: 3, name: 'Band', interest_id: 2},
 ];
 
 const interest = [

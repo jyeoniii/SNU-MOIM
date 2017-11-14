@@ -37,7 +37,7 @@ export class EditProfileComponent implements OnInit {
         this.user = user;
         for (const subject of user.subjects){
           this.subjectChecked[subject.name] = true;
-          this.interestChecked[subject.interest] = true;
+          this.interestChecked[subject.interest_id] = true;
         }
       });
     });

@@ -281,17 +281,11 @@ def commentDetail(request, comment_id):
 # url: /subject
 def subjectList(request):
   if request.method == 'GET':
-    subjects = Subject.objects.all()
-    dict_subjects = []
-    for subject in subjects:
-      d = model_to_dict(subject)
-      interest_id = d['interest']
-      d['interest'] = model_to_dict(Interest.objects.get(id=interest_id))
-      dict_subjects.append(d)
-    return JsonResponse(dict_subjects, safe=False)
+    return JsonResponse(list(Subject.objects.all().values()), safe=False)
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())
-    interest = des_req['interest']
+    interest_id = des_req['interest_id']
+    interest = Interest.objects.get(id=interest_id)
     name = des_req['name']
     new_subject = Subject(interest=interest, name=name)
     new_subject.save()
@@ -321,27 +315,8 @@ def subjectDetail(request, subject_id):
     except Subject.DoesNotExist:
       return HttpResponseNotFound()
     return JsonResponse(model_to_dict(subject))
-  elif request.method == 'PUT':
-    des_req = json.loads(request.body.decode())
-    interest = des_req['interest']
-    name = des_req['name']
-    try:
-      subject = Subject.objects.get(id=subject_id)
-    except Subject.DoesNotExist:
-      return HttpResponseNotFound()
-    subject.interest = interest
-    subject.name = name
-    subject.save()
-    return HttpResponse(status=204)
-  elif request.method == 'DELETE':
-    try:
-      subject = Subject.objects.get(id=subject_id)
-    except Subject.DoesNotExist:
-      return HttpResponseNotFound()
-    subject.delete()
-    return HttpResponse(status=204)
   else:
-    return HttpResponseNotAllowed(['GET'],['PUT'],['DELETE'])
+    return HttpResponseNotAllowed(['GET'])
 
 # url: /college
 def collegeList(request):
@@ -398,13 +373,6 @@ def convert_userinfo_for_front(user_id):
       user['name'] = ex_user.name
       user['college'] = model_to_dict(ex_user.college)
       user['subjects'] = list(ex_user.subjects.all().values())
-      dict_subjects = []
-      subjects = ex_user.subjects.all()
-      for subject in subjects:
-        d = model_to_dict(subject)
-        d['interest'] = subject.interest.name
-        dict_subjects.append(d)
-      user['subjects'] = dict_subjects 
     except Ex_User.DoesNotExist:
       return None
     return user
