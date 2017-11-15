@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
-from .models import Ex_User, Meeting, Comment, Subject, College
+from .models import Ex_User, Meeting, Comment, Subject, College, Interest
 import json
 
 class SnuMeetingTestCase(TestCase):
@@ -9,10 +9,14 @@ class SnuMeetingTestCase(TestCase):
     engineering = College.objects.create(id=0, name='Engineering')
     business = College.objects.create(id=1, name='Business')
 
+    # Interest
+    int_study = Interest.objects.create(id=0, name='study')
+    int_performance = Interest.objects.create(id=1, name='performance')
+
     # Subject
-    std_eng = Subject.objects.create(id=0, name='English', interest='study')
-    std_chi = Subject.objects.create(id=1, name='Chinese', interest='study')
-    pfm_band = Subject.objects.create(id=2, name='Band', interest='performance')
+    std_eng = Subject.objects.create(id=0, name='English', interest=int_study)
+    std_chi = Subject.objects.create(id=1, name='Chinese', interest=int_study)
+    pfm_band = Subject.objects.create(id=2, name='Band', interest=int_performance)
 
     # User
     fake1 = User.objects.create(id=0, username='fake1', password='1234', email='fake1@snu.ac.kr')
@@ -468,14 +472,14 @@ class SnuMeetingTestCase(TestCase):
     response = self.client.get('/api/subject')
     data = json.loads(response.content.decode())
     self.assertEqual(data[0]['name'], 'English')
-    self.assertEqual(data[0]['interest'], 'study')
+    self.assertEqual(data[0]['interest_id'], 0)
     self.assertEqual(len(data), 3)
     self.assertEqual(response.status_code, 200)
 
     # POST
     response = self.client.post(
       '/api/subject',
-      json.dumps({'name':'Dance', 'interest':'performance'}),
+      json.dumps({'name':'Dance', 'interest_id':1}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 201)
@@ -483,7 +487,7 @@ class SnuMeetingTestCase(TestCase):
     response = self.client.get('/api/subject') # Check the object is created
     data = json.loads(response.content.decode())
     self.assertEqual(data[3]['name'], 'Dance')
-    self.assertEqual(data[3]['interest'], 'performance')
+    self.assertEqual(data[3]['interest_id'], 1)
     self.assertEqual(len(data), 4)
 
     # PUT
@@ -499,7 +503,7 @@ class SnuMeetingTestCase(TestCase):
     response = self.client.get('/api/subject/0')
     data = json.loads(response.content.decode())
     self.assertEqual(data['name'], 'English')
-    self.assertEqual(data['interest'], 'study')
+    self.assertEqual(data['interest'], 0)
     self.assertEqual(response.status_code, 200)
 
     response = self.client.get('/api/subject/20') # Get None-existing Subject
@@ -508,32 +512,6 @@ class SnuMeetingTestCase(TestCase):
     # POST
     response = self.client.post('/api/subject/0')
     self.assertEqual(response.status_code, 405)
-
-    # PUT
-    response = self.client.put(
-      '/api/subject/0',
-      json.dumps({'name':'Dance', 'interest':'performance'}),
-      content_type='application/json',
-    )
-    self.assertEqual(response.status_code, 204)
-
-    response = self.client.get('/api/subject/0') # Check the object is editted
-    data = json.loads(response.content.decode())
-    self.assertEqual(data['name'], 'Dance')
-    self.assertEqual(data['interest'], 'performance')
-
-    response = self.client.put( # Edit None-existing Subject
-      '/api/subject/20',
-      json.dumps({'name':'Dance', 'interest':'performance'}),
-      content_type='application/json',
-    )
-    self.assertEqual(response.status_code, 404)
-
-    # DELETE
-    response = self.client.delete('/api/subject/0')
-    self.assertEqual(response.status_code, 204)
-    response = self.client.delete('/api/subject/0') # Delete None-existing Subject
-    self.assertEqual(response.status_code, 404)
 
   def test_college_list(self):
     # GET

@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
+import { PaginationDirective } from '../../node_modules/angular2-bootstrap-pagination/directives/pagination.directive';
 import { APP_BASE_HREF } from '@angular/common';
 
 import { AppComponent } from './app.component';
@@ -18,6 +19,7 @@ import { CommentService } from './comment.service';
 
 import { AppRoutingModule } from './app.routing.module';
 import {MetaDataService} from './meta-data-service';
+import {MeetingsComponent} from './meetings/meetings.component';
 
 
 @NgModule({
@@ -28,7 +30,9 @@ import {MetaDataService} from './meta-data-service';
     ProfileComponent,
     EditProfileComponent,
     MeetingDetailComponent,
-    MeetingCreateComponent
+    MeetingCreateComponent,
+    MeetingsComponent,
+    PaginationDirective,
   ],
   imports: [
     BrowserModule,
