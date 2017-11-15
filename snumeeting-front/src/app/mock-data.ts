@@ -4,6 +4,7 @@ import { College } from './college';
 import { Subject } from './subject';
 import { Meeting } from './meeting';
 import { Comment } from './comment';
+import { Interest } from './interest';
 
 const college = [
   {id: 1, name: 'Engineering'},
@@ -11,9 +12,14 @@ const college = [
 ];
 
 const subject = [
-  {id: 1, name: 'English', interest: 'study'},
-  {id: 2, name: 'Chinese', interest: 'study'},
-  {id: 3, name: 'Band', interest: 'performance'},
+  {id: 1, name: 'English', interest_id: 1},
+  {id: 2, name: 'Chinese', interest_id: 1},
+  {id: 3, name: 'Band', interest_id: 2},
+];
+
+const interest = [
+  { id: 1, name: 'Study', subjects: [subject[0], subject[1]]},
+  { id: 2, name: 'Performance', subjects: [subject[2]]}
 ];
 
 const user = [
@@ -41,11 +47,9 @@ const comment = [
   {id: 5, author: user[2], meeting_id: 3, content: 'What?', publicity: true},
 ];
 
-const interest = ['study', 'performance'];
-
 export const makeCollegeData = () => college as College[];
 export const makeUserData = () => user as User[];
-export const makeInterestData = () => interest as string[];
+export const makeInterestData = () => interest as Interest[];
 export const makeMeetingData = () => meeting as Meeting[];
 export const makeCommentData = () => comment as Comment[];
 export const makeSubjectData = () => subject as Subject[];

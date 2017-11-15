@@ -2,71 +2,74 @@
 
 <h2 class="text-center">Edit Profile</h2>
 
-<form class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label">mySNU ID</label>
-    <div class="col-sm-8">
-      <p class="form-control-static">{{user.username}}</p>
-    </div>
-  </div>
-</form>
-
-<form class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label">Password</label>
-    <div class="col-sm-8">
-      <input type="password" class="form-control" placeholder="Enter Password" #password>
-    </div>
-  </div>
-</form>
-
-<form class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label">Password Check</label>
-    <div class="col-sm-8">
-      <input type="password" class="form-control" placeholder="Re-Enter Password" #passwordCheck>
-    </div>
-  </div>
-</form>
-
-<form class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label">Name</label>
-    <div class="col-sm-8">
-      <input class="form-control" placeholder="Enter Name" #name>
-    </div>
-  </div>
-</form>
-
-<form class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label">College</label>
-    <div class="col-sm-8">
-      <select class="form-control" [(ngModel)]="user.college" [ngModelOptions]="{standalone: true}">
-          <option *ngFor="let college of colleges" [ngValue]="college"
-                  [selected]="college.id === user.college.id">{{college.name}}</option><br>
-      </select>
-      <small class="text-muted">* Don't select college if you don't want to change.</small>
-    </div>
-  </div>
-</form>
-
-<form class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label">Interest</label>
-    <div class="checkbox checkbox-inline">
-      <div *ngFor="let interest of interests">
-        <input type="checkbox" class="checkbox-inline" (click)="interestCheck(interest)">{{interest}}
-        <div *ngFor="let subject of subjects">
-          <div class="col-sm-offset-1" *ngIf="subject.interest === interest && interestChecked[interest]">
-            <input type="checkbox" class="checkbox-inline"
-                   (click)="subjectCheck(subject.name)">{{subject.name}}
-          </div>
-        </div>
+<div *ngIf="user">
+  <form class="form-horizontal">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">mySNU ID</label>
+      <div class="col-sm-8">
+        <p class="form-control-static">{{user.username}}</p>
       </div>
     </div>
-  </div>
-</form>
+  </form>
 
-<button class="col-sm-offset-5 col-sm-2 btn btn-primary"
-        (click)="editProfile(password.value, passwordCheck.value, name.value)">Edit Profile</button>
+  <form class="form-horizontal">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Password</label>
+      <div class="col-sm-8">
+        <input type="password" class="form-control" placeholder="Enter Password" #password>
+      </div>
+    </div>
+  </form>
+
+  <form class="form-horizontal">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Password Check</label>
+      <div class="col-sm-8">
+        <input type="password" class="form-control" placeholder="Re-Enter Password" #passwordCheck>
+      </div>
+    </div>
+  </form>
+
+  <form class="form-horizontal">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Name</label>
+      <div class="col-sm-8">
+        <input class="form-control" value="{{user.name}}" placeholder="Enter Name" #name>
+      </div>
+    </div>
+  </form>
+
+  <form class="form-horizontal">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">College</label>
+      <div class="col-sm-8">
+        <select class="form-control" [(ngModel)]="user.college" [ngModelOptions]="{standalone: true}">
+          <option *ngFor="let college of colleges" [ngValue]="college"
+                  [selected]="college.id === user.college.id">{{college.name}}</option><br>
+        </select>
+        <small class="text-muted">* Don't select college if you don't want to change.</small>
+      </div>
+    </div>
+  </form>
+
+  <form class="form-horizontal">
+    <div class="form-group">
+      <label class="col-sm-2 control-label">Interest</label>
+        <div class="checkbox checkbox-inline">
+          <div *ngFor="let interest of interests">
+            <input type="checkbox" class="checkbox-inline" [checked]="interestChecked[interest.id]" (click)="interestCheck(interest.id)">{{interest.name}}
+              <div *ngFor="let subject of interest.subjects">
+                <div class="col-sm-offset-1" *ngIf="interestChecked[interest.id]">
+                  <input type="checkbox" [checked]="subjectChecked[subject.name]" class="checkbox-inline"
+                         (click)="subjectCheck(subject.name)">{{subject.name}}
+                </div>
+              </div>
+          </div>
+        </div>
+    </div>
+  </form>
+
+  <button class="col-sm-offset-5 col-sm-2 btn btn-primary"
+          (click)="editProfile(password.value, passwordCheck.value, name.value)">Edit Profile</button>
+
+</div>
