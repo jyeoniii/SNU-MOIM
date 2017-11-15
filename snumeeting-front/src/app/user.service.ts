@@ -4,8 +4,6 @@ import { Headers, Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 import { User } from './user';
-import { College } from './college';
-import { Subject } from './subject';
 
 @Injectable()
 export class UserService {
@@ -76,27 +74,6 @@ export class UserService {
       {headers: this.headers})
       .toPromise()
       .then(() => null)
-      .catch(this.handleError);
-  }
-
-  getCollegeList(): Promise<College[]> {
-    return this.http.get('/api/college')
-      .toPromise()
-      .then(response => response.json() as College[])
-      .catch(this.handleError);
-  }
-
-  getInterestList(): Promise<string[]> {
-    return this.http.get('/api/interest')
-      .toPromise()
-      .then(response => response.json() as string[])
-      .catch(this.handleError);
-  }
-
-  getSubjectList(): Promise<Subject[]> {
-    return this.http.get('/api/subject')
-      .toPromise()
-      .then(response => response.json() as Subject[])
       .catch(this.handleError);
   }
 

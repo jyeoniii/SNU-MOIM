@@ -57,10 +57,10 @@
     <label class="col-sm-2 control-label">Interest</label>
         <div class="checkbox checkbox-inline">
           <div *ngFor="let interest of interests">
-            <input type="checkbox" class="checkbox-inline" (click)="interestCheck(interest)">{{interest}}
-              <div *ngFor="let subject of subjects">
-                <div class="col-sm-offset-1" *ngIf="subject.interest === interest && interestChecked[interest]">
-                  <input type="checkbox" class="checkbox-inline">{{subject.name}}
+            <input type="checkbox" class="checkbox-inline" (click)="interestCheck(interest.name)">{{interest.name}}
+              <div *ngFor="let subject of interest.subjects">
+                <div class="col-sm-offset-1" *ngIf="interestChecked[interest.name]">
+                  <input type="checkbox" class="checkbox-inline" (click)="subjectCheck(subject.name)">{{subject.name}}
                 </div>
               </div>
           </div>

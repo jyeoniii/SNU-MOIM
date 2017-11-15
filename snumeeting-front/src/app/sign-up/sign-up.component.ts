@@ -4,8 +4,10 @@ import { Router } from '@angular/router';
 import { User } from '../user';
 import { College } from '../college';
 import { Subject } from '../subject';
+import { Interest } from '../interest';
 
 import { UserService } from '../user.service';
+import {MetaDataService} from '../meta-data-service';
 
 @Component({
   selector: 'app-sign-up',
@@ -15,6 +17,7 @@ import { UserService } from '../user.service';
 export class SignUpComponent implements OnInit {
 
   constructor(
+    private metaDataService: MetaDataService,
     private userService: UserService,
     private router: Router
   ) { }
@@ -22,14 +25,14 @@ export class SignUpComponent implements OnInit {
   selectedCollege: College;
   colleges: College[];
   subjects: Subject[];
-  interests: string[];
+  interests: Interest[];
   interestChecked = [];
   subjectChecked = [];
 
   ngOnInit() {
-    this.userService.getCollegeList().then(colleges => this.colleges = colleges);
-    this.userService.getSubjectList().then(subjects => this.subjects = subjects);
-    this.userService.getInterestList().then(interests => this.interests = interests);
+    this.metaDataService.getCollegeList().then(colleges => this.colleges = colleges);
+    this.metaDataService.getSubjectList().then(subjects => this.subjects = subjects);
+    this.metaDataService.getInterestList().then(interests => this.interests = interests);
   }
 
   interestCheck(interest: string) {
