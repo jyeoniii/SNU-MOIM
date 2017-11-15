@@ -43,7 +43,7 @@ matrix:
         - npm install angular2-bootstrap-pagination@2.1.2
       script:
         - ng test --code-coverage --watch false
-        - ng e2e
+          #- ng e2e
       after_success:
         - cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js
       after_script:

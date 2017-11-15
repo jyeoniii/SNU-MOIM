@@ -3,11 +3,10 @@ import { MockBackend, MockConnection } from '@angular/http/testing';
 import { HttpModule, Http, XHRBackend, Response, ResponseOptions } from '@angular/http';
 
 import { User } from './user';
-import { College } from './college';
-import { Subject } from './subject';
+
 import { UserService } from './user.service';
 
-import { makeCollegeData, makeSubjectData, makeInterestData, makeUserData } from './mock-data';
+import { makeUserData } from './mock-data';
 
 describe('UserService (mockBackend)', () => {
   beforeEach( async(() => {
@@ -144,42 +143,6 @@ describe('UserService (mockBackend)', () => {
       })));
   });
 
-  describe('when getting lists of data', () => {
-    let backend: MockBackend;
-    let service: UserService;
-    let fakeColleges: College[];
-    let fakeSubjects: Subject[];
-    let fakeInterests: string[];
-    let response: Response;
 
-    beforeEach(inject([Http, XHRBackend], (http: Http, be: MockBackend) => {
-      backend = be;
-      service = new UserService(http);
-      fakeColleges = makeCollegeData();
-      fakeSubjects = makeSubjectData();
-      fakeInterests = makeInterestData();
-    }));
-
-    it('should get college data',
-      async(inject([], () => {
-        response = new Response(new ResponseOptions({status: 200, body: fakeColleges}));
-        backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
-        service.getCollegeList().then(colleges => expect(colleges.length).toBe(2));
-      })));
-
-    it('should get subject data',
-      async(inject([], () => {
-        response = new Response(new ResponseOptions({status: 200, body: fakeSubjects}));
-        backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
-        service.getSubjectList().then(subjects => expect(subjects.length).toBe(3));
-      })));
-
-    it('should get interest data',
-      async(inject([], () => {
-        response = new Response(new ResponseOptions({status: 200, body: fakeInterests}));
-        backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
-        service.getInterestList().then(interests => expect(interests.length).toBe(2));
-      })));
-  });
 });
 
