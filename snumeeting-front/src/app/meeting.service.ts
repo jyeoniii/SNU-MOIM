@@ -28,6 +28,31 @@ export class MeetingService {
       .catch(this.handleError);
   }
 
+  searchMeetingsOfTitle(query: string) {
+    const url = `${this.meetingsUrl}/search/title/${query}`;
+    return this.http.get(url)
+      .toPromise()
+      .then(response => response.json() as Meeting[])
+      .catch(this.handleError);
+  }
+
+  searchMeetingsOfAuthor(query: string) {
+    const url = `${this.meetingsUrl}/search/author/${query}`;
+    return this.http.get(url)
+      .toPromise()
+      .then(response => response.json() as Meeting[])
+      .catch(this.handleError);
+  }
+
+  searchMeetingsOfSubject(query: string) {
+    const url = `${this.meetingsUrl}/search/subject/${query}`;
+    return this.http.get(url)
+      .toPromise()
+      .then(response => response.json() as Meeting[])
+      .catch(this.handleError);
+  }
+
+
   createMeeting(author: User,
                 title: string,
                 subject: Subject,

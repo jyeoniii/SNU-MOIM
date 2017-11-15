@@ -7,6 +7,7 @@ import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { MeetingDetailComponent } from './meeting-detail/meeting-detail.component';
 import { MeetingCreateComponent } from './meeting-create/meeting-create.component';
+import {MeetingsComponent} from './meetings/meetings.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/sign_in', pathMatch: 'full' },
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: 'user/:id/edit', component: EditProfileComponent },
   { path: 'meeting/create', component: MeetingCreateComponent },
   { path: 'meeting/:id', component: MeetingDetailComponent },
+  { path: 'meeting', component: MeetingsComponent},
   { path: '**', redirectTo: '/sign_in' },
 ];
 

@@ -6,6 +6,7 @@ from .models import Ex_User, Meeting, Comment, Subject, College, Interest
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.db.models import Q
 import json
 
 # url: /signup
@@ -107,16 +108,7 @@ def meetingList(request):
     meetings = Meeting.objects.all()
     dict_meetings = []
     for meeting in meetings:
-      user = {}
-      d = model_to_dict(meeting)
-
-      author_id = d['author']
-      user = convert_userinfo_for_front(author_id)
-      d['author'] = user
-
-      subject_id = d['subject']
-      d['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
-      d['members']=list(meeting.members.all().values())
+      d = convert_meeting_for_mainpage(meeting)
       dict_meetings.append(d)
     return JsonResponse(dict_meetings, safe=False)
   elif request.method == 'POST':
@@ -376,3 +368,72 @@ def convert_userinfo_for_front(user_id):
   except Ex_User.DoesNotExist:
     return None
   return user
+
+def convert_userinfo_minimal(user_id):
+  # convert user info - only minimal information needed (id+name)
+  try:
+    user_id = int(user_id)
+    user = {}
+    ex_user= Ex_User.objects.get(id=user_id)
+    user['id'] = ex_user.id
+    user['name'] = ex_user.name 
+  except Ex_User.DoesNotExist:
+    return None
+  return user
+
+def convert_meeting_for_mainpage(meeting):
+  user = {}
+  d = model_to_dict(meeting)
+
+  author_id = d['author']
+  user = convert_userinfo_for_front(author_id)
+  d['author'] = user
+
+  subject_id = d['subject']
+  d['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
+  d['members']=list(meeting.members.all().values())
+  return d
+
+def searchMeeting_title(request, query):
+  if request.method == 'GET':
+    query = query.lower() # Case insensitive
+    meetings = Meeting.objects.filter(Q(title__icontains=query))
+    result = []
+    for meeting in meetings:
+      d = convert_meeting_for_mainpage(meeting)
+      result.append(d)
+  else:
+    return HttpResponseNotAllowed(['GET'])
+  return JsonResponse(result, safe=False) 
+
+def searchMeeting_author(request, query):
+  if request.method == 'GET':
+    result = []
+    query = query.lower() # Case insensitive
+    authors = Ex_User.objects.filter(Q(name__icontains=query))
+
+    for author in authors:
+      for meeting in list(author.meetingsAuthor.all()):
+        d = convert_meeting_for_mainpage(meeting)
+        result.append(d)
+  else:
+    return HttpResponseNotAllowed(['GET'])
+  return JsonResponse(result, safe=False) 
+
+def searchMeeting_subject(request, subject_id, query):
+  if request.method == 'GET':
+    result = []
+    subject_id = int(subject_id)
+    subject = Subject.objects.get(id=subject_id)
+    meetings = subject.meetingsSubject.all()
+    if query is not None:
+      meetings = meetings.filter(Q(title__icontains=query))
+    for meeting in meetings:
+      d = convert_meeting_for_mainpage(meeting)
+      result.append(d)
+  else:
+    return HttpResponseNotAllowed(['GET'])
+
+  return JsonResponse(result, safe=False)
+
+
