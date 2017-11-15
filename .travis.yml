@@ -35,10 +35,12 @@ matrix:
         - export DISPLAY=:99.0
         - sh -e /etc/init.d/xvfb start
         - cd snumeeting-front
+        - npm install typings --global
       install:
         - npm install
         - npm install coveralls
         - npm install -g @angular/cli
+        - npm install angular2-bootstrap-pagination@2.1.2
       script:
         - ng test --code-coverage --watch false
         - ng e2e
