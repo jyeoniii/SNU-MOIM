@@ -1,4 +1,5 @@
-# SNU Meeting
+[![Build Status](https://travis-ci.org/swsnu/swpp17-team9.svg?branch=master)](https://travis-ci.org/swsnu/swpp17-team9) [![Coverage Status](https://coveralls.io/repos/github/swsnu/swpp17-team9/badge.svg?branch=master)](https://coveralls.io/github/swsnu/swpp17-team9?branch=master)
+# SNU Moim
 
 ## Contributors
 - Team9
