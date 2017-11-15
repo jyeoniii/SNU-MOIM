@@ -243,7 +243,6 @@ def commentDetail(request, comment_id):
       comment = Comment.objects.get(id=comment_id)
       user = convert_userinfo_for_front(comment.author_id)
       comment_dict = model_to_dict(comment)
-      comment_dict.pop('author_id')
       comment_dict['author'] = user
     except Comment.DoesNotExist:
       return HttpResponseNotFound()
