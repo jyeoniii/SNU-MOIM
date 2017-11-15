@@ -51,11 +51,12 @@ describe('CommentService', () => {
     beforeEach(inject([XHRBackend], (be: MockBackend) => {
       backend = be;
       fakeComment = makeCommentData();
-      const options = new ResponseOptions({status: 200, body: fakeComment});
-      response = new Response(options);
     }));
 
     it('should have expected fake comments', async(inject([CommentService], (service: CommentService) => {
+      fakeComment = fakeComment.filter(comment => comment.meeting_id === 2);
+      const options = new ResponseOptions({status: 200, body: fakeComment});
+      response = new Response(options);
       backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
         service.getCommentsOnMeeting(2)
           .then(comments => {
@@ -67,6 +68,9 @@ describe('CommentService', () => {
     );
 
     it('should be ok returning no comments', async(inject([CommentService], (service: CommentService) => {
+      fakeComment = fakeComment.filter(comment => comment.meeting_id === 4);
+      const options = new ResponseOptions({status: 200, body: fakeComment});
+      response = new Response(options);
       backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
       service.getCommentsOnMeeting(4)
         .then(comments => {
@@ -86,7 +90,7 @@ describe('CommentService', () => {
     beforeEach(inject([XHRBackend], (be: MockBackend) => {
       backend = be;
       fakeComment = makeCommentData();
-      const options = new ResponseOptions({status: 200, body: fakeComment});
+      const options = new ResponseOptions({status: 200, body: fakeComment[1]});
       response = new Response(options);
     }));
 
