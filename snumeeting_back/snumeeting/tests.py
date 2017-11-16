@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest
+from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
 import json
 
 class SnuMeetingTestCase(TestCase):
@@ -22,9 +23,9 @@ class SnuMeetingTestCase(TestCase):
     fake1 = User.objects.create(id=0, username='fake1', password='1234', email='fake1@snu.ac.kr')
     fake2 = User.objects.create(id=1, username='fake2', password='1234', email='fake2@snu.ac.kr')
     fake3 = User.objects.create(id=2, username='fake3', password='1234', email='fake3@snu.ac.kr')
-    fake1_ex = Ex_User.objects.create(id=0, user=fake1, college=engineering, subjects=[std_eng])
-    fake2_ex = Ex_User.objects.create(id=1, user=fake2, college=business, subjects=[std_chi, pfm_band])
-    fake3_ex = Ex_User.objects.create(id=2, user=fake3, college=business, subjects=[pfm_band])
+    fake1_ex = Ex_User.objects.create(id=0, user=fake1, name='John', college=engineering, subjects=[std_eng])
+    fake2_ex = Ex_User.objects.create(id=1, user=fake2, name='Joshua',college=business, subjects=[std_chi, pfm_band])
+    fake3_ex = Ex_User.objects.create(id=2, user=fake3, name='Alice', college=business, subjects=[pfm_band])
 
     # Meeting
     meeting1 = Meeting.objects.create(id=0, author=fake1_ex, title='Study English',
@@ -34,7 +35,7 @@ class SnuMeetingTestCase(TestCase):
       subject=std_chi, description='I will study Chinese', location='SNU',
       max_member=5, members=[fake2_ex, fake1_ex])
     meeting3 = Meeting.objects.create(id=2, author=fake3_ex, title='Need my band',
-      subject=pfm_band, description='I need all the sessions', location='Nokdu',
+      subject=std_chi, description='I need all the sessions', location='Nokdu',
       max_member=6, members=[fake3_ex, fake1_ex, fake2_ex])
     meeting4 = Meeting.objects.create(id=3, author=fake3_ex, title='English Master',
       subject=std_eng, description='Mastering English is fun', location='SNU',
@@ -580,4 +581,136 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 204)
     response = self.client.delete('/api/college/0') # Delete None-existing College
     self.assertEqual(response.status_code, 404)
+
+  def test_search_meeting_title(self):
+      # GET
+      query = 'study'
+      response = self.client.get('/api/meeting/search/title/'+query);
+      result = json.loads(response.content.decode())
+
+      self.assertEqual(len(result), 2)
+      for meeting in result:
+        self.assertTrue(query.lower() in meeting['title'].lower())
+
+      # GET - no result
+      query = 'xxx'
+      response = self.client.get('/api/meeting/search/title/'+query);
+      result = json.loads(response.content.decode())
+
+      self.assertEqual(len(result), 0)
+      
+      # Not allowed HTTP request methods
+      # PUT
+      response = self.client.put('/api/meeting/search/title/'+query);
+      self.assertEqual(response.status_code, 405)
+
+      # DELETE
+      response = self.client.delete('/api/meeting/search/title/'+query);
+      self.assertEqual(response.status_code, 405)
+
+      # POST
+      response = self.client.post('/api/meeting/search/title/'+query);
+      self.assertEqual(response.status_code, 405)
+
+
+  def test_search_meeting_author(self):
+      # GET
+      query = 'jo'
+      response = self.client.get('/api/meeting/search/author/'+query);
+      result = json.loads(response.content.decode())
+
+      self.assertEqual(len(result), 2)
+      for meeting in result:
+          self.assertTrue(query.lower() in meeting['author']['name'].lower())
+
+      # GET - no result
+      query = 'xxx'
+      response = self.client.get('/api/meeting/search/author/'+query);
+      result = json.loads(response.content.decode())
+
+      self.assertEqual(len(result), 0)
+      
+      # Not allowed HTTP request methods
+      # PUT
+      response = self.client.put('/api/meeting/search/author/'+query);
+      self.assertEqual(response.status_code, 405)
+
+      # DELETE
+      response = self.client.delete('/api/meeting/search/author/'+query);
+      self.assertEqual(response.status_code, 405)
+
+      # POST
+      response = self.client.post('/api/meeting/search/author/'+query);
+      self.assertEqual(response.status_code, 405)
+
+
+  def test_search_meeting_subject(self):
+      # GET
+      subject_id = 0
+      response = self.client.get('/api/meeting/search/subject/'+str(subject_id));
+      result = json.loads(response.content.decode())
+
+      self.assertEqual(len(result), 2)
+      for meeting in result:
+          self.assertEqual(meeting['subject']['id'], subject_id)
+
+      # GET - no result
+      subject_id = 2 
+      response = self.client.get('/api/meeting/search/subject/'+str(subject_id));
+      result = json.loads(response.content.decode())
+
+      self.assertEqual(len(result), 0)
+      
+      # GET - non-existing subject
+      subject_id = 10 
+      response = self.client.get('/api/meeting/search/subject/'+str(subject_id));
+      self.assertEqual(response.status_code, 404)
+
+      # GET - searching both for subject id and query
+      subject_id = 0
+      query = 'master' 
+      response = self.client.get('/api/meeting/search/subject/'+str(subject_id)+'_'+query);
+      result = json.loads(response.content.decode())
+
+      self.assertEqual(len(result), 1)
+      for meeting in result:
+          self.assertEqual(meeting['subject']['id'], subject_id)
+          self.assertTrue(query.lower() in meeting['title'].lower())
+      
+      # Not allowed HTTP request methods
+      # PUT
+      response = self.client.put('/api/meeting/search/subject/'+str(subject_id));
+      self.assertEqual(response.status_code, 405)
+
+      # DELETE
+      response = self.client.delete('/api/meeting/search/subject/'+str(subject_id));
+      self.assertEqual(response.status_code, 405)
+
+      # POST
+      response = self.client.post('/api/meeting/search/subject/'+str(subject_id));
+      self.assertEqual(response.status_code, 405)
+
+  def test_convert_userinfo_for_front(self):
+      user = convert_userinfo_for_front(0)
+      self.assertEqual(len(user), 6)
+      self.assertEqual(user['id'],0)
+      self.assertEqual(user['username'],'fake1')
+      self.assertEqual(user['password'],'1234')
+      self.assertEqual(user['name'],'John')
+      self.assertEqual(user['college']['name'],'Engineering')
+      self.assertEqual(len(user['subjects']),1)
+
+      # Non-existing user
+      user = convert_userinfo_for_front(10)
+      self.assertEqual(user['name'], 'NONEXISTING')
+
+  def test_convert_userinfo_minimal(self):
+      user = convert_userinfo_minimal(1)
+      self.assertEqual(len(user), 2)
+      self.assertEqual(user['id'],1)
+      self.assertEqual(user['name'],'Joshua')
+
+      # Non-existing user
+      user = convert_userinfo_minimal(10)
+      self.assertEqual(user['name'], 'NONEXISTING')
 
