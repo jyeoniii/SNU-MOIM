@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { User } from '../user';
-import { College } from '../college';
-import { Subject } from '../subject';
-import { Interest } from '../interest';
+import { User } from '../models/user';
+import { College } from '../models/college';
+import { Subject } from '../models/subject';
+import { Interest } from '../models/interest';
 
-import { UserService } from '../user.service';
-import {MetaDataService} from '../meta-data-service';
+import { UserService } from '../services/user.service';
+import {MetaDataService} from '../services/meta-data-service';
 
 @Component({
   selector: 'app-sign-up',

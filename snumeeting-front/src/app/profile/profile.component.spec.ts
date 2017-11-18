@@ -7,9 +7,9 @@ import { Observable } from 'rxjs/Rx';
 import { AppModule } from '../app.module';
 import { ProfileComponent } from './profile.component';
 
-import { User } from '../user';
-import { UserService } from '../user.service';
-import { makeUserData } from '../mock-data';
+import { User } from '../models/user';
+import { UserService } from '../services/user.service';
+import { makeUserData } from '../models/mock-data';
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;

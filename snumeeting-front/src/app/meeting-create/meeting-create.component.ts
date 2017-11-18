@@ -6,13 +6,13 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from "@angular/common";
 
-import { UserService } from "../user.service";
+import { UserService } from "../services/user.service";
 //import user service
-import { MeetingService } from "../meeting.service";
+import { MeetingService } from "../services/meeting.service";
 //import meeting service
-import { User } from '../user';
-import { Meeting } from '../meeting';
-import { Subject } from '../subject';
+import { User } from '../models/user';
+import { Meeting } from '../models/meeting';
+import { Subject } from '../models/subject';
 
 @Component({
   selector: 'app-meeting-create',

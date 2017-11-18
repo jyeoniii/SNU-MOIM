@@ -6,9 +6,9 @@ import {FormsModule} from '@angular/forms';
 import { MockBackend, MockConnection } from '@angular/http/testing';
 
 import { MeetingService } from './meeting.service';
-import { Meeting } from './meeting';
+import { Meeting } from '../models/meeting';
 
-import { makeMeetingData } from './mock-data';
+import { makeMeetingData } from '../models/mock-data';
 
 describe('MeetingService', () => {
   beforeEach(async(() => {

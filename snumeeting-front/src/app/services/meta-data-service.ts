@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 
-import { College } from './college';
-import { Subject } from './subject';
-import { Interest } from './interest';
+import { College } from '../models/college';
+import { Subject } from '../models/subject';
+import { Interest } from '../models/interest';
 
 @Injectable()
 export class MetaDataService {
@@ -11,8 +11,6 @@ export class MetaDataService {
   private collegeUrl = '/api/college';
   private interestUrl = '/api/interest';
   private subjectUrl = '/api/subject';
-
-  private headers = new Headers({'Content-Type': 'application/json'});
 
   constructor(private http: Http) {
   }
