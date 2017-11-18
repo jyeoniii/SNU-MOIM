@@ -1,16 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Http, Headers } from '@angular/http';
+import { Http } from '@angular/http';
 
-import { Comment } from './comment';
-import { User } from './user';
-import { Meeting } from './meeting';
+import { Comment } from '../models/comment';
+import { User } from '../models/user';
+
+import { headerWithCSRF } from './header';
 
 @Injectable()
 export class CommentService {
 
   private meetingsUrl = 'api/meeting';
-  private commentsUrl = 'api/comment'; // URL to web api
-  private headers = new Headers({'Content-Type': 'application/json'});
+  private commentsUrl = 'api/comment';
 
   constructor(private http: Http) { }
 
@@ -36,7 +36,7 @@ export class CommentService {
 
     return this.http.post(url, JSON.stringify(
       {author_id: author.id, content: content, publicity: publicity}),
-      { headers: this.headers })
+      { headers: headerWithCSRF() })
       .toPromise()
       .then(response => response.json() as Comment)
       .catch(this.handleError);
@@ -59,7 +59,7 @@ export class CommentService {
     const url = `${this.commentsUrl}/${editedComment.id}`;
     return this.http.put(url,
                          JSON.stringify({content: editedComment.content, publicity: editedComment.publicity}),
-                 { headers: this.headers })
+                 { headers: headerWithCSRF() })
       .toPromise()
       .then(() => editedComment)
       .catch(this.handleError);
@@ -67,7 +67,7 @@ export class CommentService {
 
   deleteComment(id: number): Promise<Comment> {
     const url = `${this.commentsUrl}/${id}`;
-    return this.http.delete(url, {headers: this.headers})
+    return this.http.delete(url, {headers: headerWithCSRF()})
       .toPromise()
       .then(() => null)
       .catch(this.handleError);

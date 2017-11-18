@@ -44,5 +44,6 @@ Thumbs.db
 
 # manually added
 *.pyc
+.coverage
 package-lock.json
 /snumeeting_back/htmlcov

@@ -3,7 +3,7 @@ import { MockBackend, MockConnection } from '@angular/http/testing';
 import { Http, XHRBackend, Response, ResponseOptions } from '@angular/http';
 
 import { AppModule } from '../app.module';
-import { UserService } from '../user.service';
+import { UserService } from '../services/user.service';
 import { SignUpComponent } from './sign-up.component';
 
 describe('SignUpComponent', () => {

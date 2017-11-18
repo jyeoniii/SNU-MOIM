@@ -7,9 +7,9 @@ import { Observable } from 'rxjs/Rx';
 import { AppModule } from '../app.module';
 import { EditProfileComponent } from './edit-profile.component';
 
-import { User } from '../user';
-import { UserService } from '../user.service';
-import { makeUserData, makeCollegeData, makeSubjectData, makeInterestData } from '../mock-data';
+import { User } from '../models/user';
+import { UserService } from '../services/user.service';
+import { makeUserData, makeCollegeData, makeSubjectData, makeInterestData } from '../models/mock-data';
 
 describe('EditProfileComponent', () => {
   let component: EditProfileComponent;

@@ -1,33 +1,35 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
+import { Http } from '@angular/http';
 
 import 'rxjs/add/operator/toPromise';
 
-import { User } from './user';
+import { User } from '../models/user';
+
+import { headerWithCSRF } from './header';
 
 @Injectable()
 export class UserService {
   private userUrl = '/api/user';
 
-  private headers = new Headers({'Content-Type': 'application/json'});
-
   constructor(private http: Http) {
   }
 
+  cookie = '';
   user: User = new User();
   loginedUser: User = new User();
 
   signIn(username: string, password: string): Promise<User> {
-    return this.http.post('/api/signin', JSON.stringify({username: username, password: password}),
-      {headers: this.headers})
+    return this.http.post('/api/signin',
+      JSON.stringify({username: username, password: password}),
+      {headers: headerWithCSRF()})
       .toPromise()
       .then(response => response.json() as User, () => null)
       .catch(this.handleError);
   }
 
   signUp(user: User): Promise<void> {
-    var subjectIDList: number[] = [];
-    for (let subject of user.subjects) {
+    const subjectIDList: number[] = [];
+    for (const subject of user.subjects) {
       subjectIDList.push(subject.id);
     }
 
@@ -38,7 +40,7 @@ export class UserService {
         college_id: user.college.id,
         subject_ids: subjectIDList
       }),
-      {headers: this.headers})
+      {headers: headerWithCSRF()})
       .toPromise()
       .then(() => null)
       .catch(this.handleError);
@@ -46,7 +48,7 @@ export class UserService {
 
   signOut(): Promise<void> {
     // call this.loginedUser = new User() with then of this function
-    return this.http.get('/api/signout', {headers: this.headers})
+    return this.http.get('/api/signout', {headers: headerWithCSRF()})
       .toPromise()
       .then(() => null)
       .catch(this.handleError);
@@ -60,18 +62,19 @@ export class UserService {
   }
 
   editUserInfo(user: User): Promise<void> {
-    var subjectIDList: number[] = [];
-    for (let subject of user.subjects) {
+    const subjectIDList: number[] = [];
+    for (const subject of user.subjects) {
       subjectIDList.push(subject.id);
     }
 
-    return this.http.put(`${this.userUrl}/${user.id}`, JSON.stringify({
+    return this.http.put(`${this.userUrl}/${user.id}`,
+      JSON.stringify({
         password: user.password,
         name: user.name,
         college_id: user.college.id,
         subject_ids: subjectIDList
       }),
-      {headers: this.headers})
+      {headers: headerWithCSRF()})
       .toPromise()
       .then(() => null)
       .catch(this.handleError);

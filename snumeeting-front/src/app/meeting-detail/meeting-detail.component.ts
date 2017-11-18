@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Meeting } from '../meeting';
-import { Comment } from '../comment';
-import { User } from '../user';
-import { MeetingService } from '../meeting.service';
-import {CommentService} from '../comment.service';
+import { Meeting } from '../models/meeting';
+import { Comment } from '../models/comment';
+import { User } from '../models/user';
+import { MeetingService } from '../services/meeting.service';
+import {CommentService} from '../services/comment.service';
 
 @Component({
   selector: 'app-meeting-detail',

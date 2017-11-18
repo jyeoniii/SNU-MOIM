@@ -2,11 +2,11 @@ import { TestBed, async, inject } from '@angular/core/testing';
 import { MockBackend, MockConnection } from '@angular/http/testing';
 import { HttpModule, Http, XHRBackend, Response, ResponseOptions } from '@angular/http';
 
-import { User } from './user';
+import { User } from '../models/user';
 
 import { UserService } from './user.service';
 
-import { makeUserData } from './mock-data';
+import { makeUserData } from '../models/mock-data';
 
 describe('UserService (mockBackend)', () => {
   beforeEach( async(() => {

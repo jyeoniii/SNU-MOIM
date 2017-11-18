@@ -7,14 +7,14 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule, Http, XHRBackend, Response, ResponseOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 
-import { MeetingService } from '../meeting.service';
-import { CommentService } from '../comment.service';
+import { MeetingService } from '../services/meeting.service';
+import { CommentService } from '../services/comment.service';
 
-import { Meeting } from '../meeting';
+import { Meeting } from '../models/meeting';
 
 import { MockBackend } from '@angular/http/testing';
 
-import { makeMeetingData } from '../mock-data';
+import { makeMeetingData } from '../models/mock-data';
 
 describe('MeetingDetailComponent', () => {
   let component: MeetingDetailComponent;

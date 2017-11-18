@@ -4,11 +4,11 @@ import { HttpModule, Http, XHRBackend, Response, ResponseOptions } from '@angula
 
 import { MetaDataService } from './meta-data-service';
 
-import { College } from './college';
-import { Interest } from './interest';
-import { Subject } from './subject';
+import { College } from '../models/college';
+import { Interest } from '../models/interest';
+import { Subject } from '../models/subject';
 
-import { makeCollegeData, makeSubjectData, makeInterestData, makeUserData } from './mock-data';
+import { makeCollegeData, makeSubjectData, makeInterestData, makeUserData } from '../models/mock-data';
 
 describe('MetaDataServiceService', () => {
   beforeEach(() => {

@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import {MeetingService} from '../meeting.service';
-import {Meeting} from '../meeting';
-import {UserService} from '../user.service';
-import { Interest } from '../interest';
-import { Subject } from '../subject';
-import {MetaDataService} from '../meta-data-service';
+import {MeetingService} from '../services/meeting.service';
+import {Meeting} from '../models/meeting';
+import {UserService} from '../services/user.service';
+import { Interest } from '../models/interest';
+import { Subject } from '../models/subject';
+import {MetaDataService} from '../services/meta-data-service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({

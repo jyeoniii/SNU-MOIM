@@ -5,9 +5,9 @@ import {FormsModule} from '@angular/forms';
 import { MockBackend, MockConnection } from '@angular/http/testing';
 
 import { CommentService } from './comment.service';
-import { makeCommentData } from './mock-data';
+import { makeCommentData } from '../models/mock-data';
 
-import { Comment } from './comment';
+import { Comment } from '../models/comment';
 
 describe('CommentService', () => {
   beforeEach(() => {

@@ -5,9 +5,9 @@ import { FormsModule } from '@angular/forms';
 import { PaginationDirective } from '../../../node_modules/angular2-bootstrap-pagination/directives/pagination.directive';
 
 import { MeetingsComponent } from './meetings.component';
-import {MeetingService} from '../meeting.service';
-import {MetaDataService} from '../meta-data-service';
-import {UserService} from '../user.service';
+import {MeetingService} from '../services/meeting.service';
+import {MetaDataService} from '../services/meta-data-service';
+import {UserService} from '../services/user.service';
 
 describe('MeetingsComponent', () => {
   let component: MeetingsComponent;

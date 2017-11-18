@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
-import { Meeting } from './meeting';
-import { User } from './user';
-import { Subject } from './subject';
+import { Http } from '@angular/http';
+import { Meeting } from '../models/meeting';
+import { User } from '../models/user';
+import { Subject } from '../models/subject';
+
+import { headerWithCSRF } from './header';
 
 @Injectable()
 export class MeetingService {
 
   private meetingsUrl = 'api/meeting'; // URL to web api
-  private headers = new Headers({'Content-Type': 'application/json'});
 
   constructor(private http: Http) { }
 
@@ -59,9 +60,15 @@ export class MeetingService {
                 description: string,
                 location: string,
                 max_number: number): Promise<Meeting> {
-    return this.http.post(this.meetingsUrl, JSON.stringify(
-      {author_id: author.id, title: title, subject_id: subject.id, description: description, location: location, max_number: max_number}),
-      { headers: this.headers })
+    return this.http.post(this.meetingsUrl,
+      JSON.stringify({
+        author_id: author.id,
+        title: title,
+        subject_id: subject.id,
+        description: description,
+        location: location,
+        max_number: max_number}),
+      {headers: headerWithCSRF()})
       .toPromise()
       .then(response => response.json() as Meeting)
       .catch(this.handleError);
@@ -82,11 +89,15 @@ export class MeetingService {
 
   editMeeting(editedMeeting: Meeting): Promise<Meeting> {
     const url = `${this.meetingsUrl}/${editedMeeting.id}`;
-    return this.http.put(url, {title: editedMeeting.title,
-                                     description: editedMeeting.description,
-                                     location: editedMeeting.location,
-                                     max_member: editedMeeting.max_member,
-                                     subject_id: editedMeeting.subject.id }, { headers: this.headers })
+    return this.http.put(url,
+      JSON.stringify({
+        title: editedMeeting.title,
+        description: editedMeeting.description,
+        location: editedMeeting.location,
+        max_member: editedMeeting.max_member,
+        subject_id: editedMeeting.subject.id
+      }),
+      {headers: headerWithCSRF()})
       .toPromise()
       .then(() => editedMeeting)
       .catch(this.handleError);
@@ -94,7 +105,7 @@ export class MeetingService {
 
   deleteMeeting(id: number): Promise<Meeting> {
     const url = `${this.meetingsUrl}/${id}`;
-    return this.http.delete(url, {headers: this.headers})
+    return this.http.delete(url, {headers: headerWithCSRF()})
       .toPromise()
       .then(() => null)
       .catch(this.handleError);
