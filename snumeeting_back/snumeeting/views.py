@@ -10,6 +10,18 @@ from django.db.models import Q
 import json
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
 
+# url: /check_user
+def check_user(request):
+  if request.method == 'POST':
+    username = json.loads(request.body.decode())['username']
+    try:
+      user = User.objects.get(username=username)
+      return HttpResponse(status=409)
+    except User.DoesNotExist:
+      return HttpResponse(status=200)
+  else:
+    return HttpResponseNotAllowed(['POST'])
+
 # url: /signup
 def signup(request):
   if request.method == 'POST':

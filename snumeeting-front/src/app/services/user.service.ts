@@ -14,9 +14,17 @@ export class UserService {
   constructor(private http: Http) {
   }
 
-  cookie = '';
   user: User = new User();
   loginedUser: User = new User();
+
+  checkUser(username: string): Promise<boolean> {
+    return this.http.post('/api/check_user',
+      JSON.stringify({username: username}),
+      {headers: headerWithCSRF()})
+      .toPromise()
+      .then(() => true, () => false)
+      .catch(this.handleError);
+  }
 
   signIn(username: string, password: string): Promise<User> {
     return this.http.post('/api/signin',

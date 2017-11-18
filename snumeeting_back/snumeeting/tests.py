@@ -118,6 +118,32 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(str(comment), comment.content)
 
 
+  def test_check_user(self):
+    # POST
+    response = self.client.post('/api/check_user',
+                               json.dumps({'username':'fake'}),
+                               content_type='application/json')
+    self.assertEqual(response.status_code, 200)
+
+    response = self.client.post('/api/check_user',
+                                json.dumps({'username':'fake1'}),
+                                content_type='application/json')
+    self.assertEqual(response.status_code, 409)
+
+    # GET
+    response = self.client.get('/api/check_user')
+    self.assertEqual(response.status_code, 405)
+
+    # PUT
+    response = self.client.put('/api/check_user')
+    self.assertEqual(response.status_code, 405)
+
+    # DELETE
+    response = self.client.delete('/api/check_user')
+    self.assertEqual(response.status_code, 405)
+
+
+
   def test_signup(self):
     # GET
     response = self.client.get('/api/signup')

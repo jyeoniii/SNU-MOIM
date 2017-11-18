@@ -1,5 +1,5 @@
 from django.conf.urls import url, include
-from .views import signup, signin, signout, userDetail
+from .views import check_user, signup, signin, signout, userDetail
 from .views import meetingList, meetingDetail, meetingComment, commentList, commentDetail
 from .views import interestList, subjectList, subjectDetail, collegeList, collegeDetail
 from .views import token
@@ -7,6 +7,7 @@ from .views import searchMeeting_title, searchMeeting_author, searchMeeting_subj
 
 urlpatterns = [
   url('^token$', token, name='token'),
+  url(r'^check_user$', check_user, name='check_user'),
   url(r'^signup$', signup, name='signup'),
   url(r'^signin$', signin, name='signin'),
   url(r'^signout$', signout, name='signout'),
