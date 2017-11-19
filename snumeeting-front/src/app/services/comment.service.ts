@@ -55,10 +55,10 @@ export class CommentService {
       .catch(this.handleError);
   }
 
-  editComment(editedComment: Comment): Promise<Comment> {
+  editComment(editedComment: Comment, publicity: boolean): Promise<Comment> {
     const url = `${this.commentsUrl}/${editedComment.id}`;
     return this.http.put(url,
-                         JSON.stringify({content: editedComment.content, publicity: editedComment.publicity}),
+                         JSON.stringify({content: editedComment.content, publicity: publicity}),
                  { headers: headerWithCSRF() })
       .toPromise()
       .then(() => editedComment)

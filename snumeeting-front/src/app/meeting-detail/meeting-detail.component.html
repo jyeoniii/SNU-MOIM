@@ -22,24 +22,32 @@
      <!--Create comment-->
      <input [(ngModel)]="newComment" style="width:400px;">
      <button (click)="createComment(newComment)" class="btn btn-primary btn-sm" id="create-comment-button">CREATE</button>
+     <input type="checkbox" class="checkbox-inline" [checked]="isPrivate" (click)="changePrivateMode(true)"> Private
      <li *ngFor="let comment of comments">
-       <!--Author of the comment-->
-       <span style="font-weight:bold">{{ comment.author.name }}</span>
-       <!--Content of the comment-->
-       :
-       <span *ngIf="selectedComment!==comment;else edit_mode">
-        {{comment.content}}
-         <!--Edit / Delete button-->
-      <span *ngIf="currentUser && (currentUser.id===comment.author.id)">
-        <button (click)="toEditMode(comment)" class="btn btn-primary btn-sm" style="margin-left:20px;" id="edit-comment-button">EDIT</button>
-        <button (click)="deleteComment(comment)" class="btn btn-primary btn-sm" id="delete-comment-button">DELETE</button>
-      </span>
-    </span>
+       <span *ngIf="comment.publicity || currentUser.id===selectedMeeting.author.id || currentUser.id===comment.author.id; else private_comment">
+         <!--Author of the comment-->
+         <span style="font-weight:bold">{{ comment.author.name }}</span>
+         <!--Content of the comment-->
+         :
+         <span *ngIf="selectedComment!==comment;else edit_mode">
+            {{comment.content}}
+             <!--Edit / Delete button-->
+            <span *ngIf="currentUser && (currentUser.id===comment.author.id)">
+              <button (click)="toEditMode(comment)" class="btn btn-primary btn-sm" style="margin-left:20px;" id="edit-comment-button">EDIT</button>
+              <button (click)="deleteComment(comment)" class="btn btn-primary btn-sm" id="delete-comment-button">DELETE</button>
+            </span>
+          </span>
 
-       <ng-template #edit_mode>
-         <input [(ngModel)]="comment.content">
-         <button (click)="editComment(comment)" class="btn btn-primary btn-sm" id="update-button">UPDATE</button>
-         <button (click)="cancleEditMode(comment)" class="btn btn-primary btn-sm" id="cancle-edit-button">CANCLE</button>
+         <ng-template #edit_mode>
+           <input [(ngModel)]="comment.content">
+           <button (click)="editComment(comment)" class="btn btn-primary btn-sm" id="update-button">UPDATE</button>
+           <button (click)="cancleEditMode(comment)" class="btn btn-primary btn-sm" id="cancle-edit-button">CANCLE</button>
+           <input type="checkbox" class="checkbox-inline" [checked]="!comment.publicity" (click)="changePrivateMode(false)"> Private
+         </ng-template>
+       </span>
+
+       <ng-template #private_comment>
+         <label style="color:royalblue">Private comment</label>
        </ng-template>
      </li>
    </div><br>
