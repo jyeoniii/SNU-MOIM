@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
-import {MeetingService} from '../services/meeting.service';
-import {Meeting} from '../models/meeting';
-import {UserService} from '../services/user.service';
+import { MeetingService } from '../services/meeting.service';
+import { Meeting } from '../models/meeting';
+import { UserService } from '../services/user.service';
+import { User } from '../models/user';
 import { Interest } from '../models/interest';
 import { Subject } from '../models/subject';
-import {MetaDataService} from '../services/meta-data-service';
+import { MetaDataService } from '../services/meta-data-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { User } from '../models/user';
 
@@ -22,6 +23,8 @@ export class MeetingsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
   ) { }
+
+  private currentUser: User;
 
   private sub;
   private availableOnly = false;

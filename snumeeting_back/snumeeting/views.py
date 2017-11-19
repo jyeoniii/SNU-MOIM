@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.http import HttpResponseNotFound, JsonResponse
 from django.forms.models import model_to_dict
-from .models import Ex_User, Meeting, Comment, Subject, College, Interest
+from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -405,4 +405,83 @@ def searchMeeting_subject(request, subject_id, query):
 
   return JsonResponse(result, safe=False)
 
+# url: /message
+def messageList(request):
+  if request.method == 'GET':
+    return JsonResponse(list(Message.objects.all().values()), safe=False)
+  if request.method == 'POST':
+    des_req = json.loads(request.body.decode())
+    sender_id = des_req['sender_id']
+    sender = Ex_User.objects.get(id=sender_id)
+    receiver_id = des_req['receiver_id']
+    receiver = Ex_User.objects.get(id=receiver_id)
+    content = des_req['content']
+    new_message = Message(sender=sender, receiver=receiver, content=content)
+    new_message.save()
+    return HttpResponse(status=201)
+  else:
+    return HttpResponseNotAllowed(['GET'],['POST'])
 
+# url: /message/:id
+def messageDetail(request, message_id):
+  message_i = int(message_id)
+  if request.method == 'GET':
+    try:
+      message = Message.objects.get(id=message_id)
+      sender = convert_userinfo_for_front(message.sender_id)
+      receiver = convert_userinfo_for_front(message.receiver_id)
+      message_dict = model_to_dict(message)
+      message_dict['sender'] = sender
+      message_dict['receiver'] = receiver
+    except Message.DoesNotExist:
+      return HttpResponseNotFound()
+    return JsonResponse(message_dict)
+  elif request.method == 'DELETE':
+    try:
+      message = Message.objects.get(id=message_id)
+    except Message.DoesNotExist:
+      return HttpResponseNotFound()
+    message.delete()
+    return HttpResponse(status=204)
+  else:
+    return HttpResponseNotAllowed(['GET'],['DELETE'])
+
+# url: /user/:id/message/received
+def receivedMessage(request, user_id):
+  user_id = int(user_id)
+  if request.method == 'GET':
+    try:
+      user = Ex_User.objects.get(id=user_id)
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+    messageList = list(user.messageReceiver.all().values())
+    for message in messageList:
+      sender = convert_userinfo_for_front(message['sender_id'])
+      message.pop('sender_id')
+      message['sender'] = sender
+      receiver = convert_userinfo_for_front(message['receiver_id'])
+      message.pop('receiver_id')
+      message['receiver'] = receiver
+    return JsonResponse(messageList, safe=False)
+  else:
+    return HttpResponseNotAllowed(['GET'])
+
+# url: /user/:id/message/sent
+def sentMessage(request, user_id):
+  user_id = int(user_id)
+  if request.method == 'GET':
+    try:
+      user = Ex_User.objects.get(id=user_id)
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+    messageList = list(user.messageSender.all().values())
+    for message in messageList:
+      sender = convert_userinfo_for_front(message['sender_id'])
+      message.pop('sender_id')
+      message['sender'] = sender
+      receiver = convert_userinfo_for_front(message['receiver_id'])
+      message.pop('receiver_id')
+      message['receiver'] = receiver
+    return JsonResponse(messageList, safe=False)
+  else:
+    return HttpResponseNotAllowed(['GET'])

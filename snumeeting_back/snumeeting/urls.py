@@ -4,6 +4,7 @@ from .views import meetingList, meetingDetail, meetingComment, commentList, comm
 from .views import interestList, subjectList, subjectDetail, collegeList, collegeDetail
 from .views import token
 from .views import searchMeeting_title, searchMeeting_author, searchMeeting_subject
+from .views import messageList, messageDetail, receivedMessage, sentMessage
 
 urlpatterns = [
   url('^token$', token, name='token'),
@@ -22,6 +23,10 @@ urlpatterns = [
   url(r'^subject/(?P<subject_id>[0-9]+)$', subjectDetail, name='subjectDetail'),
   url(r'^college$', collegeList, name='collegeList'),
   url(r'^college/(?P<college_id>[0-9]+)$', collegeDetail, name='collegeDetail'),
+  url(r'^message$', messageList, name='messageList'),
+  url(r'^message/(?P<message_id>[0-9]+)$', messageDetail, name='messageDetail'),
+  url(r'^user/(?P<user_id>[0-9]+)/message/received$', receivedMessage, name='receivedMessage'),
+  url(r'^user/(?P<user_id>[0-9]+)/message/sent$', sentMessage, name='sentMessage'),
 
   url(r'^meeting/search/title/(?P<query>.+)$', searchMeeting_title, name='searchMeeting_title'),
   url(r'^meeting/search/author/(?P<query>.+)$', searchMeeting_author, name='searchMeeting_author'),

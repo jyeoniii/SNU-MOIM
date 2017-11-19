@@ -47,5 +47,9 @@
 
   <button *ngIf="canEdit()" class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="editProfile()">Edit Profile</button>
 
+  <button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="editProfile()">Edit Profile</button>
+  <button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="sendMessage()">Send Message</button>
+  <app-messages [selected_id]="user.id" [my_between]="true"></app-messages>
+
 </div>
 

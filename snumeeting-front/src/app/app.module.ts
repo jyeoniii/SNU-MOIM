@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule, XSRFStrategy, CookieXSRFStrategy } from '@angular/http';
 import { FormsModule } from '@angular/forms';
-import { PaginationDirective } from '../../node_modules/angular2-bootstrap-pagination/directives/pagination.directive';
+//import { PaginationDirective } from '../../node_modules/angular2-bootstrap-pagination/directives/pagination.directive';
 import { APP_BASE_HREF } from '@angular/common';
 
 import { AppComponent } from './app.component';
@@ -12,14 +12,16 @@ import { ProfileComponent } from './profile/profile.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { MeetingDetailComponent} from './meeting-detail/meeting-detail.component';
 import { MeetingCreateComponent } from './meeting-create/meeting-create.component';
+import { MeetingsComponent } from './meetings/meetings.component';
+import { MessagesComponent } from './messages/messages.component';
 
 import { UserService } from './services/user.service';
 import { MeetingService } from './services/meeting.service';
 import { CommentService } from './services/comment.service';
+import { MessageService } from './services/message.service';
 
 import { AppRoutingModule } from './app.routing.module';
 import { MetaDataService } from './services/meta-data-service';
-import { MeetingsComponent } from './meetings/meetings.component';
 
 export function CSRFStrategy() {
   return new CookieXSRFStrategy('csrftoken', 'X-CSRFToken');
@@ -35,7 +37,8 @@ export function CSRFStrategy() {
     MeetingDetailComponent,
     MeetingCreateComponent,
     MeetingsComponent,
-    PaginationDirective,
+    MessagesComponent,
+//    PaginationDirective,
   ],
   imports: [
     BrowserModule,
@@ -47,6 +50,7 @@ export function CSRFStrategy() {
     MeetingService,
     CommentService,
     UserService,
+    MessageService,
     MetaDataService,
     {
       provide: APP_BASE_HREF,

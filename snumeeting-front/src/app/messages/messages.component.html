@@ -1,0 +1,21 @@
+<body>
+  <button (click)=showMyMessage()>Messages</button>
+  <button *ngIf="selectedUser != undefined" (click)=showBetweenMessage()>{{selectedUser.username}}</button>
+  <div *ngIf="my_between">
+    <h2>sentMessage</h2>
+    <div *ngIf="receivedMessages">
+      <li *ngFor="let sentMessage of sentMessages">
+        <span (click)="onSelect(sentMessage.receiver)">{{sentMessage.receiver.username}}</span> {{sentMessage.content}}
+      </li>
+    </div>
+    <h2>receivedMessage</h2>
+    <div *ngIf="receivedMessages">
+      <li *ngFor="let receivedMessage of receivedMessages">
+        <span (click)="onSelect(receivedMessage.sender)">{{receivedMessage.sender.username}}</span> {{receivedMessage.content}}
+      </li>
+    </div>
+  </div>
+  <div *ngIf="!my_between">
+    <h2>my_between</h2>
+  </div>
+</body>
