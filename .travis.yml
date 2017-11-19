@@ -8,6 +8,7 @@ matrix:
         pip: true
       install:
         - pip install django coverage coveralls
+        - pip install social-auth-app-django
       before_script:
         - cd snumeeting_back
         - python3 manage.py migrate
