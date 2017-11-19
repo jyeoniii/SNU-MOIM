@@ -15,6 +15,7 @@ import { Meeting } from '../models/meeting';
 import { MockBackend } from '@angular/http/testing';
 
 import { makeMeetingData } from '../models/mock-data';
+import {UserService} from '../services/user.service';
 
 describe('MeetingDetailComponent', () => {
   let component: MeetingDetailComponent;
@@ -32,7 +33,7 @@ describe('MeetingDetailComponent', () => {
                  FormsModule,
       ],
       declarations: [ MeetingDetailComponent],
-      providers: [MeetingService, CommentService,
+      providers: [MeetingService, CommentService, UserService,
         { provide: XHRBackend, useClass: MockBackend },
         { provide: ActivatedRoute, useValue: { 'params': Observable.from([{ id: 1 }]) } },
       ]
