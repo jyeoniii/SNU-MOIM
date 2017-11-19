@@ -1,5 +1,7 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
+<button *ngIf="loginedUser" (click)="signOut()" class="btn btn-primary btn-primary" style="float:right;">SignOut</button>
+
 <h2 class="text-center">View Profile</h2>
 
 <div *ngIf="user">
@@ -43,7 +45,7 @@
     </div>
   </form>
 
-  <button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="editProfile()">Edit Profile</button>
+  <button *ngIf="canEdit()" class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="editProfile()">Edit Profile</button>
 
 </div>
 

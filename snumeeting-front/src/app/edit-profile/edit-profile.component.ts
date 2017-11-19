@@ -85,4 +85,6 @@ export class EditProfileComponent implements OnInit {
       alert('Password and Check doesn\'t match.');
     }
   }
+
+
 }

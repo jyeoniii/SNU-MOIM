@@ -5,6 +5,7 @@ import { Comment } from '../models/comment';
 import { User } from '../models/user';
 import { MeetingService } from '../services/meeting.service';
 import {CommentService} from '../services/comment.service';
+import {UserService} from "../services/user.service";
 
 @Component({
   selector: 'app-meeting-detail',
@@ -16,6 +17,7 @@ export class MeetingDetailComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
+    private userService: UserService,
     private meetingService: MeetingService,
     private commentService: CommentService
   ) { }
@@ -35,12 +37,13 @@ export class MeetingDetailComponent implements OnInit {
         .then(meeting => {
           this.selectedMeeting = meeting;
           this.author = meeting.author;
-          this.currentUser = meeting.author;    // TODO: should be replaced with current user
         });
       this.commentService.getCommentsOnMeeting(+params['id'])
         .then(comments => {
           this.comments = comments;
         });
+      this.userService.getLoginedUser()
+        .then(user => this.currentUser = user);
     });
   }
 
@@ -100,6 +103,11 @@ export class MeetingDetailComponent implements OnInit {
       // No user logged in
       return false;
     }
+  }
+
+  signOut(): void {
+    this.userService.signOut();
+    this.router.navigate(['/']);
   }
 
 }
