@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers } from '@angular/http';
 
-import { Message } from './message';
-import { User } from './user';
+import { Message } from '../models/message';
+import { User } from '../models/user';
 
 @Injectable()
 export class MessageService {
