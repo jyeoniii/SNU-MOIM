@@ -106,6 +106,12 @@ def signout(request):
   else:
     return HttpResponseNotAllowed(['GET'])
 
+def loginedUser(request):
+  if request.user.is_anonymous:
+    return JsonResponse(None, safe=False)
+  return JsonResponse(convert_userinfo_for_front(request.user.id), safe=False)
+
+
 # url: /user/:id
 def userDetail(request, user_id):
   user_id = int(user_id)

@@ -1,10 +1,13 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
+<button *ngIf="currentUser" (click)="signOut()" class="btn btn-primary btn-primary" style="float:right;">SignOut</button>
 
 <h2 class="text-center">Meeting Detail</h2><br>
 
  <div class="container center-block" style="width:600px;">
+
    <h3>Meeting</h3>
+
    <div *ngIf="selectedMeeting">
      <span style="font-weight: bold">title: </span> {{ selectedMeeting.title }}<br>
      <span style="font-weight: bold">author: </span> {{ selectedMeeting.author.name }}<br>

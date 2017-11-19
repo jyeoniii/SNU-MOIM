@@ -55,7 +55,7 @@ class SnuMeetingTestCase(TestCase):
 
     self.client = Client()
 
-  '''
+  
   def test_csrf(self):
     # By default, csrf checks are disabled in test client
     # To test csrf protection we enforce csrf checks here
@@ -89,7 +89,7 @@ class SnuMeetingTestCase(TestCase):
 
     response = client.delete('/api/token', HTTP_X_CSRFTOKEN=csrftoken)
     self.assertEqual(response.status_code, 405)
-    '''
+    
 
   def test_token(self):
     response = self.client.get('/api/token')
@@ -739,4 +739,32 @@ class SnuMeetingTestCase(TestCase):
       # Non-existing user
       user = convert_userinfo_minimal(10)
       self.assertEqual(user['name'], 'NONEXISTING')
+
+  def test_loginedUser(self):
+      # No user logged in
+      response = self.client.get('/api/loginedUser');
+      result = json.loads(response.content.decode())
+      self.assertEqual(result, None)
+
+      # when user logged in
+      response = self.client.post( # Making fake user
+        '/api/signup', json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':0, 'subject_ids':[0]}), content_type='application/json')
+      self.client.post('/api/signin',
+              json.dumps({'username':'test', 'password':'test'}),
+              content_type='application/json')
+ 
+      response = self.client.get('/api/loginedUser');
+      result = json.loads(response.content.decode())
+      self.assertEqual(result['username'], 'test')
+      self.assertEqual(result['name'], 'test')
+
+      # No user logged in
+      response = self.client.get('/api/loginedUser');
+      result = json.loads(response.content.decode())
+      self.assertEqual(result['username'], 'test')
+      self.assertEqual(result['name'], 'test')
+
+
+
+
 
