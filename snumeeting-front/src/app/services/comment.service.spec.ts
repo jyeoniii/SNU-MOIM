@@ -130,7 +130,7 @@ describe('CommentService', () => {
       service.getComment(3)
         .then(comment => {
           comment.content = 'New content';
-          service.editComment(comment).then(modifiedComment => {
+          service.editComment(comment, true).then(modifiedComment => {
             console.log(modifiedComment);
             expect(modifiedComment.content).toBe('New content');
           });

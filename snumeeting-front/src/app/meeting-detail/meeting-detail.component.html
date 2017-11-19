@@ -7,6 +7,9 @@
  <div class="container center-block" style="width:600px;">
 
    <h3>Meeting</h3>
+   <button *ngIf="currentUser && selectedMeeting" (click)="joinMeeting()" style="float:right" class="btn btn-primary btn-primary">
+     JOIN
+   </button>
 
    <div *ngIf="selectedMeeting">
      <span style="font-weight: bold">title: </span> {{ selectedMeeting.title }}<br>

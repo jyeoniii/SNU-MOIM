@@ -119,7 +119,20 @@ export class MeetingDetailComponent implements OnInit {
     } else {        // edit mode
       this.isPrivate_edit = !this.isPrivate_edit;
     }
+  }
 
+  joinMeeting(): void {
+    if (this.selectedMeeting.members.find(member => member.id === this.currentUser.id)) {
+      alert('You have already joined this meeting!');
+      return;
+    }
+    if (this.selectedMeeting.members.length === this.selectedMeeting.max_member) {
+      alert('This meeting is already full! :(');
+      return;
+    }
+    this.meetingService.joinMeeting(this.selectedMeeting.id, this.currentUser.id);
+    this.selectedMeeting.members.push(this.currentUser);
+    alert('Welcome!');
   }
 
 }

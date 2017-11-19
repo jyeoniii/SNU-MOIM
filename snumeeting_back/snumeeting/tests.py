@@ -738,7 +738,28 @@ class SnuMeetingTestCase(TestCase):
       self.assertEqual(result['username'], 'test')
       self.assertEqual(result['name'], 'test')
 
+  def test_joinMeeting(self):
+      response = self.client.put('/api/joinMeeting', json.dumps({'meeting_id':1, 'user_id':2}), content_type='application/json')
 
+      response = self.client.get('/api/meeting/1')
+      result = json.loads(response.content.decode())
+      self.assertEqual(len(result['members']), 3)
 
+      # Non existing meeting
+      response = self.client.put('/api/joinMeeting', json.dumps({'meeting_id':10, 'user_id':2}), content_type='application/json')
+      self.assertEqual(response.status_code, 404)
 
+      # Non existing user
+      response = self.client.put('/api/joinMeeting', json.dumps({'meeting_id':1, 'user_id':12}), content_type='application/json')
+      self.assertEqual(response.status_code, 404)
+
+      # Not allowed methods
+      response = self.client.get('/api/joinMeeting')
+      self.assertEqual(response.status_code, 405)
+
+      response = self.client.post('/api/joinMeeting')
+      self.assertEqual(response.status_code, 405)
+
+      response = self.client.delete('/api/joinMeeting')
+      self.assertEqual(response.status_code, 405)
 
