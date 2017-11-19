@@ -59,9 +59,24 @@ def signup(request):
     mail_subject = 'Activation mail for your SNU-moim account'
     email = EmailMessage(mail_subject, message, to=[email])
     email.send()
-    return HttpResponse(status=200)
+    return HttpResponse(status=201)
   else:
     return HttpResponseNotAllowed(['POST'])
+
+# url: /activiate_without_code
+def activate_without_code(request):
+  if request.method == 'PUT':
+    username = json.loads(request.body.decode())['username']
+    try:
+      user = User.objects.get(username=username)
+      user.is_active = True
+      user.save()
+      return HttpResponse(status=204)
+    except User.DoesNotExist:
+      return HttpResponseNotFound()
+  else:
+    return HttpResponseNotAllowed(['PUT'])
+
 
 # url: /activate
 def activate(request, uidb64, token):
