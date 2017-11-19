@@ -9,6 +9,7 @@ import { headerWithCSRF } from './header';
 
 @Injectable()
 export class UserService {
+  private static loginedUser = null;
   private userUrl = '/api/user';
 
   constructor(private http: Http) {
@@ -16,7 +17,6 @@ export class UserService {
 
   cookie = '';
   user: User = new User();
-  loginedUser: User = new User();
 
   signIn(username: string, password: string): Promise<User> {
     return this.http.post('/api/signin',
@@ -78,6 +78,16 @@ export class UserService {
       .toPromise()
       .then(() => null)
       .catch(this.handleError);
+  }
+
+  setLoginedUser(user: User): void {
+    UserService.loginedUser = user;
+  }
+
+  getLoginedUser(): Promise<User> {
+    return this.http.request('/api/loginedUser')
+      .toPromise()
+      .then(response => response.json() as User);
   }
 
   private handleError(error: any): Promise<any> {

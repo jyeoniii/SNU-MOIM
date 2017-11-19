@@ -25,11 +25,26 @@ export class ProfileComponent implements OnInit {
       this.userService.getUserInfo(+params['id']).then(user => this.user = user);
     });
 
-    this.loginedUser = this.userService.loginedUser;
+    this.userService.getLoginedUser()
+      .then(user => this.loginedUser = user);
   }
 
   editProfile() {
     this.router.navigate(['/user', this.user.id, 'edit']);
+  }
+
+  signOut(): void {
+    this.userService.signOut();
+    this.router.navigate(['/']);
+  }
+
+  canEdit(): boolean {
+    if (this.loginedUser && this.user) {
+      return this.loginedUser.id === this.user.id;
+    } else {
+      // No user logged in
+      return false;
+    }
   }
 
 }

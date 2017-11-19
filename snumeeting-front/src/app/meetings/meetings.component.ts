@@ -6,6 +6,7 @@ import { Interest } from '../models/interest';
 import { Subject } from '../models/subject';
 import {MetaDataService} from '../services/meta-data-service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { User } from '../models/user';
 
 @Component({
   selector: 'app-meetings',
@@ -24,6 +25,8 @@ export class MeetingsComponent implements OnInit {
 
   private sub;
   private availableOnly = false;
+
+  private loginedUser: User = null;
 
   private meetings: Meeting[];
   private allMeetings: Meeting[];
@@ -87,6 +90,7 @@ export class MeetingsComponent implements OnInit {
       });
     this.metaDataService.getInterestList()
       .then(interestList => this.interestList = interestList);
+    this.userService.getLoginedUser().then(user => this.loginedUser = user);
   }
 
   // ngOnDestroy {
@@ -139,6 +143,10 @@ export class MeetingsComponent implements OnInit {
     }
   }
 
+  signOut(): void {
+    this.userService.signOut();
+    this.router.navigate(['/']);
+  }
 
 }
 
