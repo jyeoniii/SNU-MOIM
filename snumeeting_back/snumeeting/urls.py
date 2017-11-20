@@ -1,4 +1,5 @@
 from django.conf.urls import url, include
+from .views import check_user, activate, activate_without_code
 from .views import signup, signin, signout, userDetail, loginedUser
 from .views import meetingList, meetingDetail, meetingComment, commentList, commentDetail
 from .views import interestList, subjectList, subjectDetail, collegeList, collegeDetail
@@ -7,6 +8,10 @@ from .views import searchMeeting_title, searchMeeting_author, searchMeeting_subj
 
 urlpatterns = [
   url('^token$', token, name='token'),
+  url(r'^check_user$', check_user, name='check_user'),
+  url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+      activate, name='activate'),
+  url(r'^activate_without_code', activate_without_code, name='activate_without_code'),
   url(r'^signup$', signup, name='signup'),
   url(r'^signin$', signin, name='signin'),
   url(r'^signout$', signout, name='signout'),
