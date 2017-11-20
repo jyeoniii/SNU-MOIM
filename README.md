@@ -24,13 +24,17 @@ This project aims to create service that can help SNU students to find other stu
 - Backend : Django + Python
 - Design : Bootstrap
 
+## Documents
+[Requirements and Specifications](https://github.com/swsnu/swpp17-team9/wiki/Requirement-and-Specification)  
+[Design and Planning](https://github.com/swsnu/swpp17-team9/wiki/Design-and-Planning) 
+
 ## Progress
-| Sprint | Date | Content | Report |
-|--------|------|---------|--------|
-| 1 | 10/10-10/23 | [Requirements and Specifications](https://github.com/swsnu/swpp17-team9/wiki/Requirement-and-Specification) | [Sprint1 report](https://github.com/swsnu/swpp17-team9/wiki/Sprint-1-Progress-Report) |
-| 2 | 10/24-11/6 | [Design and Planning](https://github.com/swsnu/swpp17-team9/wiki/Design-and-Planning) | [Sprint2 report](https://github.com/swsnu/swpp17-team9/wiki/Sprint-2-Progress-Report) |
-| 3 | 11/7-11/20 | To be updated  | Sprint3 report |
-| 4 | 11/21-12/4 | To be updated  | Sprint4 report |
-| 5 | 12/5-12/18 | To be updated  | Sprint5 report |
+| Sprint | Date | Report |
+|--------|------|--------|
+| 1 | 10/10-10/23 | [Sprint 1 report](https://github.com/swsnu/swpp17-team9/wiki/Sprint-1-Progress-Report) |
+| 2 | 10/24-11/6 | [Sprint 2 report](https://github.com/swsnu/swpp17-team9/wiki/Sprint-2-Progress-Report) |
+| 3 | 11/7-11/20 | [Sprint 3 report](https://github.com/swsnu/swpp17-team9/wiki/Sprint-2-Progress-Report) |
+| 4 | 11/21-12/4 | Sprint 4 report |
+| 5 | 12/5-12/18 | Sprint 5 report |
 
 Project milestone per each sprint can be seen [here](https://github.com/swsnu/swpp17-team9/wiki/Project-milestone).
