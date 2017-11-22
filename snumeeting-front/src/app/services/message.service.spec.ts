@@ -18,7 +18,7 @@ describe('MessageService', () => {
         RouterTestingModule,
         FormsModule,
       ],
-      providers: [MeetingService,
+      providers: [MessageService,
         { provide: XHRBackend, useClass: MockBackend }
       ]
     }).compileComponents();
@@ -46,7 +46,7 @@ describe('MessageService', () => {
 
   describe('when getMessages', () => {
     let backend: MockBackend;
-    let fakeMeeting: Message[];
+    let fakeMessage: Message[];
     let service: MessageService;
     let response: Response;
 
@@ -60,7 +60,7 @@ describe('MessageService', () => {
 
     it('should have expected fake messages', async(inject([], () => {
       backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
-      service.getMessages()
+      service.getMessage()
         .then(messages => {
           console.log(messages);
           expect(messages).not.toBeUndefined('returned messages should not be null');
@@ -70,10 +70,11 @@ describe('MessageService', () => {
     );
   });
 
+  /*
   describe('when getMessage', () => {
     it('should have expected fake message', async(inject([MessageService], (service: MessageService) => {
         service.getMessage(2)
-          .then(meeting => {
+          .then(message => {
             console.log(message);
             expect(message).not.toBeUndefined('returned meetings should not be null');
             expect(message.sender.name).toBe('name2');
@@ -95,6 +96,7 @@ describe('MessageService', () => {
         service.getMessage(-1).catch(reason => expect(reason).not.toBeUndefined());
       })));
   });
+  */
 });
 
 
