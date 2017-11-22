@@ -20,7 +20,7 @@ import { Subject } from '../models/subject';
   styleUrls: ['./meeting-create.component.css']
 })
 export class MeetingCreateComponent implements OnInit {
-  currentUser: User;
+  private loginedUser: User;
   meeting: Meeting;
   isWriting: boolean=false;
 
@@ -33,9 +33,9 @@ export class MeetingCreateComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'))
     this.meeting = new Meeting
     this.isWriting = true
+    this.userService.getLoginedUser().then(user => this.loginedUser = user);
   }
 
   signOut(): void {
@@ -56,7 +56,7 @@ export class MeetingCreateComponent implements OnInit {
   }
   create(): void {
     this.meetingService.createMeeting(
-      this.currentUser,
+      this.loginedUser,
       this.meeting.title,
       this.meeting.subject,
       this.meeting.description,

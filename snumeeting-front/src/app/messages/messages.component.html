@@ -1,21 +1,83 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
 <body>
-  <button (click)=showMyMessage()>Messages</button>
-  <button *ngIf="selectedUser != undefined" (click)=showBetweenMessage()>{{selectedUser.username}}</button>
-  <div *ngIf="my_between">
-    <h2>sentMessage</h2>
-    <div *ngIf="receivedMessages">
-      <li *ngFor="let sentMessage of sentMessages">
-        <span (click)="onSelect(sentMessage.receiver)">{{sentMessage.receiver.username}}</span> {{sentMessage.content}}
-      </li>
-    </div>
-    <h2>receivedMessage</h2>
-    <div *ngIf="receivedMessages">
-      <li *ngFor="let receivedMessage of receivedMessages">
-        <span (click)="onSelect(receivedMessage.sender)">{{receivedMessage.sender.username}}</span> {{receivedMessage.content}}
-      </li>
+<div *ngIf="loginedUser" style="float:right">
+  <span>Welcome, </span>{{loginedUser.name}}<br>
+  <button [routerLink]="['/user', loginedUser.id, 'message']" class="btn btn-primary btn-primary">Message</button>
+  <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
+</div>
+
+<!-- navigation for chatting -->
+
+<div style="float:left">
+  <button (click)="selectAll()" class="btn btn-primary btn-primary">All</button>
+  <div *ngIf="onChat">
+    <div *ngFor="let onChatUser of onChat">
+      <button (click)="onSelect(onChatUser)" class="btn btn-primary btn-primary">{{onChatUser.name}}</button>
+      <button (click)="deSelect(onChatUser)" class="btn btn-primary btn-primary">&times;</button>
     </div>
   </div>
-  <div *ngIf="!my_between">
-    <h2>my_between</h2>
+</div>
+
+<!-- components of navigation -->
+<div style="margin: 0 200px 0 200px">
+
+  <div *ngIf="selectedUser == null">
+    <h2>Selected All</h2>
+    <ul>
+      <li *ngFor="let u of users">
+        <a (dblclick)="onDoubleClick(u)">{{u.name}}</a>
+      </li>
+    </ul>
   </div>
+
+  <div *ngIf="selectedUser">
+
+    <h2>Selected User</h2>
+    <span>Chat with </span>{{selectedUser.name}}
+    <div *ngIf="betweenMessages">
+      <div *ngFor="let m of betweenMessages">
+        <div *ngIf="m['receiver_id']===loginedUser.id" style="margin-bottom:10px; min-height:100px; background:#ccc">
+          <div style="float:left; width:100px; min-height:100px; background:#bbb; text-align:center">{{getUser(m['sender_id']).name}}</div>
+          <div style="margin-left:100px; text-align:left; word-break:break-all">
+            {{m.content}}<br>
+            <sub>{{m.sended_at}}</sub>
+          </div>
+        </div>
+        <div *ngIf="m['sender_id']===loginedUser.id" style="margin-bottom:10px; min-height:100px; background:#ccc">
+          <div style="float:right; width:100px; min-height:100px; background:#bbb; text-align:center">{{getUser(m['sender_id']).name}}</div>
+          <div style="margin-right:100px; text-align:right; word-break:break-all">
+            {{m.content}}<br>
+            <sub>{{m.sended_at}}</sub>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="min-height:100px; background:#ccc">
+      <div (click)="sendMessage(loginedUser, selectedUser, newMessage)"
+        style="float:right; width:100px; min-height:100px; background:#bbb">
+        <button class="btn btn-primary btn-primary">Send</button>
+      </div>
+      <div style="float:none; text-align:right">
+        <textarea [(ngModel)]="newMessage" cols="40" rows="5" placeholder="Send your message" wrap="hard">
+        </textarea>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
 </body>
+</html>

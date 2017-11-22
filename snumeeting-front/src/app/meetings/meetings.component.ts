@@ -7,7 +7,6 @@ import { Interest } from '../models/interest';
 import { Subject } from '../models/subject';
 import { MetaDataService } from '../services/meta-data-service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { User } from '../models/user';
 
 @Component({
   selector: 'app-meetings',
@@ -23,7 +22,6 @@ export class MeetingsComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
   ) { }
-
   private currentUser: User;
 
   private sub;
@@ -150,6 +148,5 @@ export class MeetingsComponent implements OnInit {
     this.userService.signOut();
     this.router.navigate(['/']);
   }
-
 }
 

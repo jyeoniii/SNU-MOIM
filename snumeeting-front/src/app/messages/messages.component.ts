@@ -20,39 +20,68 @@ export class MessagesComponent implements OnInit {
     private route: ActivatedRoute,
   ) { }
 
-  private currentUser: User;
-  private sentMessages: Message[];
-  private receivedMessages: Message[];
+  private messages: Message[] = [];
+  private users: User[] = [];
+  private loginedUser: User;
+  private betweenMessages: Message[] = [];
   private selectedUser: User;
-
-  @Input() my_between: boolean; // tab my messages, between messages
-  @Input() selected_id: number;
+  private onChat: User[] = []; // tab my messages, between messages
+  private newMessage: Message;
 
   ngOnInit() {
-    this.route.paramMap
-      .switchMap((params: ParamMap) =>
-        this.messageService.getSentMessage(+params.get('id')))
-      .subscribe(messages => this.sentMessages = messages);
-    this.route.paramMap
-      .switchMap((params: ParamMap) =>
-        this.messageService.getReceivedMessage(+params.get('id')))
-      .subscribe(messages => this.receivedMessages = messages);
-    this.my_between = true;
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.getMessages();
+    this.userService.getLoginedUser().then(user => this.loginedUser = user);
+    this.userService.getUsers().then(users => this.users = users);
+  }
+
+  getMessages(): void {
+    this.messageService.getMessage().then(messages => this.messages = messages);
+  }
+
+  getUser(id: number): User {
+    return this.users.find(u => u.id === id);
+  }
+
+  selectAll(): void {
+    this.selectedUser = null;
+  }
+
+  onDoubleClick(user: User): void {
+    if(user.id != this.loginedUser.id){
+      if(this.onChat.length == 0 || this.onChat.indexOf(user) == -1) {
+        this.onChat.unshift(user);
+      }
+      this.onSelect(user);
+    }
+    else {
+      window.alert("Cannot chat with yourself!");
+    }
   }
 
   onSelect(user: User): void {
     this.selectedUser = user;
+    this.betweenMessages = this.messages.filter(m => 
+      (m['sender_id'] === this.loginedUser.id && m['receiver_id'] === user.id) ||
+      (m['sender_id'] === user.id && m['receiver_id'] === this.loginedUser.id)
+    );
   }
 
-  showMyMessage(): void {
-    this.my_between = true;
+  deSelect(user: User): void {
+    this.onChat = this.onChat.filter(u => u.id !== user.id);
+    if(user.id === this.selectedUser.id) {
+      this.selectAll();
+    }
   }
 
-  showBetweenMessage(): void {
-    this.my_between = false;
-  }
-
-  sendMessage(target_id: number): void {
+  sendMessage(sender: User, receiver: User, content: string): void {
+    if(this.newMessage !=null) {
+      let message;
+      this.messageService.sendMessage(sender, receiver, content)
+        .then(res => {
+          message = res;
+          this.betweenMessages.push(res);
+          this.newMessage = null;
+        });
+    }
   }
 }

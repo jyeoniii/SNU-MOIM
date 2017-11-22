@@ -20,7 +20,12 @@
 </head>
 
 <body>
-<button *ngIf="loginedUser" (click)="signOut()" class="btn btn-primary btn-primary" style="float:right;">SignOut</button>
+<div *ngIf="loginedUser" style="float:right">
+  <span>Welcome, </span>{{loginedUser.name}}<br>
+  <button [routerLink]="['/user', loginedUser.id, 'message']" class="btn btn-primary btn-primary">Message</button>
+  <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
+</div>
+
 <h1 class="text-center">SNU Moim</h1>
 
 <div class="container-fluid">

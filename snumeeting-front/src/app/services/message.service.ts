@@ -21,16 +21,16 @@ export class MessageService {
   /* Services for '/api/user/:id/message/receiver or sender'
   *  GET : Get all messages on specified receiver or sender
   */
-  getReceivedMessage(userId: number): Promise<Message[]> {
-    const url = '${this.usersUrl}/${userId}/message/received';
+  getReceivedMessage(id: number): Promise<Message[]> {
+    const url = '/api/user/${id}/message/received';
     return this.http.get(url)
       .toPromise()
       .then(response => response.json() as Message[])
       .catch(this.handleError);
   }
 
-  getSentMessage(userId: number): Promise<Message[]> {
-    const url = '${this.usersUrl}/${userId}/message/sent';
+  getSentMessage(id: number): Promise<Message[]> {
+    const url = '/api/user/${id}/message/sent';
     return this.http.get(url)
       .toPromise()
       .then(response => response.json() as Message[])
@@ -41,7 +41,7 @@ export class MessageService {
   *  GET : Get all messages
   *  POST : Send message 
   */
-  getMessage(id: number): Promise<Message[]> {
+  getMessage(): Promise<Message[]> {
     const url = `${this.messagesUrl}`;
     return this.http.get(url)
       .toPromise()

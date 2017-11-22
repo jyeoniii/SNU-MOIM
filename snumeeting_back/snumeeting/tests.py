@@ -214,6 +214,29 @@ class SnuMeetingTestCase(TestCase):
     response = self.client.delete('/api/signout')
     self.assertEqual(response.status_code, 405)
 
+  def test_meeting_list(self):
+    # GET
+    response = self.client.get('/api/user')
+    data = json.loads(response.content.decode())
+    self.assertEqual(data[0]['username'], 'fake1')
+    self.assertEqual(data[0]['password'], '1234')
+    self.assertEqual(data[0]['email'], 'fake1@snu.ac.kr')
+    self.assertEqual(data[0]['ex_user']['name'], 'John')
+    self.assertEqual(len(data), 3)
+    self.assertEqual(response.status_code, 200)
+   
+    # POST
+    response = self.client.post('/api/user')
+    self.assertEqual(response.status_code, 405)
+
+    # PUT
+    response = self.client.put('/api/user')
+    self.assertEqual(response.status_code, 405)
+
+    # DELETE
+    response = self.client.delete('/api/user')
+    self.assertEqual(response.status_code, 405)
+
   def test_user_detail(self):
     # GET
     college = College.objects.get(id=0)
@@ -808,52 +831,3 @@ class SnuMeetingTestCase(TestCase):
     response = self.client.delete('/api/message/0') # Delete None-existing Message
     self.assertEqual(response.status_code, 404)
 
-  def test_received_message(self):
-    # GET
-    response = self.client.get('/api/user/0/message/received')
-    data = json.loads(response.content.decode())
-    self.assertEqual(data[0]['sender']['id'], 1)
-    self.assertEqual(data[0]['receiver']['id'], 0)
-    self.assertEqual(data[0]['content'], 'Who are you?')
-    self.assertEqual(len(data), 1)
-    self.assertEqual(response.status_code, 200)
-
-    response = self.client.get('/api/user/20/message/received') # Get None-existing User Message
-    self.assertEqual(response.status_code, 404)
-
-    # POST
-    response = self.client.post('/api/user/0/message/received')
-    self.assertEqual(response.status_code, 405)
-
-    # PUT
-    response = self.client.put('/api/user/0/message/received')
-    self.assertEqual(response.status_code, 405)
-
-    # DELETE
-    response = self.client.delete('/api/user/0/message/received')
-    self.assertEqual(response.status_code, 405)
-
-  def test_sent_message(self):
-    # GET
-    response = self.client.get('/api/user/0/message/sent')
-    data = json.loads(response.content.decode())
-    self.assertEqual(data[0]['sender']['id'], 0)
-    self.assertEqual(data[0]['receiver']['id'], 2)
-    self.assertEqual(data[0]['content'], 'I want to join you')
-    self.assertEqual(len(data), 1)
-    self.assertEqual(response.status_code, 200)
-
-    response = self.client.get('/api/user/20/message/sent') # Get None-existing User Message
-    self.assertEqual(response.status_code, 404)
-
-    # POST
-    response = self.client.post('/api/user/0/message/sent')
-    self.assertEqual(response.status_code, 405)
-
-    # PUT
-    response = self.client.put('/api/user/0/message/sent')
-    self.assertEqual(response.status_code, 405)
-
-    # DELETE
-    response = self.client.delete('/api/user/0/message/sent')
-    self.assertEqual(response.status_code, 405)

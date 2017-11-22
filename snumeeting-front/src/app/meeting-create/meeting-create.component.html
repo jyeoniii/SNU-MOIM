@@ -1,4 +1,8 @@
-<button (click)=signOut() class="sign-out-button">sign out</button>
+<div *ngIf="loginedUser" style="float:right">
+  <span>Welcome, </span>{{loginedUser.name}}<br>
+  <button [routerLink]="['/user', loginedUser.id, 'message']" class="btn btn-primary btn-primary">Message</button>
+  <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
+</div>
 
 <head>
   <h1>Create Meeting</h1>

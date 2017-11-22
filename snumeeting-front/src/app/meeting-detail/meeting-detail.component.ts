@@ -45,8 +45,6 @@ export class MeetingDetailComponent implements OnInit {
       this.userService.getLoginedUser()
         .then(user => this.currentUser = user);
     });
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    console.log(this.currentUser);
   }
 
 

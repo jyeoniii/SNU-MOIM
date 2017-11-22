@@ -44,7 +44,7 @@ export function CSRFStrategy() {
     BrowserModule,
     HttpModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
   ],
   providers: [
     MeetingService,

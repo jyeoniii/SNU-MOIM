@@ -68,6 +68,17 @@ def loginedUser(request):
     return JsonResponse(None, safe=False)
   return JsonResponse(convert_userinfo_for_front(request.user.id), safe=False)
 
+# url: /user
+def userList(request):
+  if request.method == 'GET':
+    users = User.objects.all()
+    dict_users = []
+    for user in users:
+      u = convert_userinfo_for_front(user.id)
+      dict_users.append(u)
+    return JsonResponse(dict_users, safe=False)
+  else:
+    return HttpResponseNotAllowed(['GET'])
 
 # url: /user/:id
 def userDetail(request, user_id):
@@ -446,42 +457,3 @@ def messageDetail(request, message_id):
   else:
     return HttpResponseNotAllowed(['GET'],['DELETE'])
 
-# url: /user/:id/message/received
-def receivedMessage(request, user_id):
-  user_id = int(user_id)
-  if request.method == 'GET':
-    try:
-      user = Ex_User.objects.get(id=user_id)
-    except Ex_User.DoesNotExist:
-      return HttpResponseNotFound()
-    messageList = list(user.messageReceiver.all().values())
-    for message in messageList:
-      sender = convert_userinfo_for_front(message['sender_id'])
-      message.pop('sender_id')
-      message['sender'] = sender
-      receiver = convert_userinfo_for_front(message['receiver_id'])
-      message.pop('receiver_id')
-      message['receiver'] = receiver
-    return JsonResponse(messageList, safe=False)
-  else:
-    return HttpResponseNotAllowed(['GET'])
-
-# url: /user/:id/message/sent
-def sentMessage(request, user_id):
-  user_id = int(user_id)
-  if request.method == 'GET':
-    try:
-      user = Ex_User.objects.get(id=user_id)
-    except Ex_User.DoesNotExist:
-      return HttpResponseNotFound()
-    messageList = list(user.messageSender.all().values())
-    for message in messageList:
-      sender = convert_userinfo_for_front(message['sender_id'])
-      message.pop('sender_id')
-      message['sender'] = sender
-      receiver = convert_userinfo_for_front(message['receiver_id'])
-      message.pop('receiver_id')
-      message['receiver'] = receiver
-    return JsonResponse(messageList, safe=False)
-  else:
-    return HttpResponseNotAllowed(['GET'])
