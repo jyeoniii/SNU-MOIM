@@ -20,6 +20,7 @@ import { CommentService } from './services/comment.service';
 import { AppRoutingModule } from './app.routing.module';
 import { MetaDataService } from './services/meta-data-service';
 import { MeetingsComponent } from './meetings/meetings.component';
+import { MeetingEditComponent } from './meeting-edit/meeting-edit.component';
 
 export function CSRFStrategy() {
   return new CookieXSRFStrategy('csrftoken', 'X-CSRFToken');
@@ -36,6 +37,7 @@ export function CSRFStrategy() {
     MeetingCreateComponent,
     MeetingsComponent,
     PaginationDirective,
+    MeetingEditComponent,
   ],
   imports: [
     BrowserModule,

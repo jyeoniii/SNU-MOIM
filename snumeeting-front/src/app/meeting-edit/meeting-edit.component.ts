@@ -12,11 +12,12 @@ import { Interest } from '../models/interest';
 import { MetaDataService } from "../services/meta-data-service";
 
 @Component({
-  selector: 'app-meeting-create',
-  templateUrl: './meeting-create.component.html',
-  styleUrls: ['./meeting-create.component.css']
+  selector: 'app-meeting-edit',
+  templateUrl: './meeting-edit.component.html',
+  styleUrls: ['./meeting-edit.component.css']
 })
-export class MeetingCreateComponent implements OnInit {
+export class MeetingEditComponent implements OnInit {
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -27,20 +28,24 @@ export class MeetingCreateComponent implements OnInit {
 
   subjects: Subject[];
   interests: Interest[];
-  meeting: Meeting = new Meeting();
+  selectedMeeting: Meeting;
   selectedSubject: Subject;
   selectedInterest: Interest;
   currentUser: User;
   interestChecked = [];
   subjectChecked = [];
-
-
+  author: User;
 
   ngOnInit() {
+    this.route.params.subscribe(params => {
+      this.meetingService.getMeeting(+params['id']).then(meeting => {
+        this.selectedMeeting = meeting;
+        this.selectedSubject = meeting.subject;
+      })
+    })
     this.userService.getLoginedUser().then(user => this.currentUser = user);
     this.metaDataService.getSubjectList().then(subjects => this.subjects = subjects);
-    this.metaDataService.getInterestList().then(interests => this.interests = interests);
-    // this.metaDataService.getMemberList().then(members => this.members = members);
+    this.metaDataService.getInterestList().then(interests => this.interests=interests);
   }
 
   signOut(): void {
@@ -52,13 +57,11 @@ export class MeetingCreateComponent implements OnInit {
     this.router.navigate(['/meeting'])
   }
 
-
   interestCheck(interest: string) {
     if (this.interestChecked[interest]) {
       this.interestChecked[interest] = false;
     } else {
       this.interestChecked[interest] = true;
-      // this.selectedInterest = interest;
     }
   }
 
@@ -71,24 +74,18 @@ export class MeetingCreateComponent implements OnInit {
     }
   }
 
-  create(): void {
+  toEdit(): void {
+    // console.log(this.selectedMeeting.title);
+    // console.log(this.selectedMeeting.location);
+    // console.log(this.selectedMeeting.description);
+    // console.log(this.selectedMeeting.max_member);
 
-    this.meeting.subject = this.selectedSubject;
-    // console.log(this.meeting.subject);
-
-    console.log(this.meeting.description);
-
-    this.meetingService.createMeeting(
-      this.currentUser,
-      this.meeting.title,
-      this.meeting.subject,
-      this.meeting.description,
-      this.meeting.location,
-      this.meeting.max_member
-    )
-      .then(() => {
-        alert('Successfully Created a meeting!');
-        this.router.navigate(['/meeting']);
-      });
+    this.meetingService.editMeeting(this.selectedMeeting)
+     .then(()=> {
+     alert('Successfully edited the MO-IM!')
+       this.router.navigate(['/meeting'])
+     })
   }
+
+
 }
