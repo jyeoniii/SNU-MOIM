@@ -14,6 +14,7 @@ import {MetaDataService} from '../services/meta-data-service';
   templateUrl: './sign-up.component.html',
   styleUrls: ['./sign-up.component.css']
 })
+
 export class SignUpComponent implements OnInit {
 
   constructor(
@@ -28,6 +29,8 @@ export class SignUpComponent implements OnInit {
   interests: Interest[];
   interestChecked = [];
   subjectChecked = [];
+
+  userNotExist = false;
 
   ngOnInit() {
     this.metaDataService.getCollegeList().then(colleges => this.colleges = colleges);
@@ -51,8 +54,26 @@ export class SignUpComponent implements OnInit {
     }
   }
 
+  checkUser(username: string) {
+    if (username === '') {
+      alert('Please enter your mySNU ID.');
+    } else {
+      this.userService.checkUser(username).then(userNotExist => {
+        if (userNotExist) {
+          alert('You can use this ID.');
+          this.userNotExist = true;
+        } else {
+          alert('This ID is already taken.\n(Maybe you already signed up with our service?)');
+          this.userNotExist = false;
+        }
+      });
+    }
+  }
+
   signUp(username: string, password: string, passwordCheck: string, name: string) {
-    if (password === passwordCheck) {
+    if (!this.userNotExist) {
+      alert('Please check if your ID exists.');
+    } else if (password === passwordCheck) {
       var selectedSubjects: Subject[] = [];
 
       for (let subject of this.subjects) {
@@ -69,7 +90,7 @@ export class SignUpComponent implements OnInit {
       newUser.subjects = selectedSubjects;
 
       this.userService.signUp(newUser).then(() => {
-        alert('Sign Up Success!')
+        alert('Authentication mail was sent! Please check your mailbox.')
         this.router.navigate(['/sign_in']);
       });
   } else {

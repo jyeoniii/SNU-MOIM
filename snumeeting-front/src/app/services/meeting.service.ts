@@ -95,7 +95,7 @@ export class MeetingService {
         description: editedMeeting.description,
         location: editedMeeting.location,
         max_member: editedMeeting.max_member,
-        subject_id: editedMeeting.subject.id
+        subject_id: editedMeeting.subject.id,
       }),
       {headers: headerWithCSRF()})
       .toPromise()
@@ -106,6 +106,15 @@ export class MeetingService {
   deleteMeeting(id: number): Promise<Meeting> {
     const url = `${this.meetingsUrl}/${id}`;
     return this.http.delete(url, {headers: headerWithCSRF()})
+      .toPromise()
+      .then(() => null)
+      .catch(this.handleError);
+  }
+
+  joinMeeting(meeting_id: number, user_id: number) {
+    const url = `api/joinMeeting`;
+    return this.http.put(url,
+      JSON.stringify({meeting_id: meeting_id, user_id: user_id}), {headers: headerWithCSRF()})
       .toPromise()
       .then(() => null)
       .catch(this.handleError);

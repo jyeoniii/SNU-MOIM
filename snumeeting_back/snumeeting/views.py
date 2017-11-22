@@ -1,14 +1,32 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseNotAllowed
-from django.http import HttpResponseNotFound, JsonResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed, HttpResponseNotFound
+from django.shortcuts import redirect
 from django.forms.models import model_to_dict
-from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message
+from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.template.loader import render_to_string
 from django.db.models import Q
+from django.core.mail import EmailMessage
 import json
+
+from .tokens import account_activation_token
+from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
+
+# url: /check_user
+def check_user(request):
+  if request.method == 'POST':
+    username = json.loads(request.body.decode())['username']
+    try:
+      user = User.objects.get(username=username)
+      return HttpResponse(status=409)
+    except User.DoesNotExist:
+      return HttpResponse(status=200)
+  else:
+    return HttpResponseNotAllowed(['POST'])
 
 # url: /signup
 def signup(request):
@@ -23,14 +41,54 @@ def signup(request):
     subject_ids = req_data['subject_ids']
     subjects = Subject.objects.filter(id__in=subject_ids) # gets the objects by ids
     user = User.objects.create_user(username=username, password=password, email=email)
+    user.is_active = False # this will be true after activation by email
     user.save()
     ex_User = Ex_User.objects.create(name=name, user=user, college=college) # create first, m2m later
     ex_User.save()
     ex_User.subjects.add(*subjects) # adding many-to-many at once
     ex_User.save()
+
+    # Email Verification
+    current_site = get_current_site(request)
+    message = render_to_string('activation.html', {
+      'user':user,
+      'domain':current_site.domain,
+      'uid': urlsafe_base64_encode(force_bytes(user.id)),
+      'token': account_activation_token.make_token(user),
+    })
+    mail_subject = 'Activation mail for your SNU-moim account'
+    email = EmailMessage(mail_subject, message, to=[email])
+    email.send()
     return HttpResponse(status=201)
   else:
     return HttpResponseNotAllowed(['POST'])
+
+# url: /activiate_without_code
+def activate_without_code(request):
+  if request.method == 'PUT':
+    username = json.loads(request.body.decode())['username']
+    try:
+      user = User.objects.get(username=username)
+      user.is_active = True
+      user.save()
+      return HttpResponse(status=204)
+    except User.DoesNotExist:
+      return HttpResponseNotFound()
+  else:
+    return HttpResponseNotAllowed(['PUT'])
+
+
+# url: /activate
+def activate(request, uidb64, token):
+  try:
+    uid = force_text(urlsafe_base64_decode(uidb64))
+    user = User.objects.get(id=uid)
+  except(User.DoesNotExist):
+    return HttpResponseNotFound
+  if user is not None and account_activation_token.check_token(user, token):
+    user.is_active = True
+    user.save()
+    return redirect('http://localhost:4200/sign_in')
 
 @ensure_csrf_cookie
 def token(request):
@@ -456,4 +514,22 @@ def messageDetail(request, message_id):
     return HttpResponse(status=204)
   else:
     return HttpResponseNotAllowed(['GET'],['DELETE'])
+
+def joinMeeting(request):
+  if request.method == 'PUT':
+    des_req = json.loads(request.body.decode())
+    meeting_id = des_req['meeting_id']
+    user_id = des_req['user_id']
+    try:
+      meeting = Meeting.objects.get(id=meeting_id)
+      user = Ex_User.objects.get(id=user_id)
+      meeting.members.add(user)
+      meeting.save()
+    except Meeting.DoesNotExist:
+      return HttpResponseNotFound()
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+    return HttpResponse(status=204)
+  else:
+    return HttpResponseNotAllowed(['PUT'])
 

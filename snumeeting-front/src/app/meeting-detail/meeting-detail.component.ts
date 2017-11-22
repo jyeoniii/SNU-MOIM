@@ -30,6 +30,8 @@ export class MeetingDetailComponent implements OnInit {
   private selectedComment: Comment = null;   // Comment to be edited
 
   @Input() private newComment: string = null;
+  private isPrivate = false;
+  private isPrivate_edit = false;
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -49,7 +51,7 @@ export class MeetingDetailComponent implements OnInit {
 
 
   goBack(): void {
-    this.router.navigate(['/meeting']);   // TODO: meeting list URL?
+    this.router.navigate(['/meeting']);
   }
 
   // edit(): void {
@@ -58,17 +60,18 @@ export class MeetingDetailComponent implements OnInit {
   //
   delete(): void {
     this.meetingService.deleteMeeting(this.selectedMeeting.id);
-    this.router.navigate(['/meeting']);   // TODO: meeting list URL?
+    this.router.navigate(['/meeting']);
   }
 
   createComment(content: string): void {
     if (this.newComment !== null) {
       let comment;
-      this.commentService.createComment(this.selectedMeeting.id, this.currentUser, content, true)
+      this.commentService.createComment(this.selectedMeeting.id, this.currentUser, content, !this.isPrivate)
         .then(res => {
           comment = res;
           this.comments.push(comment);
           this.newComment = null;
+          this.isPrivate = false;
         });
     }
   }
@@ -83,7 +86,7 @@ export class MeetingDetailComponent implements OnInit {
 
   editComment(comment: Comment): void {
     const targetIdx = this.comments.indexOf(comment);
-    this.commentService.editComment(comment).then(modifiedComment => {
+    this.commentService.editComment(comment, !this.isPrivate_edit).then(modifiedComment => {
       this.comments[targetIdx] = modifiedComment;
       this.selectedComment = null;
     });
@@ -108,6 +111,28 @@ export class MeetingDetailComponent implements OnInit {
   signOut(): void {
     this.userService.signOut();
     this.router.navigate(['/']);
+  }
+
+  changePrivateMode(create: boolean): void {
+    if (create) {   // create mode
+      this.isPrivate = !this.isPrivate;
+    } else {        // edit mode
+      this.isPrivate_edit = !this.isPrivate_edit;
+    }
+  }
+
+  joinMeeting(): void {
+    if (this.selectedMeeting.members.find(member => member.id === this.currentUser.id)) {
+      alert('You have already joined this meeting!');
+      return;
+    }
+    if (this.selectedMeeting.members.length === this.selectedMeeting.max_member) {
+      alert('This meeting is already full! :(');
+      return;
+    }
+    this.meetingService.joinMeeting(this.selectedMeeting.id, this.currentUser.id);
+    this.selectedMeeting.members.push(this.currentUser);
+    alert('Welcome!');
   }
 
 }

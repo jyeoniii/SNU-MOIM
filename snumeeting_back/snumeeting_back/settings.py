@@ -11,10 +11,53 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
+import json
+
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+def get_env(setting, envs):
+  try:
+    return envs[setting]
+  except:
+    error_msg = 'You should set {} environ'.format(setting)
+    raise ImproperlyConfigured(error_msg)
+
+DEV_ENVS = os.path.join(BASE_DIR, "envs_dev.json")
+DEPLOY_ENVS = os.path.join(BASE_DIR, "envs.json")
+
+if os.path.exists(DEV_ENVS):  # Develop Env
+  env_file = open(DEV_ENVS)
+elif os.path.exists(DEPLOY_ENVS):
+  env_file = open(DEPLOY_ENVS)  # Deploy Env
+else:
+  env_file = None
+
+if env_file is None: # System environ
+  try:
+    FACEBOOK_KEY = os.environ['FACEBOOK_KEY']
+    FACEBOOK_SECRET = os.environ['FACEBOOK_SECRET']
+  except KeyError as error_msg:
+    raise ImproperlyConfigured(error_msg)
+else:
+  envs = json.loads(env_file.read())
+  FACEBOOK_KEY = get_env('FACEBOOK_KEY', envs)
+  FACEBOOK_SECRET = get_env('FACEBOOK_SECRET', envs)
+
+# SocialLogin: Facebook
+SOCIAL_AUTH_FACEBOOK_KEY = FACEBOOK_KEY
+SOCIAL_AUTH_FACEBOOK_SECRET = FACEBOOK_SECRET
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
+   'fields': 'id, name, email'
+}
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL='http://localhost:4200/meeting'
+
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
+LOGIN_ERROR_URL='http://localhost:4200/signin'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -38,9 +81,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'social_django',                    # For social login service
+]
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend',    
 ]
 
 MIDDLEWARE = [
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -48,6 +98,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware'        
 ]
 
 ROOT_URLCONF = 'snumeeting_back.urls'
@@ -55,7 +106,7 @@ ROOT_URLCONF = 'snumeeting_back.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -105,13 +156,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
 
@@ -119,3 +166,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# Sending e-mail (for verification)
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'snu.moim@gmail.com'
+EMAIL_HOST_PASSWORD = '2017snumoim'
+EMAIL_PORT = 587
