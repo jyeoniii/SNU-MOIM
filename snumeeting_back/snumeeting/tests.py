@@ -291,9 +291,7 @@ class SnuMeetingTestCase(TestCase):
 
     # DELETE
     response = self.client.delete('/api/user/0') # Delete Existing User
-    self.assertEqual(response.status_code, 204)
-    response = self.client.delete('/api/user/0') # Delete None-existing User
-    self.assertEqual(response.status_code, 404)
+    self.assertEqual(response.status_code, 405)
 
   def test_meeting_list(self):
     # GET

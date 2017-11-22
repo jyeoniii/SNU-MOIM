@@ -147,7 +147,7 @@ def userDetail(request, user_id):
     try:
       ex_user=Ex_User.objects.get(id=user_id)
       user = ex_user.user
-    except User.DoesNotExist:
+    except Ex_User.DoesNotExist:
       return HttpResponseNotFound()
     user.set_password(password)
     user.save()
@@ -469,8 +469,8 @@ def meetingCreate(request):
     max_member = data['max_member']
     # member_id = data['member_id']
     # member = User.objects.filter(id__in=member_id)
-    subject_ids = data['subject_ids']
-    subjects = Subject.objects.filter(id__in=subject_ids)
+    subject_id = data['subject_id']
+    subject = Subject.objects.get(id=subject_id)
 
     new_meeting = Meeting(
       author=author,
@@ -478,7 +478,7 @@ def meetingCreate(request):
       description=description,
       location=location,
       max_member=max_member,
-      subjects=subjects,
+      subject=subject,
     )
     new_meeting.save()
     new_meeting.members.add(author)
