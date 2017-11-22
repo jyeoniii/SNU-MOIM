@@ -463,4 +463,21 @@ def searchMeeting_subject(request, subject_id, query):
 
   return JsonResponse(result, safe=False)
 
+def joinMeeting(request):
+  if request.method == 'PUT':
+    des_req = json.loads(request.body.decode())
+    meeting_id = des_req['meeting_id']
+    user_id = des_req['user_id']
+    try:
+      meeting = Meeting.objects.get(id=meeting_id)
+      user = Ex_User.objects.get(id=user_id)
+      meeting.members.add(user)
+      meeting.save()
+    except Meeting.DoesNotExist:
+      return HttpResponseNotFound()
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+    return HttpResponse(status=204)
+  else:
+    return HttpResponseNotAllowed(['PUT'])
 
