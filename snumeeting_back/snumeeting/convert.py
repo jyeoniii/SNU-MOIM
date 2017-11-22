@@ -23,7 +23,7 @@ def convert_userinfo_minimal(user_id):
     user = {}
     ex_user= Ex_User.objects.get(id=user_id)
     user['id'] = ex_user.id
-    user['name'] = ex_user.name 
+    user['name'] = ex_user.name
   except Ex_User.DoesNotExist:
     user['name'] = 'NONEXISTING'
   return user

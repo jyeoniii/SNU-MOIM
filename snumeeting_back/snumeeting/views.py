@@ -124,7 +124,8 @@ def signout(request):
 def loginedUser(request):
   if request.user.is_anonymous:
     return JsonResponse(None, safe=False)
-  return JsonResponse(convert_userinfo_for_front(request.user.id), safe=False)
+  ex_user = Ex_User.objects.get(user_id=request.user.id)
+  return JsonResponse(convert_userinfo_for_front(ex_user.id), safe=False)
 
 
 # url: /user/:id
@@ -144,28 +145,20 @@ def userDetail(request, user_id):
     subject_ids = req_data['subject_ids']
     subjects = Subject.objects.filter(id__in=subject_ids) # gets the objects by ids
     try:
-      user = User.objects.get(id=user_id)
-      ex_user=Ex_User.objects.get(user=user)
+      ex_user=Ex_User.objects.get(id=user_id)
+      user = ex_user.user
     except User.DoesNotExist:
       return HttpResponseNotFound()
     user.set_password(password)
     user.save()
-    ex_user.user = user
     ex_user.name = name
     ex_user.college = college
     ex_user.subjects.clear()
     ex_user.subjects.add(*subjects)
     ex_user.save()
     return HttpResponse(status=204)
-  elif request.method == 'DELETE':
-    try:
-      user = User.objects.get(id=user_id)
-    except User.DoesNotExist:
-      return HttpResponseNotFound()
-    user.delete()
-    return HttpResponse(status=204)
   else:
-    return HttpResponseNotAllowed(['GET'],['PUT'],['DELETE'])
+    return HttpResponseNotAllowed(['GET'],['PUT'])
 
 # url: /meeting
 def meetingList(request):
@@ -180,7 +173,7 @@ def meetingList(request):
     des_req = json.loads(request.body.decode())
 
     author_id = des_req['author_id']
-    author = Ex_User.objects.get(user_id=int(author_id))
+    author = Ex_User.objects.get(id=int(author_id))
     title = des_req['title']
     description = des_req['description']
     location = des_req['location']
@@ -267,7 +260,7 @@ def meetingComment(request, meeting_id):
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())
     author_id = des_req['author_id']
-    author = Ex_User.objects.get(user_id=author_id)
+    author = Ex_User.objects.get(id=author_id)
     meeting = Meeting.objects.get(id=meeting_id)
     content = des_req['content']
     publicity = des_req['publicity']
@@ -289,7 +282,7 @@ def commentList(request):
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())
     author_id = des_req['author_id']
-    author = Ex_User.objects.get(user_id=author_id)
+    author = Ex_User.objects.get(id=author_id)
     meeting_id = des_req['meeting_id']
     meeting = Meeting.objects.get(id=meeting_id)
     content = des_req['content']
@@ -469,7 +462,7 @@ def meetingCreate(request):
   if request.method == 'POST':
     data = json.loads(request.body.decode())
     author_id = data['author_id']
-    author = Ex_User.objects.get(user_id=author_id)
+    author = Ex_User.objects.get(id=author_id)
     title = data['title']
     description = data['description']
     location = data['location']
