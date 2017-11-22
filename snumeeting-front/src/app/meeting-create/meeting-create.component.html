@@ -28,24 +28,43 @@
         </div>
       </div>
     </form>
-
     <br>
 
-    <form class="form-horizontal">
-      <div class="form-group">
-        <label class="col-sm-2 control-label">Interest</label>
-        <div class="checkbox checkbox-inline">
-          <div *ngFor="let interest of interests">
-            <input type="checkbox" class="checkbox-inline" (click)="interestCheck(interest.name)">{{interest.name}}
-            <div *ngFor="let subject of interest.subjects">
-              <div class="col-sm-offset-1" *ngIf="interestChecked[interest.name]">
-                <input type="checkbox" class="checkbox-inline" (click)="subjectCheck(subject)">{{subject.name}}
+
+    <div class="container">
+      <label class="col-sm-2 control-label">Interest</label>
+      <br><br>
+      <form>
+        <div class="radio" *ngFor="let interest of interests">
+          <label><input type="radio" name="interest" (click)="interestCheck(interest.name)">{{ interest.name }}</label>
+          <div class="radio" *ngFor="let subject of interest.subjects">
+            <div *ngIf="interestChecked[interest.name]">
+              <label><input type="radio" (click)="subjectCheck(subject)">{{ subject.name }}</label>
+            </div>
+
+          </div>
+        </div>
+
+      </form>
+
+      <form class="container">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Interest</label>
+          <div class="radio-inline">
+            <div *ngFor="let interest of interests">
+              <input type="radio" class="radio-inline" (click)="interestCheck(interest.name)">{{interest.name}}
+              <div *ngFor="let subject of interest.subjects">
+                <div class="col-sm-offset-1" *ngIf="interestChecked[interest.name]">
+                  <input type="radio" class="radio-inline" (click)="subjectCheck(subject)">{{subject.name}}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </form>
+      </form>
+    </div>
+
+
 
     <form class="form-horizontal">
       <div class="form-group">

@@ -78,7 +78,7 @@ export class MeetingEditComponent implements OnInit {
     // console.log(this.selectedMeeting.title);
     // console.log(this.selectedMeeting.location);
     // console.log(this.selectedMeeting.description);
-    // console.log(this.selectedMeeting.max_member);
+    console.log(this.selectedMeeting.max_member);
 
     this.meetingService.editMeeting(this.selectedMeeting)
      .then(()=> {

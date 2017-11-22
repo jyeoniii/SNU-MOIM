@@ -54,10 +54,10 @@
           <label class="col-sm-2 control-label">Interest</label>
           <div class="checkbox checkbox-inline">
             <div *ngFor="let interest of interests">
-              <input type="checkbox" class="checkbox-inline" (click)="interestCheck(interest.name)">{{interest.name}}
+              <input type="radio" class="radio-inline" (click)="interestCheck(interest.name)">{{interest.name}}
               <div *ngFor="let subject of interest.subjects">
                 <div class="col-sm-offset-1" *ngIf="interestChecked[interest.name]">
-                  <input type="checkbox" class="checkbox-inline" (click)="subjectCheck(subject)">{{subject.name}}
+                  <input type="radio" class="radio-inline" (click)="subjectCheck(subject)">{{subject.name}}
                 </div>
               </div>
             </div>
@@ -69,18 +69,16 @@
         <div class="form-group">
           <label class="col-sm-2 control-label">Members</label>
           <div class="col-sm-8">
-            <input class="form-control" value="{{selectedMeeting.max_member}}" placeholder="Enter members" #max_member>
+            <input class="form-control" [(ngModel)]="selectedMeeting.max_member" [ngModelOptions]="{standalone: true}">
           </div>
         </div>
       </form>
-
-
     </div>
 
   </div>
 
 
-  <div id="preview" class="tab-pane fade" *ngIf="selectedMeeting">
+  <div id="preview" class="tab-pane fade"  *ngIf="selectedMeeting">
 
     <form class="form-horizontal">
       <div class="form-group">
