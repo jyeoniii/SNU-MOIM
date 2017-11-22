@@ -103,9 +103,9 @@
               (click)="goToCreatePage()">create</button><br><br>
 
     <!--Pagination-->
-      <!--ng-pagination *ngIf="totalItems >= 0" [totalItems]="totalItems" [(ngModel)]="currentPage" [maxSize]="maxSize" [boundaryLinks]="true"
+      <ng-pagination *ngIf="totalItems >= 0" [totalItems]="totalItems" [(ngModel)]="currentPage" [maxSize]="maxSize" [boundaryLinks]="true"
                      (pageChanged)="pageChanged($event)" previous-text="&lsaquo;" next-text="&rsaquo;"
-                     style="display:block;margin:auto"first-text="First" last-text="Last"></ng-pagination><br-->
+                     style="display:block;margin:auto"first-text="First" last-text="Last"></ng-pagination><br>
 
     <!--Search filter-->
     <div style="display:block; margin:0 auto; width:800px">
