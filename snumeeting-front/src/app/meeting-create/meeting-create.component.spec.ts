@@ -56,7 +56,7 @@ describe('MeetingCreateComponent', () => {
     fakeMeeting = makeMeetingData();
 
     response = new Response(new ResponseOptions({status: 200, body: fakeMeeting[1]}));
-    backEnd.connections.subscribe((c: MockConnection)=> c.mockRespond(response));
+    backEnd.connections.subscribe((c: MockConnection) => c.mockRespond(response));
   }));
 
   it('should create', () => {

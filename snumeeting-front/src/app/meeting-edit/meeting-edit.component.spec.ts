@@ -2,8 +2,12 @@ import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing'
 
 import { MeetingEditComponent } from './meeting-edit.component';
 
-import {RouterTestingModule } from '@angular/router/testing';
-import { Http, XHRBackend, Response, ResponseOptions } from "@angular/http";
+import { RouterTestingModule } from '@angular/router/testing';
+
+import { FormsModule } from "@angular/forms";
+import { HttpModule, Http, XHRBackend, Response, ResponseOptions } from "@angular/http";
+import { Observable } from "rxjs/Observable";
+import { ActivatedRoute } from "@angular/router";
 
 import { MeetingService } from "../services/meeting.service";
 import { UserService } from "../services/user.service";
@@ -23,11 +27,6 @@ describe('MeetingEditComponent', () => {
   let response: Response;
 
   beforeEach(async(() => {
-    var HttpModule;
-    var FormsModule;
-    var XHRBackend;
-    var ActivatedRoute;
-    var Observable;
     TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -57,7 +56,7 @@ describe('MeetingEditComponent', () => {
     fakeMeeting = makeMeetingData();
 
     response = new Response(new ResponseOptions({status: 200, body: fakeMeeting[1]}));
-    backEnd.connections.subscribe((c: MockConnection)=> c.mockRespond(response));
+    backEnd.connections.subscribe((c: MockConnection) => c.mockRespond(response));
   }));
 
   it('should create', () => {
