@@ -16,6 +16,7 @@ import { Meeting } from "../models/meeting";
 
 import { MockBackend, MockConnection } from "@angular/http/testing";
 import { makeMeetingData } from "../models/mock-data";
+import { MetaDataService } from '../services/meta-data-service';
 
 describe('MeetingEditComponent', () => {
   let component: MeetingEditComponent;
@@ -35,7 +36,7 @@ describe('MeetingEditComponent', () => {
       ],
       declarations: [MeetingEditComponent],
       providers: [
-        MeetingService, UserService,
+        MeetingService, UserService, MetaDataService,
         { provide: XHRBackend, useClass: MockBackend },
         { provide: ActivatedRoute, useValue: {'params': Observable.from([{id: 1}])}},
       ]
