@@ -5,6 +5,7 @@ import { Subject } from './subject';
 import { Meeting } from './meeting';
 import { Comment } from './comment';
 import { Interest } from './interest';
+import { Message } from './message';
 
 const college = [
   {id: 1, name: 'Engineering'},
@@ -47,9 +48,19 @@ const comment = [
   {id: 5, author: user[2], meeting_id: 3, content: 'What?', publicity: true},
 ];
 
+const message = [
+  {id: 1, sender: user[0], receiver: user[1], content: 'Bye', sended_at: 2017-11-15T01:34:52Z}
+  {id: 2, sender: user[1], receiver: user[0], content: 'Ok, bye', sended_at: 2017-11-15T01:35:06Z}
+  {id: 3, sender: user[1], receiver: user[2], content: 'You want to join us?', sended_at: 2017-11-16T21:34:52Z}
+  {id: 4, sender: user[2], receiver: user[0], content: 'Let's get it on', sended_at: 2017-11-17T09:22:01Z}
+  {id: 5, sender: user[0], receiver: user[2], content: 'Ok', sended_at: 2017-11-17T11:56:11Z}
+  {id: 6, sender: user[2], receiver: user[1], content: 'Right', sended_at: 2017-11-17T15:03:12Z}
+];
+
 export const makeCollegeData = () => college as College[];
 export const makeUserData = () => user as User[];
 export const makeInterestData = () => interest as Interest[];
 export const makeMeetingData = () => meeting as Meeting[];
 export const makeCommentData = () => comment as Comment[];
 export const makeSubjectData = () => subject as Subject[];
+export const makeMessageData = () => message as Message[];
