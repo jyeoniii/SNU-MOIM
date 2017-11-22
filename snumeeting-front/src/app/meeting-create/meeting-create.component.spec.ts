@@ -1,8 +1,8 @@
 import {async, ComponentFixture, inject, TestBed} from '@angular/core/testing';
 
-import { AppModule } from '../app.module';
 import { MeetingCreateComponent } from './meeting-create.component';
 
+import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { HttpModule, Http, XHRBackend, Response, ResponseOptions } from "@angular/http";
@@ -15,6 +15,7 @@ import { Meeting } from "../models/meeting";
 
 import { MockBackend, MockConnection } from "@angular/http/testing";
 import { makeMeetingData } from "../models/mock-data";
+import { MetaDataService } from '../services/meta-data-service';
 
 describe('MeetingCreateComponent', () => {
   let component: MeetingCreateComponent;
@@ -28,13 +29,13 @@ describe('MeetingCreateComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
-        AppModule,
+        RouterTestingModule,
         HttpModule,
         FormsModule,
       ],
       declarations: [MeetingCreateComponent],
       providers: [
-        MeetingService, UserService,
+        MeetingService, UserService, MetaDataService,
         { provide: XHRBackend, useClass: MockBackend },
         { provide: ActivatedRoute, useValue: {'params': Observable.from([{id: 1}])}},
       ]
