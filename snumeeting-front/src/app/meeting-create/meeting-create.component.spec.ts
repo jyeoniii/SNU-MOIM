@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ActivatedRoute } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { HttpModule, Http, XHRBackend, Response, ResponseOptions } from "@angular/http";
-import { Observable } from "rxjs/Observable";
+import { Observable } from 'rxjs/Rx';
 
 import { MeetingService } from "../services/meeting.service";
 import { UserService } from "../services/user.service";
