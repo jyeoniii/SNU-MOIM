@@ -10,6 +10,9 @@ class College(models.Model):
 class Interest(models.Model):
   name = models.CharField(max_length=64)
 
+  def __str__(self):
+    return self.name
+
 class Subject(models.Model):
   name = models.CharField(max_length=64)
   interest = models.ForeignKey(
@@ -31,11 +34,15 @@ class Ex_User(models.Model):
   college = models.ForeignKey(
     College,
     related_name = 'usersCollege',
-    null=True
+    null=False
   )
   subjects = models.ManyToManyField(
     Subject,
     related_name = 'usersSubjects',
+  )
+  fb_friends = models.ManyToManyField(
+    'self',
+    related_name = 'fbFriends'
   )
 
   def __str__(self):

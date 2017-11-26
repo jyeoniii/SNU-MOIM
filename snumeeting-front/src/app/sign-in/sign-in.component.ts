@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { UserService } from '../services/user.service';
+import { MetaDataService } from '../services/meta-data-service';
 
 @Component({
   selector: 'app-sign-in',
@@ -12,10 +13,20 @@ export class SignInComponent implements OnInit {
 
   constructor(
     private userService: UserService,
+    private metaDataService: MetaDataService,
     private router: Router
   ) {}
 
   ngOnInit() {
+    this.showMessageAlert();
+  }
+
+  showMessageAlert() {
+    this.metaDataService.getMessage().then(message => {
+      if (message !== '') {
+        alert(message);
+      }
+    });
   }
 
   signIn(username: string, password: string) {
@@ -32,5 +43,4 @@ export class SignInComponent implements OnInit {
   signUp() {
     this.router.navigate(['/sign_up']);
   }
-
 }

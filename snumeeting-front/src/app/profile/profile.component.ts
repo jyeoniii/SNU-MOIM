@@ -19,6 +19,7 @@ export class ProfileComponent implements OnInit {
 
   user: User;
   loginedUser: User;
+  notConnectedtoFB: boolean;
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -27,13 +28,15 @@ export class ProfileComponent implements OnInit {
 
     this.userService.getLoginedUser()
       .then(user => this.loginedUser = user);
+
+    this.userService.checkFBaccount().then(connected => this.notConnectedtoFB = !connected);
   }
 
   editProfile() {
     this.router.navigate(['/user', this.user.id, 'edit']);
   }
 
-  signOut(): void {
+  signOut() {
     this.userService.signOut();
     this.router.navigate(['/']);
   }
@@ -46,5 +49,4 @@ export class ProfileComponent implements OnInit {
       return false;
     }
   }
-
 }

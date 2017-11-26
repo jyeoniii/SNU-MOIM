@@ -174,3 +174,19 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'snu.moim@gmail.com'
 EMAIL_HOST_PASSWORD = '2017snumoim'
 EMAIL_PORT = 587
+
+
+# Facebook Login
+SOCIAL_AUTH_PIPELINE = (
+    'social_core.pipeline.social_auth.social_details',
+    'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
+    'snumeeting.social.check_user',
+    'social_core.pipeline.social_auth.associate_user',
+    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.user.user_details'
+)
+
+
+LOGIN_REDIRECT_URL = 'http://localhost:4200/meeting'
