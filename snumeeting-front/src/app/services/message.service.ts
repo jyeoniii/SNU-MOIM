@@ -41,11 +41,11 @@ export class MessageService {
   *  GET : Get all messages
   *  POST : Send message 
   */
-  getMessage(): Promise<Message[]> {
+  getMessages(): Promise<Message[]> {
     const url = `${this.messagesUrl}`;
     return this.http.get(url)
       .toPromise()
-      .then(response => response.json() as Message)
+      .then(response => response.json() as Message[])
       .catch(this.handleError);
   }
 
@@ -64,7 +64,7 @@ export class MessageService {
   *  DELETE : Delete specified message
   */
 
-  getMesseage(id: number): Promise<Message> {
+  getMessage(id: number): Promise<Message> {
     const url = '${this.messagesUrl}/${id}';
     return this.http.get(url, {headers: this.headers})
       .toPromise()

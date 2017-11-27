@@ -26,7 +26,7 @@ export class MessagesComponent implements OnInit {
   private betweenMessages: Message[] = [];
   private selectedUser: User;
   private onChat: User[] = []; // tab my messages, between messages
-  private newMessage: Message;
+  @Input() newMessage: string;
 
   ngOnInit() {
     this.getMessages();
@@ -35,7 +35,7 @@ export class MessagesComponent implements OnInit {
   }
 
   getMessages(): void {
-    this.messageService.getMessage().then(messages => this.messages = messages);
+    this.messageService.getMessages().then(messages => this.messages = messages);
   }
 
   getUser(id: number): User {
@@ -59,10 +59,12 @@ export class MessagesComponent implements OnInit {
   }
 
   onSelect(user: User): void {
+    console.log(this.betweenMessages);
+    console.log(this.messages);
     this.selectedUser = user;
     this.betweenMessages = this.messages.filter(m => 
-      (m['sender_id'] === this.loginedUser.id && m['receiver_id'] === user.id) ||
-      (m['sender_id'] === user.id && m['receiver_id'] === this.loginedUser.id)
+      (m.sender.id === this.loginedUser.id && m.receiver.id === user.id) ||
+      (m.sender.id === user.id && m.receiver.id === this.loginedUser.id)
     );
   }
 
@@ -74,14 +76,20 @@ export class MessagesComponent implements OnInit {
   }
 
   sendMessage(sender: User, receiver: User, content: string): void {
-    if(this.newMessage !=null) {
+    if(this.newMessage != null) {
       let message;
       this.messageService.sendMessage(sender, receiver, content)
         .then(res => {
           message = res;
+          this.messages.push(res);
           this.betweenMessages.push(res);
           this.newMessage = null;
         });
     }
+  }
+
+  signOut(): void {
+    this.userService.signOut();
+    this.router.navigate(['/']);
   }
 }

@@ -47,15 +47,15 @@
     <span>Chat with </span>{{selectedUser.name}}
     <div *ngIf="betweenMessages">
       <div *ngFor="let m of betweenMessages">
-        <div *ngIf="m['receiver_id']===loginedUser.id" style="margin-bottom:10px; min-height:100px; background:#ccc">
-          <div style="float:left; width:100px; min-height:100px; background:#bbb; text-align:center">{{getUser(m['sender_id']).name}}</div>
+        <div *ngIf="m.receiver.id==loginedUser.id" style="margin-bottom:10px; min-height:100px; background:#ccc">
+          <div style="float:left; width:100px; min-height:100px; background:#bbb; text-align:center">{{getUser(m.sender.id).name}}</div>
           <div style="margin-left:100px; text-align:left; word-break:break-all">
             {{m.content}}<br>
             <sub>{{m.sended_at}}</sub>
           </div>
         </div>
-        <div *ngIf="m['sender_id']===loginedUser.id" style="margin-bottom:10px; min-height:100px; background:#ccc">
-          <div style="float:right; width:100px; min-height:100px; background:#bbb; text-align:center">{{getUser(m['sender_id']).name}}</div>
+        <div *ngIf="m.sender.id===loginedUser.id" style="margin-bottom:10px; min-height:100px; background:#ccc">
+          <div style="float:right; width:100px; min-height:100px; background:#bbb; text-align:center">{{getUser(m.sender.id).name}}</div>
           <div style="margin-right:100px; text-align:right; word-break:break-all">
             {{m.content}}<br>
             <sub>{{m.sended_at}}</sub>

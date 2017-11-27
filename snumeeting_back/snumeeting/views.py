@@ -11,6 +11,7 @@ from django.template.loader import render_to_string
 from django.db.models import Q
 from django.core.mail import EmailMessage
 import json
+import datetime
 
 from .tokens import account_activation_token
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message
@@ -477,7 +478,15 @@ def searchMeeting_subject(request, subject_id, query):
 # url: /message
 def messageList(request):
   if request.method == 'GET':
-    return JsonResponse(list(Message.objects.all().values()), safe=False)
+    messagesList = list(Message.objects.all().values())
+    for message in messagesList:
+      sender = convert_userinfo_for_front(message['sender_id'])
+      receiver = convert_userinfo_for_front(message['receiver_id'])
+      message.pop('sender_id')
+      message.pop('receiver_id')
+      message['sender'] = sender
+      message['receiver'] = receiver
+    return JsonResponse(messagesList, safe=False)
   if request.method == 'POST':
     des_req = json.loads(request.body.decode())
     sender_id = des_req['sender_id']
@@ -487,13 +496,21 @@ def messageList(request):
     content = des_req['content']
     new_message = Message(sender=sender, receiver=receiver, content=content)
     new_message.save()
-    return HttpResponse(status=201)
+    now = datetime.datetime.now()
+
+    sender = convert_userinfo_for_front(new_message.sender_id)
+    receiver = convert_userinfo_for_front(new_message.receiver_id)
+    message_dict = model_to_dict(new_message)
+    message_dict['sender'] = sender
+    message_dict['receiver'] = receiver
+    message_dict['sended_at'] = now
+    return JsonResponse(message_dict, status=201)
   else:
     return HttpResponseNotAllowed(['GET'],['POST'])
 
 # url: /message/:id
 def messageDetail(request, message_id):
-  message_i = int(message_id)
+  message_id = int(message_id)
   if request.method == 'GET':
     try:
       message = Message.objects.get(id=message_id)

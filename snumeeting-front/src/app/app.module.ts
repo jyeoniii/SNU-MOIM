@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule, XSRFStrategy, CookieXSRFStrategy } from '@angular/http';
 import { FormsModule } from '@angular/forms';
-import { PaginationDirective } from '../../node_modules/angular2-bootstrap-pagination/directives/pagination.directive';
+//import { PaginationDirective } from '../../node_modules/angular2-bootstrap-pagination/directives/pagination.directive';
 import { APP_BASE_HREF } from '@angular/common';
 
 import { AppComponent } from './app.component';
@@ -38,7 +38,7 @@ export function CSRFStrategy() {
     MeetingCreateComponent,
     MeetingsComponent,
     MessagesComponent,
-    PaginationDirective,
+//    PaginationDirective,
   ],
   imports: [
     BrowserModule,
