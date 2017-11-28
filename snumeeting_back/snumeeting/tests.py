@@ -824,8 +824,8 @@ class SnuMeetingTestCase(TestCase):
     # GET
     response = self.client.get('/api/message')
     data = json.loads(response.content.decode())
-    self.assertEqual(data[0]['sender_id'], 0) 
-    self.assertEqual(data[0]['receiver_id'], 2)
+    self.assertEqual(data[0]['sender']['id'], 0) 
+    self.assertEqual(data[0]['receiver']['id'], 2)
     self.assertEqual(data[0]['content'], 'I want to join you')
     self.assertEqual(len(data), 3)
     self.assertEqual(response.status_code, 200)
@@ -840,8 +840,8 @@ class SnuMeetingTestCase(TestCase):
 
     response = self.client.get('/api/message')
     data = json.loads(response.content.decode())
-    self.assertEqual(data[3]['sender_id'], 2) 
-    self.assertEqual(data[3]['receiver_id'], 1)
+    self.assertEqual(data[3]['sender']['id'], 2) 
+    self.assertEqual(data[3]['receiver']['id'], 1)
     self.assertEqual(data[3]['content'], 'Oh, I like it')
     self.assertEqual(len(data), 4)
 
