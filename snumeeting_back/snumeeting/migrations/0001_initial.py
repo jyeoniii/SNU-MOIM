@@ -69,26 +69,52 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='meeting',
             name='subject',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='meetingsSubject', to='snumeeting.Subject'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='meetings', to='snumeeting.Subject'),
         ),
         migrations.AddField(
             model_name='ex_user',
             name='subjects',
-            field=models.ManyToManyField(related_name='usersSubjects', to='snumeeting.Subject'),
+            field=models.ManyToManyField(related_name='users', to='snumeeting.Subject'),
         ),
         migrations.AddField(
             model_name='ex_user',
             name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='extendedUser', to=settings.AUTH_USER_MODEL),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='extended', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='comment',
             name='author',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='commentsAuthor', to='snumeeting.Ex_User'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='snumeeting.Ex_User'),
         ),
         migrations.AddField(
             model_name='comment',
             name='meeting',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='commentsMeeting', to='snumeeting.Meeting'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='snumeeting.Meeting'),
+        ),
+        migrations.AddField(
+            model_name='ex_user',
+            name='fb_friends',
+            field=models.ManyToManyField(related_name='_ex_user_fb_friends_+', to='snumeeting.Ex_User'),
+        ),
+        migrations.AlterField(
+            model_name='ex_user',
+            name='college',
+            field=models.ForeignKey(default=2, on_delete=django.db.models.deletion.CASCADE, related_name='usersCollege', to='snumeeting.College'),
+            preserve_default=False,
+        ),
+        migrations.AlterField(
+            model_name='ex_user',
+            name='college',
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='users', to='snumeeting.College'),
+        ),
+        migrations.AlterField(
+            model_name='meeting',
+            name='author',
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='meetings_made', to='snumeeting.Ex_User'),
+        ),
+        migrations.AlterField(
+            model_name='meeting',
+            name='members',
+            field=models.ManyToManyField(related_name='meetings_joined', to='snumeeting.Ex_User'),
         ),
     ]
