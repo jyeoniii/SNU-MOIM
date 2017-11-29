@@ -1,11 +1,15 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
+from social_django.models import UserSocialAuth
+
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest
+from .social import check_user
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
 import json
 
 class SnuMeetingTestCase(TestCase):
   def setUp(self):
+
     # College
     engineering = College.objects.create(id=0, name='Engineering')
     business = College.objects.create(id=1, name='Business')
@@ -102,6 +106,9 @@ class SnuMeetingTestCase(TestCase):
     college = College.objects.get(id=1)
     self.assertEqual(str(college), college.name)
 
+    interest = Interest.objects.get(id=1)
+    self.assertEqual(str(interest), interest.name)
+
     subject = Subject.objects.get(id=1)
     self.assertEqual(str(subject), subject.name)
 
@@ -137,6 +144,29 @@ class SnuMeetingTestCase(TestCase):
     # DELETE
     response = self.client.delete('/api/check_user')
     self.assertEqual(response.status_code, 405)
+
+  def test_check_FB_user(self):
+    # GET
+
+    # TODO: SIGN A USER IN
+
+    # No user signed in
+    self.client.get('/api/signout')
+    response = self.client.get('/api/check_FB_user')
+    self.assertEqual(response.status_code, 404)
+
+    # POST
+    response = self.client.post('/api/check_FB_user')
+    self.assertEqual(response.status_code, 405)
+
+    # PUT
+    response = self.client.put('/api/check_FB_user')
+    self.assertEqual(response.status_code, 405)
+
+    # DELETE
+    response = self.client.delete('/api/check_FB_user')
+    self.assertEqual(response.status_code, 405)
+
 
   def test_signup(self):
     # GET
@@ -290,10 +320,8 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 404)
 
     # DELETE
-    response = self.client.delete('/api/user/0') # Delete Existing User
-    self.assertEqual(response.status_code, 204)
-    response = self.client.delete('/api/user/0') # Delete None-existing User
-    self.assertEqual(response.status_code, 404)
+    response = self.client.delete('/api/user/1')
+    self.assertEqual(response.status_code, 405)
 
   def test_meeting_list(self):
     # GET
@@ -787,27 +815,29 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(result['name'], 'test')
 
   def test_joinMeeting(self):
-      response = self.client.put('/api/joinMeeting', json.dumps({'meeting_id':1, 'user_id':2}), content_type='application/json')
+    response = self.client.put('/api/joinMeeting', json.dumps({'meeting_id':1, 'user_id':2}), content_type='application/json')
 
-      response = self.client.get('/api/meeting/1')
-      result = json.loads(response.content.decode())
-      self.assertEqual(len(result['members']), 3)
+    response = self.client.get('/api/meeting/1')
+    result = json.loads(response.content.decode())
+    self.assertEqual(len(result['members']), 3)
 
-      # Non existing meeting
-      response = self.client.put('/api/joinMeeting', json.dumps({'meeting_id':10, 'user_id':2}), content_type='application/json')
-      self.assertEqual(response.status_code, 404)
+    # Non existing meeting
+    response = self.client.put('/api/joinMeeting', json.dumps({'meeting_id':10, 'user_id':2}), content_type='application/json')
+    self.assertEqual(response.status_code, 404)
 
-      # Non existing user
-      response = self.client.put('/api/joinMeeting', json.dumps({'meeting_id':1, 'user_id':12}), content_type='application/json')
-      self.assertEqual(response.status_code, 404)
+    # Non existing user
+    response = self.client.put('/api/joinMeeting', json.dumps({'meeting_id':1, 'user_id':12}), content_type='application/json')
+    self.assertEqual(response.status_code, 404)
 
-      # Not allowed methods
-      response = self.client.get('/api/joinMeeting')
-      self.assertEqual(response.status_code, 405)
+    # Not allowed methods
+    response = self.client.get('/api/joinMeeting')
+    self.assertEqual(response.status_code, 405)
 
-      response = self.client.post('/api/joinMeeting')
-      self.assertEqual(response.status_code, 405)
+    response = self.client.post('/api/joinMeeting')
+    self.assertEqual(response.status_code, 405)
 
-      response = self.client.delete('/api/joinMeeting')
-      self.assertEqual(response.status_code, 405)
+    response = self.client.delete('/api/joinMeeting')
+    self.assertEqual(response.status_code, 405)
+
+
 

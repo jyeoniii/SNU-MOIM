@@ -98,6 +98,13 @@ export class UserService {
       .then(response => response.json() as User);
   }
 
+  checkFBaccount(): Promise<boolean> {
+    return this.http.get('/api/check_FB_user')
+      .toPromise()
+      .then(() => true, () => false)
+      .catch(this.handleError);
+  }
+
   private handleError(error: any): Promise<any> {
     console.error('An error occurred', error);
     return Promise.reject(error.message || error);

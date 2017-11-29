@@ -47,5 +47,12 @@
 
   <button *ngIf="canEdit()" class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="editProfile()">Edit Profile</button>
 
+  <div style="margin-top:100px">
+    <a href="/oauth/login/facebook/">
+      <button *ngIf="canEdit() && notConnectedtoFB"
+              class="col-sm-offset-5 col-sm-2 btn btn-primary">Connect to Facebook</button>
+    </a>
+  </div>
+
 </div>
 

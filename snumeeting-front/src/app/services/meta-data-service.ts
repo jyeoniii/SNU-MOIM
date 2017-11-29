@@ -11,6 +11,7 @@ export class MetaDataService {
   private collegeUrl = '/api/college';
   private interestUrl = '/api/interest';
   private subjectUrl = '/api/subject';
+  private messageUrl = '/api/messages';
 
   constructor(private http: Http) {
   }
@@ -36,9 +37,15 @@ export class MetaDataService {
       .catch(this.handleError);
   }
 
+  getMessage(): Promise<String> {
+    return this.http.get(this.messageUrl)
+      .toPromise()
+      .then(response => response.json()['message'] as String)
+      .catch(this.handleError);
+  }
+
   private handleError(error: any): Promise<any> {
     console.error('An error occurred', error);
     return Promise.reject(error.message || error);
   }
-
 }
