@@ -273,7 +273,7 @@ def meetingComment(request, meeting_id):
       meeting = Meeting.objects.get(id=meeting_id)
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
-    commentsList = list(meeting.commentsMeeting.all().values())
+    commentsList = list(meeting.comments.all().values())
     for comment in commentsList:
       user = convert_userinfo_for_front(comment['author_id'])
       comment.pop('author_id')
@@ -450,7 +450,7 @@ def searchMeeting_author(request, query):
     authors = Ex_User.objects.filter(Q(name__icontains=query))
 
     for author in authors:
-      for meeting in list(author.meetingsAuthor.all()):
+      for meeting in list(author.meetings_made.all()):
         d = convert_meeting_for_mainpage(meeting)
         result.append(d)
   else:
@@ -465,7 +465,7 @@ def searchMeeting_subject(request, subject_id, query):
     subject_id = int(subject_id)
     try:
       subject = Subject.objects.get(id=subject_id)
-      meetings = subject.meetingsSubject.all()
+      meetings = subject.meetings.all()
       if query is not None:
         meetings = meetings.filter(Q(title__icontains=query))
       for meeting in meetings:
