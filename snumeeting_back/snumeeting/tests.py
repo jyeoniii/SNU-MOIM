@@ -795,36 +795,58 @@ class SnuMeetingTestCase(TestCase):
                   'location':'SNU',
                   'max_member':5,
                   'subject_id':2,
-                  # 'subject': 'pfm_band',
                   }),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 201)
 
-    # # GET
-    # response = self.client.get('/api/meeting/create')
-    # self.assertEqual(response.status_code, 405)
-    #
-    # # PUT
-    # response = self.client.put('/api/meeting/create')
-    # self.assertEqual(response.status_code, 405)
-    #
-    # # DELETE
-    # response = self.client.delete('api/meeting/create')
-    # self.assertEqual(response.status_code, 405)
+    # GET
+    response = self.client.get('/api/meeting/create')
+    self.assertEqual(response.status_code, 405)
+
+    # PUT
+    response = self.client.put('/api/meeting/create')
+    self.assertEqual(response.status_code, 405)
+
+    # DELETE
+    response = self.client.delete('/api/meeting/create')
+    self.assertEqual(response.status_code, 405)
 
 
-  # def test_meeting_edit(self):
-  #   # GET
-  #   response = self.client.get('api/meeting/0')
-  #   data = json.loads(response.content.decode())
-  #   self.assertEqual(data['author']['id'], 0)
-  #   self.assertEqual(data['title'], 'Study English')
-  #   self.assertEqual(data['description'], 'I will study English')
-  #   self.assertEqual(data['location'], 'SNUstation')
-  #   self.assertEqual(data['max_number'], '4')
-  #   self.assertEqual(data['subject'], 'std_eng')
-  #   self.assertEqual(response.status_code, 200)
+  def test_meeting_edit(self):
+    # GET
+    response = self.client.get('/api/meeting/0/edit')
+    data = json.loads(response.content.decode())
+    self.assertEqual(data['author']['id'], 0)
+    self.assertEqual(data['title'], 'Study English')
+    self.assertEqual(data['description'], 'I will study English')
+    self.assertEqual(data['location'], 'SNUstation')
+    self.assertEqual(data['max_member'], 4)
+    self.assertEqual(data['subject']['id'], 0)
+    self.assertEqual(response.status_code, 200)
+
+    # PUT
+    response = self.client.put(
+      '/api/meeting/0',
+      json.dumps({'author_id':2, 'title': 'Performance Band', 'subject_id':'2', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 1]}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 204)
+
+    response = self.client.put(
+      '/api/meeting/30/meeting',
+      json.dumps({'author_id':2, 'title': 'Performance Band', 'subject_id':'2', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 1]}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 404)
+
+    # POST
+    response = self.client.post('/api/meeting/0')
+    self.assertEqual(response.status_code, 405)
+
+    # DELETE
+    response = self.client.delete('/api/meeting/0/edit')
+    self.assertEqual(response.status_code, 405)
 
 
   def test_joinMeeting(self):

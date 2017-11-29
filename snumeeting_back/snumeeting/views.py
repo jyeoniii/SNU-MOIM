@@ -504,6 +504,7 @@ def meetingEdit(request, meeting_id):
       dict_meeting['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
+    return JsonResponse(dict_meeting, safe = False);
 
   elif request.method == 'PUT':
     request = json.loads(request.body.decode())
