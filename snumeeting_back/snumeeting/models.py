@@ -29,20 +29,19 @@ class Ex_User(models.Model):
   user = models.OneToOneField(
     User,
     on_delete=models.CASCADE,
-    related_name = 'extendedUser',
+    related_name = 'extended',
   )
   college = models.ForeignKey(
     College,
-    related_name = 'usersCollege',
+    related_name = 'users',
     null=False
   )
   subjects = models.ManyToManyField(
     Subject,
-    related_name = 'usersSubjects',
+    related_name = 'users',
   )
   fb_friends = models.ManyToManyField(
     'self',
-    related_name = 'fbFriends'
   )
 
   def __str__(self):
@@ -51,7 +50,7 @@ class Ex_User(models.Model):
 class Meeting(models.Model):
   author = models.ForeignKey(
     Ex_User,
-    related_name='meetingsAuthor',
+    related_name='meetings_made',
     null=True
   )
   title = models.CharField(max_length=64)
@@ -60,11 +59,11 @@ class Meeting(models.Model):
   max_member = models.IntegerField()
   members = models.ManyToManyField(
     Ex_User,
-    related_name = 'meetingsMembers',
+    related_name = 'meetings_joined',
   )
   subject = models.ForeignKey(
     Subject,
-    related_name = 'meetingsSubject',
+    related_name = 'meetings',
     null=True
   )
 
@@ -74,12 +73,12 @@ class Meeting(models.Model):
 class Comment(models.Model):
   author = models.ForeignKey(
     Ex_User,
-    related_name='commentsAuthor',
+    related_name='comments',
     null=True
   )
   meeting = models.ForeignKey(
     Meeting,
-    related_name='commentsMeeting',
+    related_name='comments',
     null=True
   )
   content = models.CharField(max_length=64)
