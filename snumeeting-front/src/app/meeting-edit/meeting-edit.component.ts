@@ -70,7 +70,8 @@ export class MeetingEditComponent implements OnInit {
       this.subjectChecked[subject.name] = false;
     } else {
       this.subjectChecked[subject.name] = true;
-      this.selectedSubject = subject;
+      this.selectedSubject.name = subject.name;
+      this.selectedSubject.id = subject.id;
     }
   }
 
@@ -78,8 +79,9 @@ export class MeetingEditComponent implements OnInit {
     // console.log(this.selectedMeeting.title);
     // console.log(this.selectedMeeting.location);
     // console.log(this.selectedMeeting.description);
-    console.log(this.selectedMeeting.max_member);
-    console.log(this.selectedMeeting.subject.name);
+    // console.log(this.selectedMeeting.max_member);
+    // console.log(this.selectedMeeting.subject.name);
+    // console.log(this.selectedMeeting.subject.id);
 
     this.meetingService.editMeeting(this.selectedMeeting)
      .then(()=> {

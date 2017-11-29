@@ -54,10 +54,10 @@
           <label class="col-sm-2 control-label">Interest</label>
           <div class="checkbox checkbox-inline">
             <div *ngFor="let interest of interests">
-              <input type="radio" class="radio-inline" (click)="interestCheck(interest.name)">{{interest.name}}
+              <input type="radio" class="radio-inline" name="interest" (click)="interestCheck(interest.name)">{{interest.name}}
               <div *ngFor="let subject of interest.subjects">
                 <div class="col-sm-offset-1" *ngIf="interestChecked[interest.name]">
-                  <input type="radio" class="radio-inline" (click)="subjectCheck(subject)">{{subject.name}}
+                  <input type="radio" class="radio-inline" name="subject" (click)="subjectCheck(subject)">{{subject.name}}
                 </div>
               </div>
             </div>

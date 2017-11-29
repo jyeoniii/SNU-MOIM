@@ -32,30 +32,15 @@
 
 
     <div class="container">
-      <label class="col-sm-2 control-label">Interest</label>
-      <br><br>
-      <form>
-        <div class="radio" *ngFor="let interest of interests">
-          <label><input type="radio" name="interest" (click)="interestCheck(interest.name)">{{ interest.name }}</label>
-          <div class="radio" *ngFor="let subject of interest.subjects">
-            <div *ngIf="interestChecked[interest.name]">
-              <label><input type="radio" (click)="subjectCheck(subject)">{{ subject.name }}</label>
-            </div>
-
-          </div>
-        </div>
-
-      </form>
-
       <form class="container">
         <div class="form-group">
           <label class="col-sm-2 control-label">Interest</label>
           <div class="radio-inline">
             <div *ngFor="let interest of interests">
-              <input type="radio" class="radio-inline" (click)="interestCheck(interest.name)">{{interest.name}}
+              <input type="radio" name="interest" class="radio-inline" (click)="interestCheck(interest.name)">{{interest.name}}
               <div *ngFor="let subject of interest.subjects">
                 <div class="col-sm-offset-1" *ngIf="interestChecked[interest.name]">
-                  <input type="radio" class="radio-inline" (click)="subjectCheck(subject)">{{subject.name}}
+                  <input type="radio" name="subject" class="radio-inline" (click)="subjectCheck(subject)">{{subject.name}}
                 </div>
               </div>
             </div>
@@ -110,7 +95,7 @@
       </div>
     </form>
 
-    <form class="form-horizontal">
+    <!--   <form class="form-horizontal">
       <div class="form-group">
         <label class="col-sm-6 control-label">Interest</label>
         <div class="col-sm-2">
@@ -121,7 +106,7 @@
           </div>
         </div>
       </div>
-    </form>
+    </form> -->
 
 
     <form class="form-horizontal">

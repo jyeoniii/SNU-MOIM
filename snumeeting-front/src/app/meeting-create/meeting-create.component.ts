@@ -76,7 +76,7 @@ export class MeetingCreateComponent implements OnInit {
     this.meeting.subject = this.selectedSubject;
     // console.log(this.meeting.subject);
 
-    console.log(this.meeting.description);
+    // console.log(this.meeting.description);
 
     this.meetingService.createMeeting(
       this.currentUser,
