@@ -129,9 +129,26 @@ export class MeetingService {
   }
 
   joinMeeting(meeting_id: number, user_id: number) {
-    const url = `api/joinMeeting`;
+    const url = `api/joinMeeting/${meeting_id}`;
     return this.http.put(url,
-      JSON.stringify({meeting_id: meeting_id, user_id: user_id}), {headers: headerWithCSRF()})
+      JSON.stringify({user_id: user_id}), {headers: headerWithCSRF()})
+      .toPromise()
+      .then(() => null)
+      .catch(this.handleError);
+  }
+
+  leaveMeeting(meeting_id: number, user_id: number) {
+    const url = `api/leaveMeeting/${meeting_id}`;
+    return this.http.put(url,
+      JSON.stringify({user_id: user_id}), {headers: headerWithCSRF()})
+      .toPromise()
+      .then(() => null)
+      .catch(this.handleError);
+  }
+
+  closeMeeting(meeting_id: number): Promise<void> {
+    const url = `api/closeMeeting/${meeting_id}`;
+    return this.http.get(url)
       .toPromise()
       .then(() => null)
       .catch(this.handleError);

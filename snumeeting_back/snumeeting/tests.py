@@ -880,29 +880,83 @@ class SnuMeetingTestCase(TestCase):
 
 
   def test_joinMeeting(self):
-    response = self.client.put('/api/joinMeeting', json.dumps({'meeting_id':1, 'user_id':2}), content_type='application/json')
+    response = self.client.put('/api/joinMeeting/1', json.dumps({'user_id':2}), content_type='application/json')
 
     response = self.client.get('/api/meeting/1')
     result = json.loads(response.content.decode())
     self.assertEqual(len(result['members']), 3)
 
     # Non existing meeting
-    response = self.client.put('/api/joinMeeting', json.dumps({'meeting_id':10, 'user_id':2}), content_type='application/json')
+    response = self.client.put('/api/joinMeeting/10', json.dumps({'user_id':2}), content_type='application/json')
     self.assertEqual(response.status_code, 404)
 
     # Non existing user
-    response = self.client.put('/api/joinMeeting', json.dumps({'meeting_id':1, 'user_id':12}), content_type='application/json')
+    response = self.client.put('/api/joinMeeting/1', json.dumps({'user_id':12}), content_type='application/json')
     self.assertEqual(response.status_code, 404)
 
     # Not allowed methods
-    response = self.client.get('/api/joinMeeting')
+    response = self.client.get('/api/joinMeeting/1')
     self.assertEqual(response.status_code, 405)
 
-    response = self.client.post('/api/joinMeeting')
+    response = self.client.post('/api/joinMeeting/1')
     self.assertEqual(response.status_code, 405)
 
-    response = self.client.delete('/api/joinMeeting')
+    response = self.client.delete('/api/joinMeeting/1')
     self.assertEqual(response.status_code, 405)
+
+  def test_leaveMeeting(self):
+    response = self.client.put('/api/leaveMeeting/1', json.dumps({'user_id':0}), content_type='application/json')
+
+    response = self.client.get('/api/meeting/1')
+    result = json.loads(response.content.decode())
+    self.assertEqual(len(result['members']), 1)
+
+    # User hasn't joined the meeting - should be no effect
+    response = self.client.put('/api/leaveMeeting/1', json.dumps({'user_id':2}), content_type='application/json')
+
+    response = self.client.get('/api/meeting/0')
+    result = json.loads(response.content.decode())
+    self.assertEqual(len(result['members']), 1)
+
+    # Non existing meeting
+    response = self.client.put('/api/leaveMeeting/10', json.dumps({'user_id':2}), content_type='application/json')
+    self.assertEqual(response.status_code, 404)
+
+    # Non existing user
+    response = self.client.put('/api/leaveMeeting/1', json.dumps({'user_id':12}), content_type='application/json')
+    self.assertEqual(response.status_code, 404)
+
+    # Not allowed methods
+    response = self.client.get('/api/leaveMeeting/1')
+    self.assertEqual(response.status_code, 405)
+
+    response = self.client.post('/api/leaveMeeting/1')
+    self.assertEqual(response.status_code, 405)
+
+    response = self.client.delete('/api/leaveMeeting/1')
+    self.assertEqual(response.status_code, 405)
+
+  def test_closeMeeting(self):
+    response = self.client.get('/api/closeMeeting/3')
+    response = self.client.get('/api/meeting/3')
+    result = json.loads(response.content.decode())
+    self.assertTrue(result['is_closed'])
+
+    # Non existing meeting
+    response = self.client.get('/api/closeMeeting/10')
+    self.assertEqual(response.status_code, 404)
+
+    # Not allowed methods
+    response = self.client.put('/api/closeMeeting/1')
+    self.assertEqual(response.status_code, 405)
+
+    response = self.client.post('/api/closeMeeting/1')
+    self.assertEqual(response.status_code, 405)
+
+    response = self.client.delete('/api/closeMeeting/1')
+    self.assertEqual(response.status_code, 405)
+
+
 
 
 

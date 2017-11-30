@@ -1,4 +1,5 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 <button *ngIf="currentUser" (click)="signOut()" class="btn btn-primary btn-primary" style="float:right;">SignOut</button>
 
@@ -7,15 +8,37 @@
  <div class="container center-block" style="width:600px;">
 
    <h3>Meeting</h3>
-   <button *ngIf="currentUser && selectedMeeting" (click)="joinMeeting()" style="float:right" class="btn btn-primary btn-primary">
-     JOIN
-   </button>
+   <span *ngIf="selectedMeeting && !selectedMeeting.is_closed; else closed">
+     <span *ngIf="isOwner(); else notOwner">
+      <button (click)="closeMeeting()" style="float:right" class="btn btn-primary btn-primary">CLOSE</button>
+     </span>
+     <ng-template #notOwner>
+       <span *ngIf="alreadyJoined; else canJoin">
+         <button *ngIf="currentUser && selectedMeeting" (click)="leaveMeeting()" style="float:right" class="btn btn-primary btn-primary">
+           LEAVE
+         </button>
+       </span>
+       <ng-template #canJoin>
+         <button *ngIf="currentUser && selectedMeeting" (click)="joinMeeting()" style="float:right" class="btn btn-primary btn-primary">
+         JOIN
+         </button>
+       </ng-template>
+     </ng-template>
+   </span>
+   <ng-template #closed>
+     <button class="btn" style="float:right; color: maroon" disabled>CLOSED</button>
+   </ng-template>
+
+
 
    <div *ngIf="selectedMeeting">
      <span style="font-weight: bold">title: </span> {{ selectedMeeting.title }}<br>
      <span style="font-weight: bold">author: </span> {{ selectedMeeting.author.name }}<br>
      <span style="font-weight: bold">location:</span> {{ selectedMeeting.location }}<br>
-     <span style="font-weight: bold">participation: </span>{{ selectedMeeting.members.length }} / {{ selectedMeeting.max_member}}<br>
+     <span style="font-weight: bold">participation: </span>
+       <i *ngFor="let m of selectedMeeting.members" class="fa fa-user" style="font-size:25px; color: royalblue"></i>
+       <i *ngFor="let m of emptySeats" class="fa fa-user" style="font-size:25px; color: darkgray "></i><br>
+
      <span style="font-weight: bold">description: <br></span>{{ selectedMeeting.description }}<br>
    </div>
    <br>
@@ -55,8 +78,7 @@
      </li>
    </div><br>
 
-
-   <span *ngIf="isOwner()">
+   <span *ngIf="isOwner() && selectedMeeting && !selectedMeeting.is_closed">
     <button (click)="edit()" class="btn btn-primary btn-primary" id="edit-button" >EDIT</button>
     <button (click)="delete()" class="btn btn-primary btn-primary" id="delete-button">DELETE</button>
   </span>
