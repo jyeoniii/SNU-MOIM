@@ -1,6 +1,5 @@
 import { Subject } from './subject';
 import { User } from './user';
-import { Comment } from './comment';
 
 export class Meeting {
   id: number;
@@ -11,4 +10,5 @@ export class Meeting {
   location: string;
   max_member: number;
   members: User[];
+  is_closed: boolean;
 }

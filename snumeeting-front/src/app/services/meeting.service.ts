@@ -53,13 +53,30 @@ export class MeetingService {
       .catch(this.handleError);
   }
 
+  // createMeeting(meeting: Meeting): Promise<Meeting> {
+  //
+  //   return this.http.post(this.meetingsUrl, JSON.stringify({
+  //       author_id: meeting.author.id,
+  //       title: meeting.title,
+  //       description: meeting.description,
+  //       location: meeting.location,
+  //       max_number: meeting.max_member,
+  //       member: meeting.members,
+  //       subject_id: meeting.subject.id,
+  //     }),
+  //     { headers: headerWithCSRF() })
+  //     .toPromise()
+  //     .then(response => response.json() as Meeting)
+  //     .catch(this.handleError);
+  // }
+
 
   createMeeting(author: User,
                 title: string,
                 subject: Subject,
                 description: string,
                 location: string,
-                max_number: number): Promise<Meeting> {
+                max_number: number): Promise<void> {
     return this.http.post(this.meetingsUrl,
       JSON.stringify({
         author_id: author.id,
@@ -67,10 +84,10 @@ export class MeetingService {
         subject_id: subject.id,
         description: description,
         location: location,
-        max_number: max_number}),
+        max_member: max_number}),
       {headers: headerWithCSRF()})
       .toPromise()
-      .then(response => response.json() as Meeting)
+      .then(() => null)
       .catch(this.handleError);
   }
 
@@ -112,9 +129,26 @@ export class MeetingService {
   }
 
   joinMeeting(meeting_id: number, user_id: number) {
-    const url = `api/joinMeeting`;
+    const url = `api/joinMeeting/${meeting_id}`;
     return this.http.put(url,
-      JSON.stringify({meeting_id: meeting_id, user_id: user_id}), {headers: headerWithCSRF()})
+      JSON.stringify({user_id: user_id}), {headers: headerWithCSRF()})
+      .toPromise()
+      .then(() => null)
+      .catch(this.handleError);
+  }
+
+  leaveMeeting(meeting_id: number, user_id: number) {
+    const url = `api/leaveMeeting/${meeting_id}`;
+    return this.http.put(url,
+      JSON.stringify({user_id: user_id}), {headers: headerWithCSRF()})
+      .toPromise()
+      .then(() => null)
+      .catch(this.handleError);
+  }
+
+  closeMeeting(meeting_id: number): Promise<void> {
+    const url = `api/closeMeeting/${meeting_id}`;
+    return this.http.get(url)
       .toPromise()
       .then(() => null)
       .catch(this.handleError);

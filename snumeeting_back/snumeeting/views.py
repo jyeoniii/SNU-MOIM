@@ -478,6 +478,7 @@ def searchMeeting_subject(request, subject_id, query):
 
   return JsonResponse(result, safe=False)
 
+
 # url: /meeting/create
 def meetingCreate(request):
 
@@ -526,6 +527,7 @@ def meetingEdit(request, meeting_id):
       dict_meeting['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
+    return JsonResponse(dict_meeting, safe = False);
 
   elif request.method == 'PUT':
     request = json.loads(request.body.decode())
@@ -552,10 +554,10 @@ def meetingEdit(request, meeting_id):
     return HttpResponseNotAllowed(['GET'],['PUT'])
 
 
-def joinMeeting(request):
+# url: /joinMeeting/:meeting_id
+def joinMeeting(request, meeting_id):
   if request.method == 'PUT':
     des_req = json.loads(request.body.decode())
-    meeting_id = des_req['meeting_id']
     user_id = des_req['user_id']
     try:
       meeting = Meeting.objects.get(id=meeting_id)
@@ -570,13 +572,48 @@ def joinMeeting(request):
   else:
     return HttpResponseNotAllowed(['PUT'])
 
+# url: /closeMeeting/:meeting_id
+def closeMeeting(request, meeting_id):
+  if request.method == 'GET':
+    try:
+      meeting = Meeting.objects.get(id=meeting_id)
+      meeting.is_closed = True
+      meeting.save()
+    except Meeting.DoesNotExist:
+      return HttpResponseNotFound()
+    return HttpResponse(status=204)
+  else:
+    return HttpResponseNotAllowed(['GET'])
+
+# url: /leaveMeeting/:meeting_id
+def leaveMeeting(request, meeting_id):
+  if request.method == 'PUT':
+    des_req = json.loads(request.body.decode())
+    user_id = des_req['user_id']
+    try:
+      meeting = Meeting.objects.get(id=meeting_id)
+      user = Ex_User.objects.get(id=user_id)
+      meeting.members.remove(user)
+      meeting.save()
+    except Meeting.DoesNotExist:
+      return HttpResponseNotFound()
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+    return HttpResponse(status=204)
+  else:
+    return HttpResponseNotAllowed(['PUT'])
+
+
 # Send Django message as JSON data.
 # url: /messages
 def get_django_messages(request):
   messages = get_messages(request)
 
-  if (len(messages) == 0):
+  if len(messages) == 0:
     return HttpResponse(status=204)
 
   for message in messages:
     return JsonResponse({'message':message.message}, safe=False)
+
+
+

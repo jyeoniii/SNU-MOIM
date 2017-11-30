@@ -5,13 +5,15 @@ import { Comment } from '../models/comment';
 import { User } from '../models/user';
 import { MeetingService } from '../services/meeting.service';
 import {CommentService} from '../services/comment.service';
-import {UserService} from "../services/user.service";
+import {UserService} from '../services/user.service';
 
 @Component({
   selector: 'app-meeting-detail',
   templateUrl: './meeting-detail.component.html',
   styleUrls: ['./meeting-detail.component.css']
 })
+
+
 export class MeetingDetailComponent implements OnInit {
 
   constructor(
@@ -23,9 +25,11 @@ export class MeetingDetailComponent implements OnInit {
   ) { }
 
   private selectedMeeting: Meeting;
+
   private comments: Comment[];
   private author: User;
   private currentUser: User;
+  private alreadyJoined = false;
 
   private selectedComment: Comment = null;   // Comment to be edited
 
@@ -33,19 +37,26 @@ export class MeetingDetailComponent implements OnInit {
   private isPrivate = false;
   private isPrivate_edit = false;
 
+  private emptySeats = null;
+
   ngOnInit() {
     this.route.params.subscribe(params => {
+      this.userService.getLoginedUser()
+        .then(user => this.currentUser = user);
       this.meetingService.getMeeting(+params['id'])
         .then(meeting => {
           this.selectedMeeting = meeting;
           this.author = meeting.author;
+          this.emptySeats = new Array(this.selectedMeeting.max_member - this.selectedMeeting.members.length);
+          if (this.selectedMeeting.members.find(member => member.id === this.currentUser.id)) {
+            this.alreadyJoined = true;
+            console.log(this.alreadyJoined);
+          }
         });
       this.commentService.getCommentsOnMeeting(+params['id'])
         .then(comments => {
           this.comments = comments;
         });
-      this.userService.getLoginedUser()
-        .then(user => this.currentUser = user);
     });
   }
 
@@ -54,10 +65,10 @@ export class MeetingDetailComponent implements OnInit {
     this.router.navigate(['/meeting']);
   }
 
-  // edit(): void {
-  //   this.router.navigate(['/meeting', this.selectedArticle.id, 'edit']);
-  // }
-  //
+  edit(): void {
+    this.router.navigate(['/meeting', this.selectedMeeting.id, 'edit']);
+  }
+
   delete(): void {
     this.meetingService.deleteMeeting(this.selectedMeeting.id);
     this.router.navigate(['/meeting']);
@@ -122,17 +133,34 @@ export class MeetingDetailComponent implements OnInit {
   }
 
   joinMeeting(): void {
-    if (this.selectedMeeting.members.find(member => member.id === this.currentUser.id)) {
-      alert('You have already joined this meeting!');
-      return;
-    }
     if (this.selectedMeeting.members.length === this.selectedMeeting.max_member) {
       alert('This meeting is already full! :(');
       return;
     }
     this.meetingService.joinMeeting(this.selectedMeeting.id, this.currentUser.id);
     this.selectedMeeting.members.push(this.currentUser);
+    this.emptySeats = new Array(this.selectedMeeting.max_member - this.selectedMeeting.members.length);
+    this.alreadyJoined = true;
     alert('Welcome!');
   }
 
+  leaveMeeting(): void {
+    if (confirm('Are you sure you leave this meeting?')) {
+      this.meetingService.leaveMeeting(this.selectedMeeting.id, this.currentUser.id)
+        .then(() => {
+        alert('Bye!');
+        this.selectedMeeting.members.splice(this.selectedMeeting.members.indexOf(this.currentUser), 1);
+        this.emptySeats = new Array(this.selectedMeeting.max_member - this.selectedMeeting.members.length);
+        this.alreadyJoined = false;
+        });
+    }
+  }
+
+  closeMeeting(): void {
+    // Only for the author
+    if (confirm('Are you sure to close this meeting?\n(You cannot edit or delete this meeting after closing.)')) {
+      this.meetingService.closeMeeting(this.selectedMeeting.id);
+      this.selectedMeeting.is_closed = true;
+    }
+  }
 }

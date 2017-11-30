@@ -67,6 +67,7 @@ class Meeting(models.Model):
     related_name = 'meetings',
     null=True
   )
+  is_closed= models.BooleanField(default=False)
 
   def __str__(self):
     return self.title
