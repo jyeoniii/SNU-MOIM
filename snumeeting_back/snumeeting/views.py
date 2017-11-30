@@ -478,6 +478,7 @@ def searchMeeting_subject(request, subject_id, query):
 
   return JsonResponse(result, safe=False)
 
+
 # url: /meeting/create
 def meetingCreate(request):
 
@@ -526,6 +527,7 @@ def meetingEdit(request, meeting_id):
       dict_meeting['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
+    return JsonResponse(dict_meeting, safe = False);
 
   elif request.method == 'PUT':
     request = json.loads(request.body.decode())
@@ -570,13 +572,15 @@ def joinMeeting(request):
   else:
     return HttpResponseNotAllowed(['PUT'])
 
+
 # Send Django message as JSON data.
 # url: /messages
 def get_django_messages(request):
   messages = get_messages(request)
 
-  if (len(messages) == 0):
+  if len(messages) == 0:
     return HttpResponse(status=204)
 
   for message in messages:
     return JsonResponse({'message':message.message}, safe=False)
+

@@ -4,8 +4,10 @@ from .views import signup, signin, signout, userDetail, loginedUser
 from .views import meetingList, meetingDetail, meetingComment, commentList, commentDetail
 from .views import interestList, subjectList, subjectDetail, collegeList, collegeDetail
 from .views import token
-from .views import searchMeeting_title, searchMeeting_author, searchMeeting_subject, joinMeeting
+from .views import meetingCreate, meetingEdit, joinMeeting
+from .views import searchMeeting_title, searchMeeting_author, searchMeeting_subject
 from .views import get_django_messages
+
 
 urlpatterns = [
   url('^token$', token, name='token'),
@@ -32,6 +34,8 @@ urlpatterns = [
   url(r'^meeting/search/title/(?P<query>.+)$', searchMeeting_title, name='searchMeeting_title'),
   url(r'^meeting/search/author/(?P<query>.+)$', searchMeeting_author, name='searchMeeting_author'),
   url(r'^meeting/search/subject/(?P<subject_id>[0-9]+)(_(?P<query>.+))?$', searchMeeting_subject, name='searchMeeting_subject'),
+  url(r'^meeting/create$', meetingCreate, name='meetingCreate'),
+  url(r'^meeting/(?P<meeting_id>[0-9]+)/edit$', meetingEdit, name='meetingEdit'),
   url(r'^joinMeeting$', joinMeeting, name='joinMeeting'),
   url(r'^messages$', get_django_messages, name='messages')
 ]
