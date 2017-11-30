@@ -79,7 +79,7 @@ export class MeetingCreateComponent implements OnInit {
     // console.log(this.meeting.description);
 
     this.meetingService.createMeeting(
-      this.loginedUser,
+      this.currentUser,
       this.meeting.title,
       this.meeting.subject,
       this.meeting.description,

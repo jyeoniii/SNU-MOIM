@@ -75,6 +75,7 @@
       <span style="float:right">
        <input type="checkbox" class="checkbox-inline" [checked]="availableOnly" (click)="available()"> Available meetings only
       </span>
+
       <div class="table-responsive">
         <table class="table table-striped">
           <thead class="thead-default">
@@ -85,7 +86,7 @@
             <th>subject</th>
             <th>members</th>
           </tr>
-          <tr *ngFor="let meeting of meetings">
+          <tr *ngFor="let meeting of meetings | paginate: { itemsPerPage: maxSize, currentPage: currentPage, totalItems: totalItems }">
             <td>{{meeting.id}}</td>
             <td><a [routerLink]="['/meeting', meeting.id]" routerLinkActive="active">{{meeting.title}}</a></td>
             <td>{{meeting.author.name}}</td>
@@ -102,11 +103,13 @@
       <button class=" col-sm-2 btn btn-primary" style="float:right; width:100px; margin-right: 100px;"
               (click)="goToCreatePage()">create</button><br><br>
 
+    <pagination-controls (pageChange)="currentPage = $event; pageChanged($event)" style="display:block; margin:auto"></pagination-controls>
     <!--Pagination-->
+<!--
     <ng-pagination *ngIf="totalItems >= 0" [totalItems]="totalItems" [(ngModel)]="currentPage" [maxSize]="maxSize" [boundaryLinks]="true"
                      (pageChanged)="pageChanged($event)" previous-text="&lsaquo;" next-text="&rsaquo;"
                      style="display:block;margin:auto"first-text="First" last-text="Last"></ng-pagination><br>
-
+-->
     <!--Search filter-->
     <div style="display:block; margin:0 auto; width:800px">
       <select name="interest" [(ngModel)]="selectedOption">

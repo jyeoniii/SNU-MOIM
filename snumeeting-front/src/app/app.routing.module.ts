@@ -18,11 +18,10 @@ const routes: Routes = [
   { path: 'user/:id', component: ProfileComponent },
   { path: 'user/:id/edit', component: EditProfileComponent },
   { path: 'meeting/create', component: MeetingCreateComponent },
+  { path: 'meeting/:id/edit', component: MeetingEditComponent },
   { path: 'meeting/:id', component: MeetingDetailComponent },
   { path: 'meeting', component: MeetingsComponent },
   { path: 'user/:id/message', component: MessagesComponent },
-  { path: 'meeting/:id/edit', component: MeetingEditComponent },
-  { path: 'meeting', component: MeetingsComponent},
   { path: '**', redirectTo: '/sign_in' },
 ];
 
