@@ -15,6 +15,7 @@ from django.contrib.messages import get_messages
 from social_django.models import UserSocialAuth
 
 import json
+import requests
 
 from .tokens import account_activation_token
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest
@@ -128,12 +129,38 @@ def signin(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
       login(request, user)
+      refresh_fb_friend_status(user)
       converted_user = convert_userinfo_for_front(user.id)
       return JsonResponse(converted_user, safe = False)
     else:
       return HttpResponse(status=401)
   else:
     return HttpResponseNotAllowed(['POST'])
+
+def refresh_fb_friend_status(user):
+  ex_user = Ex_User.objects.get(user=user)
+  if ex_user.access_token != '' and ex_user.access_token != 'EXPIRED':
+    url = 'https://graph.facebook.com/v2.11/me?fields=friends&access_token=' + ex_user.access_token
+    response = requests.get(url)
+    if (response.status_code == 400):
+      ex_user.access_token = 'EXPIRED'
+    elif (response.status_code == 200):
+      friends = response.json()['friends']['data']
+
+      for friend in friends:
+        try:
+          friend_by_id = UserSocialAuth.get_social_auth('facebook', friend['id']).user
+          if friend_by_id is not None:
+            try:
+              ex_user_friend = Ex_User.objects.get(user = friend_by_id)
+              ex_user.fb_friends.add(ex_user_friend)
+            except Exception:
+              pass
+        except Exception:
+          pass
+
+    ex_user.save()
+
 
 # url: /signout
 def signout(request):

@@ -49,9 +49,9 @@ else:
 # SocialLogin: Facebook
 SOCIAL_AUTH_FACEBOOK_KEY = FACEBOOK_KEY
 SOCIAL_AUTH_FACEBOOK_SECRET = FACEBOOK_SECRET
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
+SOCIAL_AUTH_FACEBOOK_SCOPE = ['user_friends']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-   'fields': 'id, name, email'
+   'fields': 'id, name, friends'
 }
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 SOCIAL_AUTH_LOGIN_REDIRECT_URL='http://localhost:4200/meeting'
@@ -185,7 +185,8 @@ SOCIAL_AUTH_PIPELINE = (
     'snumeeting.social.check_user',
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
-    'social_core.pipeline.user.user_details'
+    'snumeeting.social.save_access_token',
+    'snumeeting.social.save_friends_data',
 )
 
 

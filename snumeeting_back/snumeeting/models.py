@@ -26,6 +26,7 @@ class Subject(models.Model):
 
 class Ex_User(models.Model):
   name = models.CharField(max_length=64)
+  access_token = models.CharField(max_length=255)
   user = models.OneToOneField(
     User,
     on_delete=models.CASCADE,
