@@ -54,10 +54,10 @@ export class MeetingDetailComponent implements OnInit {
     this.router.navigate(['/meeting']);
   }
 
-  // edit(): void {
-  //   this.router.navigate(['/meeting', this.selectedArticle.id, 'edit']);
-  // }
-  //
+  edit(): void {
+    this.router.navigate(['/meeting', this.selectedMeeting.id, 'edit']);
+  }
+
   delete(): void {
     this.meetingService.deleteMeeting(this.selectedMeeting.id);
     this.router.navigate(['/meeting']);

@@ -1,12 +1,13 @@
-import {async, ComponentFixture, inject, TestBed} from '@angular/core/testing';
+import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
 
-import { MeetingCreateComponent } from './meeting-create.component';
+import { MeetingEditComponent } from './meeting-edit.component';
 
 import { RouterTestingModule } from '@angular/router/testing';
-import { ActivatedRoute } from "@angular/router";
+
 import { FormsModule } from "@angular/forms";
 import { HttpModule, Http, XHRBackend, Response, ResponseOptions } from "@angular/http";
 import { Observable } from 'rxjs/Rx';
+import { ActivatedRoute } from "@angular/router";
 
 import { MeetingService } from "../services/meeting.service";
 import { UserService } from "../services/user.service";
@@ -17,9 +18,9 @@ import { MockBackend, MockConnection } from "@angular/http/testing";
 import { makeMeetingData } from "../models/mock-data";
 import { MetaDataService } from '../services/meta-data-service';
 
-describe('MeetingCreateComponent', () => {
-  let component: MeetingCreateComponent;
-  let fixture: ComponentFixture<MeetingCreateComponent>;
+describe('MeetingEditComponent', () => {
+  let component: MeetingEditComponent;
+  let fixture: ComponentFixture<MeetingEditComponent>;
 
   let backEnd: MockBackend;
   let fakeMeeting: Meeting[];
@@ -33,7 +34,7 @@ describe('MeetingCreateComponent', () => {
         HttpModule,
         FormsModule,
       ],
-      declarations: [MeetingCreateComponent],
+      declarations: [MeetingEditComponent],
       providers: [
         MeetingService, UserService, MetaDataService,
         { provide: XHRBackend, useClass: MockBackend },
@@ -41,13 +42,13 @@ describe('MeetingCreateComponent', () => {
       ]
     }).compileComponents()
       .then(() => {
-        fixture = TestBed.createComponent(MeetingCreateComponent);
+        fixture = TestBed.createComponent(MeetingEditComponent);
         component = fixture.componentInstance;
       });
   }));
 
   beforeEach(inject([Http, XHRBackend], (http: Http, be: MockBackend) => {
-    fixture = TestBed.createComponent(MeetingCreateComponent);
+    fixture = TestBed.createComponent(MeetingEditComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
 

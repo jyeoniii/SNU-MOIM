@@ -9,6 +9,7 @@ import { MeetingDetailComponent } from './meeting-detail/meeting-detail.componen
 import { MeetingCreateComponent } from './meeting-create/meeting-create.component';
 import { MeetingsComponent } from './meetings/meetings.component';
 import { MessagesComponent } from './messages/messages.component';
+import { MeetingEditComponent } from "./meeting-edit/meeting-edit.component";
 
 const routes: Routes = [
   { path: '', redirectTo: '/sign_in', pathMatch: 'full' },
@@ -20,6 +21,8 @@ const routes: Routes = [
   { path: 'meeting/:id', component: MeetingDetailComponent },
   { path: 'meeting', component: MeetingsComponent },
   { path: 'user/:id/message', component: MessagesComponent },
+  { path: 'meeting/:id/edit', component: MeetingEditComponent },
+  { path: 'meeting', component: MeetingsComponent},
   { path: '**', redirectTo: '/sign_in' },
 ];
 

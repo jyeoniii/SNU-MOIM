@@ -14,14 +14,16 @@ import { MeetingDetailComponent} from './meeting-detail/meeting-detail.component
 import { MeetingCreateComponent } from './meeting-create/meeting-create.component';
 import { MeetingsComponent } from './meetings/meetings.component';
 import { MessagesComponent } from './messages/messages.component';
+import { MeetingsComponent } from './meetings/meetings.component';
+import { MeetingEditComponent } from './meeting-edit/meeting-edit.component';
 
 import { UserService } from './services/user.service';
 import { MeetingService } from './services/meeting.service';
 import { CommentService } from './services/comment.service';
 import { MessageService } from './services/message.service';
+import { MetaDataService } from './services/meta-data-service';
 
 import { AppRoutingModule } from './app.routing.module';
-import { MetaDataService } from './services/meta-data-service';
 
 export function CSRFStrategy() {
   return new CookieXSRFStrategy('csrftoken', 'X-CSRFToken');
@@ -38,6 +40,7 @@ export function CSRFStrategy() {
     MeetingCreateComponent,
     MeetingsComponent,
     MessagesComponent,
+    MeetingEditComponent,
     PaginationDirective,
   ],
   imports: [

@@ -1,73 +1,146 @@
-<div *ngIf="loginedUser" style="float:right">
-  <span>Welcome, </span>{{loginedUser.name}}<br>
-  <button [routerLink]="['/user', loginedUser.id, 'message']" class="btn btn-primary btn-primary">Message</button>
+<div *ngIf="currentUser" style="float:right">
+  <span>Welcome, </span>{{currentUser.name}}<br>
+  <button [routerLink]="['/user', currentUser.id, 'message']" class="btn btn-primary btn-primary">Message</button>
   <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
 </div>
 
 <head>
-  <h1>Create Meeting</h1>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body>
+
+<button (click)="signOut()" class="col-sm-offset-1 col-sm-1 btn btn-primary" id="signout-button">Sign out</button>
+<br><br>
+<h2 class="text-center">Create MO-IM</h2>
 <br>
 
-<div>
-  <ul>
-    <li (click)="showWritingTap()" class="write_tap">write</li>
-    <li (click)="showPreviewTap" class="preview_tap">preview</li>
+<div class="container">
+  <ul class="nav nav-pills nav-justified">
+    <li class="active"><a href="#create" data-toggle="tab">Create</a></li>
+    <li><a href="#preview" data-toggle="tab">Preview</a></li>
   </ul>
+</div>
+<br><br>
 
-  <div *ngIf="isWriting">
-    <label>Title: </label>
-    <input type="text" [(ngModel)]="meeting.title" placeholder="title" cols="50"><br><br>
+<div class="tab-content">
+  <div id="create" class="tab-pane fade in active">
 
-    <label>Interest & Subject: </label>
-    <select name="interest">
-      <optgroup label="select your interest"></optgroup>
-      <optgroup label="Study">
-        <option value="eng">English</option>
-        <option value="math">Mathematics</option>
-        <option value="chem">Chemistry</option>
-        <option value="phy">Physics</option>
-        <option value="bio">Biology</option>
-        <option value="chi">Chinese</option>
-        <option value="com">Computer</option>
-      </optgroup>
-      <optgroup label="Activity">
-        <option value="band">Band</option>
-        <option value="dance">Dance</option>
-        <option value="sport">Sport</option>
-      </optgroup>
-      <option value="" disabled selected hidden>Please select your interested field</option>
-    </select>
-    <br><br>
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Title</label>
+        <div class="col-sm-8">
+          <input class="col-sm-9 form-control" [(ngModel)]="meeting.title" placeholder="Enter title" [ngModelOptions]="{standalone: true}">
+        </div>
+      </div>
+    </form>
+    <br>
 
-    <label>Description: </label><br>
-    <textarea [(ngModel)]="meeting.description" placeholder="description" rows="15"></textarea><br><br>
 
-    <select name="location">
-      <option value="" disabled selected hidden>Select a location you want to meet</option>
-      <option value="snu">SNU</option>
-      <option value="nsd">Nak Seong Dae</option>
-      <option value="snu_stn">SNU station</option>
-      <option value="etc">etc</option>
-    </select>
-    <br><br>
+    <div class="container">
+      <form class="container">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Interest</label>
+          <div class="radio-inline">
+            <div *ngFor="let interest of interests">
+              <input type="radio" name="interest" class="radio-inline" (click)="interestCheck(interest.name)">{{interest.name}}
+              <div *ngFor="let subject of interest.subjects">
+                <div class="col-sm-offset-1" *ngIf="interestChecked[interest.name]">
+                  <input type="radio" name="subject" class="radio-inline" (click)="subjectCheck(subject)">{{subject.name}}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
 
-    <p>If select etc, please specify below</p>
-    <label>etc:</label><input type="text" placeholder="specify the place"><br><br>
 
-    <label>Number of member: </label>
-    <input type="text" [(ngModel)]="meeting.max_number"><br><br>
 
-    <button (click)=create() class="create-button">create</button>
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Description</label>
+        <div class="col-sm-8">
+          <textarea class="col-sm-9 form-control" rows="10" style="width:500px;height:300px"
+                 placeholder="Enter detail for your meeting" [(ngModel)]="meeting.description"
+                 [ngModelOptions]="{standalone: true}">
+          </textarea>
+        </div>
+      </div>
+    </form>
+
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Location</label>
+        <div class="col-sm-8">
+          <input class="col-sm-9 form-control" placeholder="Enter a place to meet" [(ngModel)]="meeting.location" [ngModelOptions]="{standalone: true}">
+        </div>
+      </div>
+    </form>
+
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Participants</label>
+        <div class="col-sm-8">
+          <input class="col-sm-9 form-control" placeholder="Enter maximum members" [(ngModel)]="meeting.max_member" [ngModelOptions]="{standalone: true}">
+        </div>
+      </div>
+    </form>
 
   </div>
 
-  <div *ngIf="!isWriting">
-    <h2 class="meeting-title">{{ meeting.title }}</h2>
-    <p class="meeting-description">{{ meeting.description }}</p>
-  </div>
+  <div id="preview" class="tab-pane fade">
+    <h3 class="text-center">PREVIEW</h3>
 
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-6 control-label">Title</label>
+        <div class="col-sm-6">
+          <p class="form-control-static">{{meeting.title}}</p>
+        </div>
+      </div>
+    </form>
+
+    <!--<form class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-6 control-label">Interest</label>
+        <div class="col-sm-6">
+          <p class="form-control-static">{{selectedSubject.name}}</p>
+        </div>
+      </div>
+    </form>-->
+
+
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-6 control-label">Description</label>
+        <div class="col-sm-6">
+          <p class="form-control-static">{{meeting.description}}</p>
+        </div>
+      </div>
+    </form>
+
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-6 control-label">Location</label>
+        <div class="col-sm-6">
+          <p class="form-control-static">{{meeting.location}}</p>
+        </div>
+      </div>
+    </form>
+
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-6 control-label">Participant</label>
+        <div class="col-sm-6">
+          <p class="form-control-static">{{meeting.max_member}}</p>
+        </div>
+      </div>
+    </form>
+
+  </div>
 </div>
 
-</body>
+<button (click)="create()" class="col-sm-offset-2 col-sm-2 btn btn-primary">Create</button>
+
+<button (click)="goBack()" class="col-sm-offset-2 col-sm-2 btn btn-primary" id="go-back-button">Back</button>
