@@ -185,7 +185,8 @@ SOCIAL_AUTH_PIPELINE = (
     'snumeeting.social.check_user',
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
-    'snumeeting.social.save_friends_data'
+    'snumeeting.social.save_access_token',
+    'snumeeting.social.save_friends_data',
 )
 
 
