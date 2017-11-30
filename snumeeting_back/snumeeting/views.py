@@ -554,15 +554,46 @@ def meetingEdit(request, meeting_id):
     return HttpResponseNotAllowed(['GET'],['PUT'])
 
 
-def joinMeeting(request):
+# url: /joinMeeting/:meeting_id
+def joinMeeting(request, meeting_id):
   if request.method == 'PUT':
     des_req = json.loads(request.body.decode())
-    meeting_id = des_req['meeting_id']
     user_id = des_req['user_id']
     try:
       meeting = Meeting.objects.get(id=meeting_id)
       user = Ex_User.objects.get(id=user_id)
       meeting.members.add(user)
+      meeting.save()
+    except Meeting.DoesNotExist:
+      return HttpResponseNotFound()
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+    return HttpResponse(status=204)
+  else:
+    return HttpResponseNotAllowed(['PUT'])
+
+# url: /closeMeeting/:meeting_id
+def closeMeeting(request, meeting_id):
+  if request.method == 'GET':
+    try:
+      meeting = Meeting.objects.get(id=meeting_id)
+      meeting.is_closed = True
+      meeting.save()
+    except Meeting.DoesNotExist:
+      return HttpResponseNotFound()
+    return HttpResponse(status=204)
+  else:
+    return HttpResponseNotAllowed(['GET'])
+
+# url: /leaveMeeting/:meeting_id
+def leaveMeeting(request, meeting_id):
+  if request.method == 'PUT':
+    des_req = json.loads(request.body.decode())
+    user_id = des_req['user_id']
+    try:
+      meeting = Meeting.objects.get(id=meeting_id)
+      user = Ex_User.objects.get(id=user_id)
+      meeting.members.remove(user)
       meeting.save()
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
@@ -583,4 +614,6 @@ def get_django_messages(request):
 
   for message in messages:
     return JsonResponse({'message':message.message}, safe=False)
+
+
 
