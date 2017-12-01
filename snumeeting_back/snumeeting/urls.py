@@ -5,7 +5,6 @@ from .views import *
 urlpatterns = [
   url('^token$', token, name='token'),
   url(r'^check_user$', check_user, name='check_user'),
-  url(r'^check_FB_user$', check_FB_user, name='check_FB_user'),
   url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
       activate, name='activate'),
   url(r'^activate_without_code', activate_without_code, name='activate_without_code'),

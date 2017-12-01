@@ -1,5 +1,6 @@
 from .models import Ex_User, User, Subject
 from django.forms.models import model_to_dict
+from social_django.models import UserSocialAuth
 
 def convert_userinfo_for_front(user_id):
   try:
@@ -12,11 +13,29 @@ def convert_userinfo_for_front(user_id):
     user['name'] = ex_user.name
     user['college'] = model_to_dict(ex_user.college)
     user['subjects'] = list(ex_user.subjects.all().values())
+    user['fb_friends'] = fb_friends_userinfo_for_front(ex_user)
+    try:
+      ex_user.user.social_auth.get(provider='facebook')
+      user['fb_connected'] = True
+    except UserSocialAuth.DoesNotExist:
+        user['fb_connected'] = False
     if ex_user.access_token == 'EXPIRED':
       user['token_expired'] = True
   except Ex_User.DoesNotExist:
     user['name'] = 'NONEXISTING'
   return user
+
+def fb_friends_userinfo_for_front(ex_user):
+  fb_friends = []
+  for friend in ex_user.fb_friends.all():
+    friend_info = {}
+    friend_info['id'] = friend.id
+    friend_info['name'] = friend.name
+    friend_info['username'] = User.objects.get(id=friend.user_id).username
+    fb_friends.append(friend_info)
+  return fb_friends
+
+
 
 def convert_userinfo_minimal(user_id):
   # convert user info - only minimal information needed (id+name)

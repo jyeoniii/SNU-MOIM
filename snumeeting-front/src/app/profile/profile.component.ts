@@ -4,6 +4,15 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { User } from '../models/user';
 import { UserService } from '../services/user.service';
 
+enum Status {
+  Self = 0,
+  Friend = 1,
+  ShowMutual = 2,
+  LoginUserNoFB = 3,
+  ProfileUserNoFB = 4,
+  NoOneLoggedIn = 5,
+}
+
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -19,7 +28,8 @@ export class ProfileComponent implements OnInit {
 
   user: User;
   loginedUser: User;
-  notConnectedtoFB: boolean;
+  mutualFriends: User[] = [];
+  status: Status;
 
   ngOnInit() {
     this.route.params.subscribe(params => {
@@ -27,9 +37,10 @@ export class ProfileComponent implements OnInit {
     });
 
     this.userService.getLoginedUser()
-      .then(user => this.loginedUser = user);
-
-    this.userService.checkFBaccount().then(connected => this.notConnectedtoFB = !connected);
+      .then(user => {
+        this.loginedUser = user;
+        this.setStatus();
+      });
   }
 
   editProfile() {
@@ -47,6 +58,50 @@ export class ProfileComponent implements OnInit {
     } else {
       // No user logged in
       return false;
+    }
+  }
+
+  setStatus(): void {
+    if (this.loginedUser && this.user) {
+      if (this.loginedUser.id === this.user.id) {
+        this.status = Status.Self;
+      } else {
+        if (!this.loginedUser.fb_connected) {
+          this.status = Status.LoginUserNoFB;
+        } else if (!this.user.fb_connected) {
+          this.status = Status.ProfileUserNoFB;
+        } else {
+          this.status = Status.ShowMutual;
+          for (const friend of this.loginedUser.fb_friends) {
+            if (friend.id === this.user.id) {
+              this.status = Status.Friend;
+              break;
+            }
+          }
+
+          if (this.status === Status.ShowMutual) {
+            this.getMutualFriends();
+          }
+        }
+      }
+    } else {
+      this.status = Status.NoOneLoggedIn;
+    }
+
+    console.log(this.status);
+  }
+
+  getMutualFriends(): void {
+    // Doesn't work:
+    // return this.loginedUser.fb_friends.filter(e => this.user.fb_friends.includes(e));
+
+    for (const loginedUserFriend of this.loginedUser.fb_friends) {
+      for (const profileUserFriend of this.user.fb_friends) {
+        if (loginedUserFriend.id === profileUserFriend.id) {
+          this.mutualFriends.push(loginedUserFriend);
+          break;
+        }
+      }
     }
   }
 }

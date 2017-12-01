@@ -43,7 +43,6 @@ export class UserService {
 
     return this.http.post('/api/signup', JSON.stringify({
         username: user.username,
-        password: user.password,
         name: user.name,
         college_id: user.college.id,
         subject_ids: subjectIDList
@@ -96,13 +95,6 @@ export class UserService {
     return this.http.request('/api/loginedUser')
       .toPromise()
       .then(response => response.json() as User);
-  }
-
-  checkFBaccount(): Promise<boolean> {
-    return this.http.get('/api/check_FB_user')
-      .toPromise()
-      .then(() => true, () => false)
-      .catch(this.handleError);
   }
 
   private handleError(error: any): Promise<any> {

@@ -33,21 +33,6 @@ def check_user(request):
   else:
     return HttpResponseNotAllowed(['POST'])
 
-# url: /check_FB_user
-def check_FB_user(request):
-  if request.method == 'GET':
-    if request.user.is_anonymous:
-      return HttpResponseNotFound()
-    else:
-      try:
-        request.user.social_auth.get(provider='facebook')
-        return HttpResponse(status=200)
-      except UserSocialAuth.DoesNotExist:
-        return HttpResponseNotFound()
-  else:
-    return HttpResponseNotAllowed(['GET'])
-
-
 # url: /signup
 def signup(request):
   if request.method == 'POST':

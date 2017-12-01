@@ -55,14 +55,34 @@
     </div>
   </form>
 
-  <button *ngIf="canEdit()" class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="editProfile()">Edit Profile</button>
+  <br>
 
-  <div style="margin-top:100px">
-    <a href="/oauth/login/facebook/">
-      <button *ngIf="canEdit() && notConnectedtoFB"
-              class="col-sm-offset-5 col-sm-2 btn btn-primary">Connect to Facebook</button>
+  <div *ngIf="status === 0"> <!-- Logged in user is on their own profile page -->
+    <button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="editProfile()">Edit Profile</button>
+    <br><br>
+    <a href="/oauth/login/facebook/"> <!-- Show Facebook Connect Button -->
+      <button *ngIf="!loginedUser.fb_connected" class="col-sm-offset-5 col-sm-2 btn btn-primary">Connect to Facebook</button>
     </a>
   </div>
 
-</div>
+  <div *ngIf="status === 1"> <!-- Facebook friend -->
+    <h4 class="text-center"><u>You're a friend with this user!</u></h4>
+  </div>
+
+  <div *ngIf="status === 2"> <!-- Show mutual friends -->
+    <div *ngIf="mutualFriends.length === 0">
+      <h4 class="text-center">There's no mutual friends between you and this user.</h4>
+    </div>
+    <div *ngIf="mutualFriends.length > 0">
+      <h4 class="text-center"><u>Mutual friends between you and this user</u></h4>
+      <div class="col-sm-offset-4 col-sm-4">
+        <div *ngFor="let friend of mutualFriends">
+          <li class="list-group-item" style="text-align: center;">
+            {{friend.name}} (username: {{friend.username}})
+          </li>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
