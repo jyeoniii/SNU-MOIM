@@ -33,7 +33,11 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.userService.getUserInfo(+params['id']).then(user => this.user = user);
+      this.userService.getUserInfo(+params['id']).then(user => {
+          this.user = user;
+          this.setStatus();
+        }
+      );
     });
 
     this.userService.getLoginedUser()
