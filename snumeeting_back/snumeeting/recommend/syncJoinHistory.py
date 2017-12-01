@@ -7,14 +7,14 @@ def SyncUserHistoryAll():
   for user in users:
     ReinitUserHistory(user)
 
-  print("SyncUserHistoryAll() done")
+  #print("SyncUserHistoryAll() done")
 
 def SyncCollegeHistoryAll():
   colleges = College.objects.all()
   for college in colleges:
     ReinitCollegeHistory(college)
 
-  print("SyncCollegeHistoryAll() done")
+  #print("SyncCollegeHistoryAll() done")
 
 def ReinitUserHistory(user):
   manager = JoinHistoryManager()
