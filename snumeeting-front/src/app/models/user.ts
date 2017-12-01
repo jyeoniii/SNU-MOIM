@@ -8,4 +8,5 @@ export class User {
   name: string;
   college: College;
   subjects: Subject[];
+  token_expired = false;
 }

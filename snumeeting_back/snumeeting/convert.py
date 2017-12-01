@@ -12,6 +12,8 @@ def convert_userinfo_for_front(user_id):
     user['name'] = ex_user.name
     user['college'] = model_to_dict(ex_user.college)
     user['subjects'] = list(ex_user.subjects.all().values())
+    if ex_user.access_token == 'EXPIRED':
+      user['token_expired'] = True
   except Ex_User.DoesNotExist:
     user['name'] = 'NONEXISTING'
   return user
