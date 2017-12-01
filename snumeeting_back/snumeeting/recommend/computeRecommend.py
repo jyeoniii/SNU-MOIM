@@ -5,28 +5,30 @@ import heapq
 import random
 from operator import itemgetter
 
-def getRecMeetingsUserBased(target, N):
+def getRecMeetings(target, N):
   # Get meetings that similar users is joined
   # N : maximum number of meetings to be recommended
 
   K = 3     # number of similar users to be recommended
+  target_interests = target.subjects.all()
   similar_users = dict(getUserSimilarity(target,K))
-  result = []
+  scores = {} 
 
   sim_user_ids = list(similar_users.keys())
   for uid in sim_user_ids:
     user = Ex_User.objects.get(id=uid)
     meetings_joined = list(user.meetings_joined.all())
-    result += meetings_joined
 
-  if len(result) > N:
-    result = result[:N]
+    for m in meetings_joined:
+      if not (m.is_closed or (target in m.members.all())):  # exclude closed meeting or one that target user is already joined
+        score = similar_users[uid]
+        if m.subject in target_interests: 
+          score *= 1.1    # Give 10% advantage for meetings in categories that user is interested
+        scores[m] = score
 
-  result = list(filter(
-      (lambda m: not (m.is_closed or (target in m.members.all()))),
-       result))
+  topN = heapq.nlargest(N, scores.items(), key=itemgetter(1)) 
 
-  return result
+  return [t[0] for t in topN] 
 
 def getUserSimilarity(target, K):
   # Find the user having the most similar join history
@@ -77,7 +79,6 @@ def getCollegeDistance(target):
     distances[college.id] = d
     sum += d
 
-  #return {k: v / sum for k, v in distances.items()}  # Proportion (sum=1)
   return distances
 
 
