@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 class College(models.Model):
   name = models.CharField(max_length=64)
+  joinHistory = models.CharField(max_length=200, default='{}')
 
   def __str__(self):
     return self.name
@@ -44,6 +45,7 @@ class Ex_User(models.Model):
   fb_friends = models.ManyToManyField(
     'self',
   )
+  joinHistory = models.CharField(max_length=200, default='{}')
 
   def __str__(self):
     return self.name
