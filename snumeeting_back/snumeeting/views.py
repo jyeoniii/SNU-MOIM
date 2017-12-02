@@ -661,8 +661,9 @@ def get_django_messages(request):
 def recommendMeetings(request, user_id, N):
   if request.method == 'GET':
     try:
-      user = Ex_User.objects.get(id=user_id)
-      result = getRecMeetings(user, N)
+      user = Ex_User.objects.get(id=int(user_id))
+      result = getRecMeetings(user, int(N))
+      print(result)
       return JsonResponse(result, safe=False)
     except Ex_User.DoesNotExist:
       return HttpResponseNotFound()

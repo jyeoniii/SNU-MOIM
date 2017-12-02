@@ -1,3 +1,4 @@
+from django.forms.models import model_to_dict
 from snumeeting.models import Ex_User, College
 from .similaritymeasures import Similarity 
 from .JoinHistoryManager import JoinHistoryManager
@@ -28,7 +29,14 @@ def getRecMeetings(target, N):
 
   topN = heapq.nlargest(N, scores.items(), key=itemgetter(1)) 
 
-  return [t[0] for t in topN] 
+  # Helper function: remove Queryset type 'members' which is not serializable
+  def removeMembers(meeting):
+    del meeting['members']
+    return meeting
+
+  return list(map(lambda x: removeMembers(x), [model_to_dict(t[0]) for t in topN])) 
+
+
 
 def getUserSimilarity(target, K):
   # Find the user having the most similar join history
