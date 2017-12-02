@@ -21,6 +21,7 @@ from .tokens import account_activation_token
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
 from snumeeting.recommend.JoinHistoryManager import JoinHistoryManager
+from snumeeting.recommend.computeRecommend import getRecMeetings, getUserSimilarity
 
 # url: /check_user
 def check_user(request):
@@ -657,5 +658,14 @@ def get_django_messages(request):
   for message in messages:
     return JsonResponse({'message':message.message}, safe=False)
 
-
+def recommendMeetings(request, user_id, N):
+  if request.method == 'GET':
+    try:
+      user = Ex_User.objects.get(id=user_id)
+      result = getRecMeetings(user, N)
+      return JsonResponse(result, safe=False)
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+  else:
+    return HttpResponseNotAllowed(['GET'])
 
