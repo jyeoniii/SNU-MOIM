@@ -1,4 +1,4 @@
-from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed, HttpResponseNotFound
+from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed, HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.forms.models import model_to_dict
 from django.contrib.sites.shortcuts import get_current_site
@@ -14,12 +14,15 @@ from django.contrib import messages
 from django.contrib.messages import get_messages
 from social_django.models import UserSocialAuth
 
-import json
-import requests
+from snumeeting.recommend.JoinHistoryManager import JoinHistoryManager
+from snumeeting.recommend.computeRecommend import getRecMeetings, getUserSimilarity
 
 from .tokens import account_activation_token
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
+
+import json
+import requests
 
 # url: /check_user
 def check_user(request):
@@ -581,8 +584,15 @@ def joinMeeting(request, meeting_id):
     user_id = des_req['user_id']
     try:
       meeting = Meeting.objects.get(id=meeting_id)
+      if meeting.is_closed:
+        return HttpResponseBadRequest()
       user = Ex_User.objects.get(id=user_id)
       meeting.members.add(user)
+      manager = JoinHistoryManager()
+      user.joinHistory = manager.increaseCnt(user.joinHistory, meeting.subject_id)
+      user.college.joinHistory = manager.increaseCnt(user.college.joinHistory, meeting.subject_id)
+      user.save()
+      user.college.save()
       meeting.save()
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
@@ -612,8 +622,15 @@ def leaveMeeting(request, meeting_id):
     user_id = des_req['user_id']
     try:
       meeting = Meeting.objects.get(id=meeting_id)
+      if meeting.is_closed:
+        return HttpResponseBadRequest()
       user = Ex_User.objects.get(id=user_id)
+      manager = JoinHistoryManager()
       meeting.members.remove(user)
+      user.joinHistory = manager.decreaseCnt(user.joinHistory, meeting.subject_id)
+      user.college.joinHistory = manager.decreaseCnt(user.college.joinHistory, meeting.subject_id)
+      user.save()
+      user.college.save()
       meeting.save()
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
@@ -623,6 +640,17 @@ def leaveMeeting(request, meeting_id):
   else:
     return HttpResponseNotAllowed(['PUT'])
 
+def recommendMeetings(request, user_id, N):
+  if request.method == 'GET':
+    try:
+      user = Ex_User.objects.get(id=int(user_id))
+      result = getRecMeetings(user, int(N))
+      print(result)
+      return JsonResponse(result, safe=False)
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+  else:
+    return HttpResponseNotAllowed(['GET'])
 
 # Send Django message as JSON data.
 # url: /messages
@@ -637,7 +665,6 @@ def get_django_messages(request):
       return JsonResponse({'message':message.message}, safe=False)
   else:
     return HttpResponseNotAllowed(['GET'])
-
 
 # for testing
 # url: /add_message
