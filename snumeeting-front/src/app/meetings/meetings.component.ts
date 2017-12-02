@@ -103,11 +103,13 @@ export class MeetingsComponent implements OnInit {
       .then(interestList => this.interestList = interestList);
     this.userService.getLoginedUser().then(user => {
       this.loginedUser = user;
-      this.recommendService.getRecMeetings(this.loginedUser.id, 5)
-        .then(res => {
-          this.meetingsRecommended = res;
-          this.meetingsShown = this.meetingsRecommended.slice(this.idx, this.idx + this.N);
-        });
+      if (this.loginedUser) {
+        this.recommendService.getRecMeetings(this.loginedUser.id, 5)
+          .then(res => {
+            this.meetingsRecommended = res;
+            this.meetingsShown = this.meetingsRecommended.slice(this.idx, this.idx + this.N);
+          });
+      }
     });
   }
 

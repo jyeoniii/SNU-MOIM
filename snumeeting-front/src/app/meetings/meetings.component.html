@@ -28,7 +28,10 @@
     <div class="col-sm-3 col-md-2 sidebar">
       <ul class="nav nav-sidebar">
         <li class="active"><a href="/meeting">Home<span class="sr-only">(current)</span></a></li>
-        <li *ngIf="loginedUser"><a href="/user/{{loginedUser.id}}">Your profile</a></li>
+        <li *ngIf="loginedUser;else signIn"><a href="/user/{{loginedUser.id}}">Your profile</a></li>
+        <ng-template #signIn>
+          <li><a href="/">SignIn</a></li>
+        </ng-template>
       </ul>
       <ul class="nav nav-sidebar">
         <li><a href="">Nav item</a></li>
@@ -43,8 +46,8 @@
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
       <!--Recommendation-->
-      <h2> You might like..</h2>
       <div *ngIf="meetingsShown" class="container-fluid">
+        <h2> You might like..</h2>
 
         <div class="row">
           <div class="col-md-12">
