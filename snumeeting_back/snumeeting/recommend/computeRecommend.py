@@ -15,6 +15,8 @@ def getRecMeetings(target, N):
   similar_users = dict(getUserSimilarity(target,K))
   scores = {} 
 
+
+  # Score based on similar users
   sim_user_ids = list(similar_users.keys())
   for uid in sim_user_ids:
     user = Ex_User.objects.get(id=uid)
@@ -22,10 +24,16 @@ def getRecMeetings(target, N):
 
     for m in meetings_joined:
       if not (m.is_closed or (target in m.members.all())):  # exclude closed meeting or one that target user is already joined
-        score = similar_users[uid]
-        if m.subject in target_interests: 
-          score *= 1.1    # Give 10% advantage for meetings in categories that user is interested
-        scores[m] = score
+        scores[m] = similar_users[uid]
+
+  # Score based on target user's interest
+  for subject in target_interests:
+    for m in subject.meetings.all():
+      if not (m.is_closed or (target in m.members.all())):  # exclude closed meeting or one that target user is already joined
+        if m in scores.keys():
+          scores[m] += 0.15    # Give 15% advantage for meetings in categories that user is interested
+        else:
+          scores[m] = 0.15
 
   topN = heapq.nlargest(N, scores.items(), key=itemgetter(1)) 
 
@@ -61,9 +69,9 @@ def getUserSimilarity(target, K):
     col_d = d_colleges[user.college_id]          # College Distance 
 
     # Convert distance to similarity
-    # (Current weight) InterestDistance:CollegeDistance = 2:1
+    # (Current weight) InterestDistance:CollegeDistance = 3:1
     # print("id:"+str(user.id)+" interest distance: "+str(jh_d)+ " / college distance: " + str(col_d/2))
-    similarities[user.id] = 1 / (1 + jh_d + col_d/2)  
+    similarities[user.id] = 1 / (1 + jh_d + col_d/3)  
 
   return heapq.nlargest(K, similarities.items(), key=itemgetter(1)) 
 
