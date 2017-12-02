@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from social_django.models import UserSocialAuth
 
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest
-from .social import check_user
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
 import json
 
@@ -27,9 +26,11 @@ class SnuMeetingTestCase(TestCase):
     fake1 = User.objects.create(id=0, username='fake1', password='1234', email='fake1@snu.ac.kr')
     fake2 = User.objects.create(id=1, username='fake2', password='1234', email='fake2@snu.ac.kr')
     fake3 = User.objects.create(id=2, username='fake3', password='1234', email='fake3@snu.ac.kr')
+    fake3_fb = UserSocialAuth.objects.create(user_id=2, uid=39203928, provider='facebook')
     fake1_ex = Ex_User.objects.create(id=0, user=fake1, name='John', college=engineering, subjects=[std_eng])
     fake2_ex = Ex_User.objects.create(id=1, user=fake2, name='Joshua',college=business, subjects=[std_chi, pfm_band])
-    fake3_ex = Ex_User.objects.create(id=2, user=fake3, name='Alice', college=business, subjects=[pfm_band])
+    fake3_ex = Ex_User.objects.create(id=2, user=fake3, name='Alice', college=business, subjects=[pfm_band],
+                                      fb_friends=[fake1_ex], access_token='EXPIRED')
 
     # Meeting
     meeting1 = Meeting.objects.create(id=0, author=fake1_ex, title='Study English',
@@ -144,29 +145,6 @@ class SnuMeetingTestCase(TestCase):
     # DELETE
     response = self.client.delete('/api/check_user')
     self.assertEqual(response.status_code, 405)
-
-  def test_check_FB_user(self):
-    # GET
-
-    # TODO: SIGN A USER IN
-
-    # No user signed in
-    self.client.get('/api/signout')
-    response = self.client.get('/api/check_FB_user')
-    self.assertEqual(response.status_code, 404)
-
-    # POST
-    response = self.client.post('/api/check_FB_user')
-    self.assertEqual(response.status_code, 405)
-
-    # PUT
-    response = self.client.put('/api/check_FB_user')
-    self.assertEqual(response.status_code, 405)
-
-    # DELETE
-    response = self.client.delete('/api/check_FB_user')
-    self.assertEqual(response.status_code, 405)
-
 
   def test_signup(self):
     # GET
@@ -759,7 +737,7 @@ class SnuMeetingTestCase(TestCase):
 
   def test_convert_userinfo_for_front(self):
     user = convert_userinfo_for_front(0)
-    self.assertEqual(len(user), 6)
+    self.assertEqual(len(user), 8)
     self.assertEqual(user['id'],0)
     self.assertEqual(user['username'],'fake1')
     self.assertEqual(user['password'],'1234')
@@ -955,8 +933,5 @@ class SnuMeetingTestCase(TestCase):
 
     response = self.client.delete('/api/closeMeeting/1')
     self.assertEqual(response.status_code, 405)
-
-
-
 
 
