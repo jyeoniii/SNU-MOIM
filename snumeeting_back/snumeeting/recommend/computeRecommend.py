@@ -12,9 +12,10 @@ def getRecMeetings(target, N):
 
   K = 3     # number of similar users to be recommended
   target_interests = target.subjects.all()
-  similar_users = dict(getUserSimilarity(target,K))
   scores = {} 
 
+  similar_users = dict(getUserSimilarity(target,K))
+  print(similar_users)
 
   # Score based on similar users
   sim_user_ids = list(similar_users.keys())
@@ -64,8 +65,11 @@ def getUserSimilarity(target, K):
   for user in users:
     if user.id == target.id:
       continue
-    jh_user = manager.convertToList(user.joinHistory)
-    jh_d = measure.euclidean_distance(jh_target, jh_user)  # Interest Distance 
+    if target.joinHistory != "{}":
+      jh_user = manager.convertToList(user.joinHistory)
+      jh_d = measure.euclidean_distance(jh_target, jh_user)  # Interest Distance 
+    else:  # Cold start -> computing join history similarity is meaningless
+      jh_d = 0
     col_d = d_colleges[user.college_id]          # College Distance 
 
     # Convert distance to similarity

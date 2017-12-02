@@ -172,7 +172,6 @@ export class MeetingsComponent implements OnInit {
     if (next) {
       const increasedIdx = this.idx + 1;
       if (increasedIdx + this.N <= this.meetingsRecommended.length) this.idx = increasedIdx;
-      console.log(this.idx);
     } else {
       if (this.idx !== 0) this.idx -= 1;
     }
