@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from social_django.models import UserSocialAuth
+from django.contrib import messages
 
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
@@ -960,4 +961,28 @@ class SnuMeetingTestCase(TestCase):
     response = self.client.delete('/api/closeMeeting/1')
     self.assertEqual(response.status_code, 405)
 
+  def test_django_messages(self):
+    # No message
+    response = self.client.get('/api/messages')
+    self.assertEqual(response.status_code, 204)
 
+    # Add message & get it
+    response = self.client.post('/api/add_message', json.dumps({'message':'message'}), content_type='application/json')
+    self.assertEqual(response.status_code, 200)
+
+    response = self.client.get('/api/messages')
+    self.assertEqual(response.status_code, 200)
+
+    #PUT
+    response = self.client.put('/api/messages')
+    self.assertEqual(response.status_code, 405)
+
+    response = self.client.put('/api/add_message')
+    self.assertEqual(response.status_code, 405)
+
+    #DELETE
+    response = self.client.delete('/api/messages')
+    self.assertEqual(response.status_code, 405)
+
+    response = self.client.delete('/api/add_message')
+    self.assertEqual(response.status_code, 405)

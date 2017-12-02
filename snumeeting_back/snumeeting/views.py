@@ -627,13 +627,24 @@ def leaveMeeting(request, meeting_id):
 # Send Django message as JSON data.
 # url: /messages
 def get_django_messages(request):
-  messages = get_messages(request)
+  if request.method == 'GET':
+    messages = get_messages(request)
 
-  if len(messages) == 0:
-    return HttpResponse(status=204)
+    if len(messages) == 0:
+      return HttpResponse(status=204)
 
-  for message in messages:
-    return JsonResponse({'message':message.message}, safe=False)
+    for message in messages:
+      return JsonResponse({'message':message.message}, safe=False)
+  else:
+    return HttpResponseNotAllowed(['GET'])
 
 
-
+# for testing
+# url: /add_message
+def add_django_message(request):
+  if request.method == 'POST':
+    req_data = json.loads(request.body.decode())
+    messages.success(request, req_data['message'])
+    return HttpResponse(status=200)
+  else:
+    return HttpResponseNotAllowed(['POST'])

@@ -37,6 +37,26 @@ describe('UserService (mockBackend)', () => {
       expect(service instanceof UserService).toBe(true, 'new service should be ok');
     }));
 
+  describe('when check user', () => {
+    let backend: MockBackend;
+    let service: UserService;
+    let fakeUsers: User[];
+
+    beforeEach(inject([Http, XHRBackend], (http: Http, be: MockBackend) => {
+      backend = be;
+      service = new UserService(http);
+      fakeUsers = makeUserData();
+
+    }));
+
+    it('should check if user doesn\'t exist',
+      async(inject([], () => {
+        let response = new Response(new ResponseOptions({status: 200}));
+        backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
+        service.checkUser('no').then(result => expect(result).toBe(true));
+      })));
+  });
+
   describe('when signIn', () => {
     let backend: MockBackend;
     let service: UserService;
