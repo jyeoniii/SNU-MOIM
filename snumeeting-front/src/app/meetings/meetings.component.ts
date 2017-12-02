@@ -38,6 +38,7 @@ export class MeetingsComponent implements OnInit {
   private allMeetingsWithoutFiltering: Meeting[] = null;
 
   private meetingsRecommended: Meeting[] = null;
+  private meetingsShown: Meeting[] = null;
   private K = 10; // Num of meetings to be recommended;
   private N = 3; // Num of recommended meetings to be shown
   private idx = 0;  // Start index to be shown from recommended meetings
@@ -103,7 +104,10 @@ export class MeetingsComponent implements OnInit {
     this.userService.getLoginedUser().then(user => {
       this.loginedUser = user;
       this.recommendService.getRecMeetings(this.loginedUser.id, 5)
-        .then(res => this.meetingsRecommended = res);
+        .then(res => {
+          this.meetingsRecommended = res;
+          this.meetingsShown = this.meetingsRecommended.slice(this.idx, this.idx + this.N);
+        });
     });
   }
 
@@ -164,10 +168,13 @@ export class MeetingsComponent implements OnInit {
 
   showOtherRecommendation(next: boolean): void {
     if (next) {
-      this.idx += 1;
+      const increasedIdx = this.idx + 1;
+      if (increasedIdx + this.N <= this.meetingsRecommended.length) this.idx = increasedIdx;
+      console.log(this.idx);
     } else {
-      this.idx -= 1;
+      if (this.idx !== 0) this.idx -= 1;
     }
+    this.meetingsShown = this.meetingsRecommended.slice(this.idx, this.idx + this.N);
   }
 
 }
