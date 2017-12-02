@@ -48,9 +48,17 @@ def signup(request):
     user = User.objects.create_user(username=username, password=password, email=email)
     user.is_active = False # this will be true after activation by email
     user.save()
-    ex_User = Ex_User.objects.create(name=name, user=user, college=college) # create first, m2m later
+    try: # these keys are only for testing
+      access_token = req_data['access_token']
+      fb_friend_ids = req_data['fb_friend_ids']
+      fb_friends = Ex_User.objects.filter(id__in=fb_friend_ids)
+    except KeyError:
+      access_token = ''
+      fb_friends=[]
+    ex_User = Ex_User.objects.create(name=name, user=user, college=college, access_token=access_token) # create first, m2m later
     ex_User.save()
     ex_User.subjects.add(*subjects) # adding many-to-many at once
+    ex_User.fb_friends.add(*fb_friends)
     ex_User.save()
 
     # Email Verification

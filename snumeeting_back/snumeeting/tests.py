@@ -26,7 +26,7 @@ class SnuMeetingTestCase(TestCase):
     fake1 = User.objects.create(id=0, username='fake1', password='1234', email='fake1@snu.ac.kr')
     fake2 = User.objects.create(id=1, username='fake2', password='1234', email='fake2@snu.ac.kr')
     fake3 = User.objects.create(id=2, username='fake3', password='1234', email='fake3@snu.ac.kr')
-    fake3_fb = UserSocialAuth.objects.create(user_id=2, uid=39203928, provider='facebook')
+    fake3_fb = UserSocialAuth.objects.create(user_id=2, uid=100407420743302, provider='facebook')
     fake1_ex = Ex_User.objects.create(id=0, user=fake1, name='John', college=engineering, subjects=[std_eng])
     fake2_ex = Ex_User.objects.create(id=1, user=fake2, name='Joshua',college=business, subjects=[std_chi, pfm_band])
     fake3_ex = Ex_User.objects.create(id=2, user=fake3, name='Alice', college=business, subjects=[pfm_band],
@@ -175,20 +175,46 @@ class SnuMeetingTestCase(TestCase):
     # POST
     self.client.post( # Making fake user
       '/api/signup',
-      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':0, 'subject_ids':[0]}),
+      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':0, 'subject_ids':[0],
+                  'access_token':'EAALMoP2WHT4BADFPbkwUY3Um3ZBBmmPJbA4ZBXdd8fCnmo4pyMprZAxZAMzVHFKdY8Fpb08trFMIVo2vNsgiCJUkW6iPHN7qre38lZCJxdVBTZAWrQNjli5VHTuY1CQ1M2T2ZBTq6HeRsOqgoOpDjy4sXKidhgf6Y5ydpDWGwQwXWaFAFR4uTf4',
+                  'fb_friend_ids':[0]}),
       content_type='application/json',
     )
+
     self.client.put( # Activate the fake user without activation code
       '/api/activate_without_code',
       json.dumps({'username':'test'}),
       content_type='application/json',
     )
+
+    self.client.post( # Making fake user with wrong FB access token
+      '/api/signup',
+      json.dumps({'name':'test1', 'password':'test1', 'username':'test1', 'college_id':0, 'subject_ids':[0],
+                  'access_token':'wrong_token', 'fb_friend_ids':[2]
+                  }),
+      content_type='application/json',
+    )
+
+    self.client.put( # Activate the fake user without activation code
+      '/api/activate_without_code',
+      json.dumps({'username':'test1'}),
+      content_type='application/json',
+    )
+
     response = self.client.post( # Correct email & password
       '/api/signin',
       json.dumps({'password':'test', 'username':'test'}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 200)
+
+    response = self.client.post( # Correct email & password with wrong FB access token
+      '/api/signin',
+      json.dumps({'password':'test1', 'username':'test1'}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 200)
+
     response = self.client.post( # Wrong password
       '/api/signin',
       json.dumps({'password':'wrong', 'username':'test'}),
