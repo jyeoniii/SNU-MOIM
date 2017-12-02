@@ -18,7 +18,6 @@ class Subject(models.Model):
   name = models.CharField(max_length=64)
   interest = models.ForeignKey(
     Interest,
-    on_delete=models.CASCADE,
     related_name='subjects',
     null=False
   )
@@ -36,7 +35,6 @@ class Ex_User(models.Model):
   )
   college = models.ForeignKey(
     College,
-    on_delete=models.CASCADE,
     related_name = 'users',
     null=False
   )
@@ -55,7 +53,6 @@ class Ex_User(models.Model):
 class Meeting(models.Model):
   author = models.ForeignKey(
     Ex_User,
-    on_delete=models.CASCADE,
     related_name='meetings_made',
     null=True
   )
@@ -69,7 +66,6 @@ class Meeting(models.Model):
   )
   subject = models.ForeignKey(
     Subject,
-    on_delete=models.CASCADE,
     related_name = 'meetings',
     null=True
   )
@@ -81,13 +77,11 @@ class Meeting(models.Model):
 class Comment(models.Model):
   author = models.ForeignKey(
     Ex_User,
-    on_delete=models.CASCADE,
     related_name='comments',
     null=True
   )
   meeting = models.ForeignKey(
     Meeting,
-    on_delete=models.CASCADE,
     related_name='comments',
     null=True
   )
@@ -96,4 +90,3 @@ class Comment(models.Model):
 
   def __str__(self):
     return self.content
-
