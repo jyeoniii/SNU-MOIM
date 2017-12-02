@@ -42,9 +42,9 @@ class Ex_User(models.Model):
     Subject,
     related_name = 'users',
   )
-#  fb_friends = models.ManyToManyField(
-#    'self',
-#  )
+  fb_friends = models.ManyToManyField(
+    'self',
+  )
   joinHistory = models.CharField(max_length=200, default='{}')
 
   def __str__(self):
