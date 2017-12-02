@@ -72,8 +72,10 @@
             </div>
           </div>
         </div>
-        <span (click)="showOtherRecommendation(false)" class="glyphicon glyphicon-circle-arrow-left" style="float:left; font-size:35px; color: #336699"></span>
-        <span (click)="showOtherRecommendation(true)" class="glyphicon glyphicon-circle-arrow-right" style="float:right; font-size:35px; color: #336699"></span>
+        <span (click)="showOtherRecommendation(false)" class="glyphicon glyphicon-circle-arrow-left"
+              [style.opacity]="idx==0?0.5:1" style="float:left; font-size:35px; color: #336699"></span>
+        <span (click)="showOtherRecommendation(true)" class="glyphicon glyphicon-circle-arrow-right"
+              [style.opacity]="idx+N==meetingsRecommended.length?0.5:1" style="float:right; font-size:35px; color: #336699"></span>
 
       </div>
       <br><br>
