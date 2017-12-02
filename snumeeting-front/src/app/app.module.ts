@@ -16,6 +16,7 @@ import { MeetingCreateComponent } from './meeting-create/meeting-create.componen
 import { UserService } from './services/user.service';
 import { MeetingService } from './services/meeting.service';
 import { CommentService } from './services/comment.service';
+import { RecommendService } from './services/recommend.service';
 
 import { AppRoutingModule } from './app.routing.module';
 import { MetaDataService } from './services/meta-data-service';
@@ -50,6 +51,7 @@ export function CSRFStrategy() {
     CommentService,
     UserService,
     MetaDataService,
+    RecommendService,
     {
       provide: APP_BASE_HREF,
       useValue : '/'
