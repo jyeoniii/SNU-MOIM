@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-<h2 class="text-center">SNU Meeting SIGN UP</h2>
+<!--<h2 class="text-center">SNU Meeting SIGN UP</h2>
 
 <form class="form-horizontal">
   <div class="form-group">
@@ -68,5 +68,69 @@
   </div>
 </form>
 
-<p><p><button class="col-sm-offset-5 col-sm-2 btn btn-primary"
-              (click)="signUp(username.value, password.value, passwordCheck.value, name.value)">Sign Up</button>
+<p><p>
+  <button class="col-sm-offset-5 col-sm-2 btn btn-primary"
+              (click)="signUp(username.value, password.value, passwordCheck.value, name.value)">Sign Up
+  </button>
+
+  <button (click)="goBack()" class="col-sm-offset-2 col-sm-2 btn btn-primary" id="go-back-button">Back</button>-->
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <div class="panel panel-primary">
+        <div class="panel-heading">SNU MO-IM SIGN UP!</div>
+        <div class="panel-body">
+          <form role="form" method="post" action="" accept-charset="UTF-8">
+
+            <label for="username">mySNU ID</label>
+            <input type="text" id="username" class="form-control" name="username" placeholder="Enter mySNU ID" #username>
+            <br>
+            <button class="btn btn-primary" (click)="checkUser(username.value)">Check</button>
+
+            <br>
+
+            <label for="password" class="m-t-10">Password</label>
+            <input type="password" id="password" class="form-control" name="password" placeholder="Enter password" #password>
+
+            <label for="passwordCheck" class="m-t-10">Verify Password</label>
+            <input type="password" id="passwordCheck" class="form-control" name="passwordCheck" placeholder="Re-enter password" #passwordCheck>
+
+
+            <label for="name">Name</label>
+            <input type="text" id="name" class="form-control" name="name" placeholder="Enter name" #name>
+
+           <label for="college" class="m-t-10">College</label>
+            <select class="form-control" [(ngModel)]="selectedCollege" [ngModelOptions]="{standalone: true}">
+              <option *ngFor="let college of colleges" [ngValue]="college">
+                {{college.name}}
+              </option>
+            </select>
+
+            <br><br>
+
+            <label for="interest" class="m-t-10">Interest</label>
+            <div class="checkbox checkbox-inline">
+              <div *ngFor="let interest of interests">
+                <input type="checkbox" class="checkbox-inline" (click)="interestCheck(interest.name)">{{interest.name}}
+                <div *ngFor="let subject of interest.subjects">
+                  <div class="col-sm-offset-1" *ngIf="interestChecked[interest.name]">
+                    <input type="checkbox" class="checkbox-inline" (click)="subjectCheck(subject.name)">{{subject.name}}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <br><br>
+
+            <button class="btn btn-primary m-t-10"
+                    (click)="signUp(username.value, password.value, passwordCheck.value, name.value)">Sign Up
+            </button>
+          <!--  <input type="submit" class="btn btn-primary m-t-10" id="submitbtn" name="submit" value="Submit"> -->
+            <button (click)="goBack()" class="btn btn-primary m-t-10" id="go-back-button">Back</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
