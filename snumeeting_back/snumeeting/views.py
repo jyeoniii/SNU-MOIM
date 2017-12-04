@@ -15,11 +15,8 @@ from django.contrib.messages import get_messages
 from social_django.models import UserSocialAuth
 
 import json
-<<<<<<< HEAD
 import datetime
-=======
 import requests
->>>>>>> master
 
 from .tokens import account_activation_token
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message
@@ -728,8 +725,6 @@ def get_django_messages(request):
   for message in messages:
     return JsonResponse({'message':message.message}, safe=False)
 
-<<<<<<< HEAD
-=======
 def recommendMeetings(request, user_id, N):
   if request.method == 'GET':
     try:
@@ -742,4 +737,3 @@ def recommendMeetings(request, user_id, N):
   else:
     return HttpResponseNotAllowed(['GET'])
 
->>>>>>> master
