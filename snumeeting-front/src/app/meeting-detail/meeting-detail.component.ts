@@ -4,8 +4,8 @@ import { Meeting } from '../models/meeting';
 import { Comment } from '../models/comment';
 import { User } from '../models/user';
 import { MeetingService } from '../services/meeting.service';
-import {CommentService} from '../services/comment.service';
-import {UserService} from '../services/user.service';
+import { UserService } from "../services/user.service";
+import { CommentService}  from '../services/comment.service';
 
 @Component({
   selector: 'app-meeting-detail',

@@ -51,7 +51,7 @@ export class CommentService {
     const url = `${this.commentsUrl}/${id}`;
     return this.http.get(url)
       .toPromise()
-      .then(response => response.json() as Comment[])
+      .then(response => response.json() as Comment)
       .catch(this.handleError);
   }
 

@@ -50,6 +50,23 @@ class Ex_User(models.Model):
   def __str__(self):
     return self.name
 
+class Message(models.Model):
+  sender = models.ForeignKey(
+    Ex_User,
+    related_name='messageSender',
+    null=True
+  )
+  receiver = models.ForeignKey(
+    Ex_User,
+    related_name='messageReceiver',
+    null=True
+  )
+  content = models.TextField()
+  sended_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return self.content
+
 class Meeting(models.Model):
   author = models.ForeignKey(
     Ex_User,

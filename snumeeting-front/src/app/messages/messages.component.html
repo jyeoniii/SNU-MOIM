@@ -1,0 +1,79 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div *ngIf="loginedUser" style="float:right">
+  <span>Welcome, </span>{{loginedUser.name}}<br>
+  <button [routerLink]="['/user', loginedUser.id, 'message']" class="btn btn-primary btn-primary">Message</button>
+  <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
+</div>
+
+<!-- navigation for chatting -->
+
+<div style="float:left">
+  <button (click)="selectAll()" class="btn btn-primary btn-primary" style="width:180px">All</button>
+  <div *ngIf="onChat">
+    <div *ngFor="let onChatUser of onChat">
+      <button class="btn btn-primary btn-primary" style="width:150px; margin-right:0px; border-right-width:0px;" (click)="onSelect(onChatUser)">{{onChatUser.name}}</button>
+      <button class="btn btn-primary btn-primary" style="width:30px; margin-left:0px; border-left-width:0px;" (click)="deSelect(onChatUser)">&times;</button><br>
+    </div>
+  </div>
+</div>
+
+<!-- components of navigation -->
+<div style="margin: 0 200px 0 200px">
+
+  <div *ngIf="selectedUser == null">
+    <h2>Send messages to others!</h2>
+    <div *ngIf="users">
+      <div *ngFor="let u of users">
+        <a (dblclick)="onDoubleClick(u)">{{u.name}}</a>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="selectedUser">
+
+    <h2>{{selectedUser.name}}</h2>
+    <div *ngIf="betweenMessages" style="max-height:600px; overFlow:auto">
+      <div *ngFor="let m of betweenMessages">
+        <div *ngIf="m.receiver.id==loginedUser.id" style="margin-bottom:10px; min-height:100px">
+          <div style="float:left; width:100px; min-height:100px; background:#bbb; text-align:center; border-radius:20px">{{getUser(m.sender.id).name}}</div>
+          <div style="margin-left:100px; text-align:left; word-break:break-all">
+            <div style="border: 3px solid steelblue; border-radius:10px">{{m.content}}</div>
+            <sub>{{m.sended_at}}</sub>
+          </div>
+        </div>
+        <div *ngIf="m.sender.id===loginedUser.id" style="margin-bottom:10px; min-height:100px">
+          <div style="float:right; width:100px; min-height:100px; background:#bbb; text-align:center; border-radius:20px">{{getUser(m.sender.id).name}}</div>
+          <div style="margin-right:100px; text-align:right; word-break:break-all">
+            <div style="border: 3px solid khaki; border-radius:10px">{{m.content}}</div>
+            <sub>{{m.sended_at}}</sub>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+
+    <button (click)="sendMessage(loginedUser, selectedUser, newMessage)"
+      style="float:right" class="btn btn-primary btn-primary">Send</button>
+    <div style="min-height:100px; margin-right:300px">
+      <textarea [(ngModel)]="newMessage" cols="45" rows="5" placeholder="Send your message" wrap="hard">
+      </textarea>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>

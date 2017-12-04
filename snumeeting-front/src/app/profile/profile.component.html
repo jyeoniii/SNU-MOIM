@@ -1,6 +1,10 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-<button *ngIf="loginedUser" (click)="signOut()" class="btn btn-primary btn-primary" style="float:right;">SignOut</button>
+<div *ngIf="loginedUser" style="float:right">
+  <span>Welcome, </span>{{loginedUser.name}}
+  <button [routerLink]="['/user', loginedUser.id, 'message']" class="btn btn-primary btn-primary">Message</button>
+  <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
+</div>
 
 <h2 class="text-center">View Profile</h2>
 
@@ -46,6 +50,9 @@
   </form>
 
   <button *ngIf="canEdit()" class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="editProfile()">Edit Profile</button>
+
+  <button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="editProfile()">Edit Profile</button>
+  <button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="sendMessage()">Send Message</button>
 
   <div style="margin-top:100px">
     <a href="/oauth/login/facebook/">

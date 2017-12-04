@@ -24,6 +24,7 @@ export class EditProfileComponent implements OnInit {
     private userService: UserService
   ) { }
 
+  loginedUser: User;
   user: User;
   colleges: College[];
   subjects: Subject[];
@@ -41,6 +42,7 @@ export class EditProfileComponent implements OnInit {
         }
       });
     });
+    this.userService.getLoginedUser().then(user => this.loginedUser = user);
 
     this.metaDataService.getCollegeList().then(colleges => this.colleges = colleges);
     this.metaDataService.getSubjectList().then(subjects => this.subjects = subjects);

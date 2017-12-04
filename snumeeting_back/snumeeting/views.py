@@ -15,10 +15,11 @@ from django.contrib.messages import get_messages
 from social_django.models import UserSocialAuth
 
 import json
+import datetime
 import requests
 
 from .tokens import account_activation_token
-from .models import Ex_User, Meeting, Comment, Subject, College, Interest
+from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
 from snumeeting.recommend.JoinHistoryManager import JoinHistoryManager
 from snumeeting.recommend.computeRecommend import getRecMeetings, getUserSimilarity
@@ -178,6 +179,17 @@ def loginedUser(request):
   ex_user = Ex_User.objects.get(user_id=request.user.id)
   return JsonResponse(convert_userinfo_for_front(ex_user.id), safe=False)
 
+# url: /user
+def userList(request):
+  if request.method == 'GET':
+    users = User.objects.all()
+    dict_users = []
+    for user in users:
+      u = convert_userinfo_for_front(user.id)
+      dict_users.append(u)
+    return JsonResponse(dict_users, safe=False)
+  else:
+    return HttpResponseNotAllowed(['GET'])
 
 # url: /user/:id
 def userDetail(request, user_id):
@@ -507,6 +519,62 @@ def searchMeeting_subject(request, subject_id, query):
 
   return JsonResponse(result, safe=False)
 
+# url: /message
+def messageList(request):
+  if request.method == 'GET':
+    messagesList = list(Message.objects.all().values())
+    for message in messagesList:
+      sender = convert_userinfo_for_front(message['sender_id'])
+      receiver = convert_userinfo_for_front(message['receiver_id'])
+      message.pop('sender_id')
+      message.pop('receiver_id')
+      message['sender'] = sender
+      message['receiver'] = receiver
+    return JsonResponse(messagesList, safe=False)
+  if request.method == 'POST':
+    des_req = json.loads(request.body.decode())
+    sender_id = des_req['sender_id']
+    sender = Ex_User.objects.get(id=sender_id)
+    receiver_id = des_req['receiver_id']
+    receiver = Ex_User.objects.get(id=receiver_id)
+    content = des_req['content']
+    new_message = Message(sender=sender, receiver=receiver, content=content)
+    new_message.save()
+    now = datetime.datetime.now()
+
+    sender = convert_userinfo_for_front(new_message.sender_id)
+    receiver = convert_userinfo_for_front(new_message.receiver_id)
+    message_dict = model_to_dict(new_message)
+    message_dict['sender'] = sender
+    message_dict['receiver'] = receiver
+    message_dict['sended_at'] = now
+    return JsonResponse(message_dict, status=201)
+  else:
+    return HttpResponseNotAllowed(['GET'],['POST'])
+
+# url: /message/:id
+def messageDetail(request, message_id):
+  message_id = int(message_id)
+  if request.method == 'GET':
+    try:
+      message = Message.objects.get(id=message_id)
+      sender = convert_userinfo_for_front(message.sender_id)
+      receiver = convert_userinfo_for_front(message.receiver_id)
+      message_dict = model_to_dict(message)
+      message_dict['sender'] = sender
+      message_dict['receiver'] = receiver
+    except Message.DoesNotExist:
+      return HttpResponseNotFound()
+    return JsonResponse(message_dict)
+  elif request.method == 'DELETE':
+    try:
+      message = Message.objects.get(id=message_id)
+    except Message.DoesNotExist:
+      return HttpResponseNotFound()
+    message.delete()
+    return HttpResponse(status=204)
+  else:
+    return HttpResponseNotAllowed(['GET'],['DELETE'])
 
 # url: /meeting/create
 def meetingCreate(request):
@@ -581,7 +649,6 @@ def meetingEdit(request, meeting_id):
 
   else:
     return HttpResponseNotAllowed(['GET'],['PUT'])
-
 
 # url: /joinMeeting/:meeting_id
 def joinMeeting(request, meeting_id):

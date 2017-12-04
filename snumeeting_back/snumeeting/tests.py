@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from social_django.models import UserSocialAuth
 
-from .models import Ex_User, Meeting, Comment, Subject, College, Interest
+from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message
 from .social import check_user
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
 from snumeeting.recommend.JoinHistoryManager import JoinHistoryManager
@@ -58,6 +58,14 @@ class SnuMeetingTestCase(TestCase):
                                       content='Nooooooo', publicity=True)
     comment5 = Comment.objects.create(id=4, author=fake3_ex, meeting=meeting3,
                                       content='What?', publicity=True)
+
+    # Message
+    message1 = Message.objects.create(id=0, sender=fake1_ex, receiver=fake3_ex,
+      content='I want to join you')
+    message2 = Message.objects.create(id=1, sender=fake2_ex, receiver=fake3_ex,
+      content='I like your mo-im')
+    message3 = Message.objects.create(id=2, sender=fake2_ex, receiver=fake1_ex,
+      content='Who are you?')
 
     self.client = Client()
 
@@ -122,6 +130,9 @@ class SnuMeetingTestCase(TestCase):
 
     comment = Comment.objects.get(id=1)
     self.assertEqual(str(comment), comment.content)
+
+    message = Message.objects.get(id=1)
+    self.assertEqual(str(message), message.content)
 
   def test_check_user(self):
     # POST
@@ -273,6 +284,29 @@ class SnuMeetingTestCase(TestCase):
 
     # DELETE
     response = self.client.delete('/api/signout')
+    self.assertEqual(response.status_code, 405)
+
+  def test_user_list(self):
+    # GET
+    response = self.client.get('/api/user')
+    data = json.loads(response.content.decode())
+    self.assertEqual(data[0]['username'], 'fake1')
+    self.assertEqual(data[0]['password'], '1234')
+    # self.assertEqual(data[0]['email'], 'fake1@snu.ac.kr')
+    # self.assertEqual(data[0]['ex_User']['name'], 'John')
+    self.assertEqual(len(data), 3)
+    self.assertEqual(response.status_code, 200)
+   
+    # POST
+    response = self.client.post('/api/user')
+    self.assertEqual(response.status_code, 405)
+
+    # PUT
+    response = self.client.put('/api/user')
+    self.assertEqual(response.status_code, 405)
+
+    # DELETE
+    response = self.client.delete('/api/user')
     self.assertEqual(response.status_code, 405)
 
   def test_user_detail(self):
@@ -880,6 +914,66 @@ class SnuMeetingTestCase(TestCase):
     response = self.client.delete('/api/meeting/0/edit')
     self.assertEqual(response.status_code, 405)
 
+
+  def test_message_list(self):
+    # GET
+    response = self.client.get('/api/message')
+    data = json.loads(response.content.decode())
+    self.assertEqual(data[0]['sender']['id'], 0) 
+    self.assertEqual(data[0]['receiver']['id'], 2)
+    self.assertEqual(data[0]['content'], 'I want to join you')
+    self.assertEqual(len(data), 3)
+    self.assertEqual(response.status_code, 200)
+
+    # POST
+    response = self.client.post(
+      '/api/message',
+      json.dumps({'sender_id':2, 'receiver_id':1, 'content':'Oh, I like it'}),
+      content_type='application/json',
+    )
+    self.assertEqual(response.status_code, 201)
+
+    response = self.client.get('/api/message')
+    data = json.loads(response.content.decode())
+    self.assertEqual(data[3]['sender']['id'], 2) 
+    self.assertEqual(data[3]['receiver']['id'], 1)
+    self.assertEqual(data[3]['content'], 'Oh, I like it')
+    self.assertEqual(len(data), 4)
+
+    # PUT
+    response = self.client.put('/api/message')
+    self.assertEqual(response.status_code, 405)
+
+    # DELETE
+    response = self.client.delete('/api/message')
+    self.assertEqual(response.status_code, 405)
+
+
+  def test_message_detail(self):
+    # GET
+    response = self.client.get('/api/message/0')
+    data = json.loads(response.content.decode())
+    self.assertEqual(data['sender']['id'], 0) 
+    self.assertEqual(data['receiver']['id'], 2)
+    self.assertEqual(data['content'], 'I want to join you')
+    self.assertEqual(response.status_code, 200)
+
+    response = self.client.get('/api/message/20') # Get None-existing Message
+    self.assertEqual(response.status_code, 404)
+
+    # POST
+    response = self.client.post('/api/message/0')
+    self.assertEqual(response.status_code, 405)
+
+    # PUT
+    response = self.client.put('/api/message/0')
+    self.assertEqual(response.status_code, 405)
+
+    # DELETE
+    response = self.client.delete('/api/message/0')
+    self.assertEqual(response.status_code, 204)
+    response = self.client.delete('/api/message/0') # Delete None-existing Message
+    self.assertEqual(response.status_code, 404)
 
   def test_joinMeeting(self):
     SyncUserHistoryAll()

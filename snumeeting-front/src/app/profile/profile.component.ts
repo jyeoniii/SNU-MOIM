@@ -49,4 +49,8 @@ export class ProfileComponent implements OnInit {
       return false;
     }
   }
+
+  sendMessage() {
+    this.router.navigate(['/user', this.loginedUser.id, 'message']);
+  }
 }
