@@ -60,7 +60,7 @@ describe('MessageService', () => {
 
     it('should have expected fake messages', async(inject([], () => {
       backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
-      service.getMessage()
+      service.getMessages()
         .then(messages => {
           console.log(messages);
           expect(messages).not.toBeUndefined('returned messages should not be null');
