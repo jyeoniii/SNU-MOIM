@@ -61,6 +61,13 @@ export class UserService {
       .catch(this.handleError);
   }
 
+  getUsers(): Promise<User[]> {
+    return this.http.get('/api/user')
+      .toPromise()
+      .then(response => response.json() as User[])
+      .catch(this.handleError);
+  }
+
   getUserInfo(id: number): Promise<User> {
     return this.http.get(`${this.userUrl}/${id}`)
       .toPromise()

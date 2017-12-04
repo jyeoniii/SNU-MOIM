@@ -1,7 +1,6 @@
 from django.conf.urls import url, include
 from .views import *
 
-
 urlpatterns = [
   url('^token$', token, name='token'),
   url(r'^check_user$', check_user, name='check_user'),
@@ -12,6 +11,7 @@ urlpatterns = [
   url(r'^signin$', signin, name='signin'),
   url(r'^signout$', signout, name='signout'),
   url(r'^loginedUser$', loginedUser, name='loginedUser'),
+  url(r'^user$', userList, name='userList'),
   url(r'^user/(?P<user_id>[0-9]+)$', userDetail, name='userDetail'),
   url(r'^meeting$', meetingList, name='meetingList'),
   url(r'^meeting/(?P<meeting_id>[0-9]+)$', meetingDetail, name='meetingDetail'),
@@ -23,6 +23,9 @@ urlpatterns = [
   url(r'^subject/(?P<subject_id>[0-9]+)$', subjectDetail, name='subjectDetail'),
   url(r'^college$', collegeList, name='collegeList'),
   url(r'^college/(?P<college_id>[0-9]+)$', collegeDetail, name='collegeDetail'),
+  url(r'^message$', messageList, name='messageList'),
+  url(r'^message/(?P<message_id>[0-9]+)$', messageDetail, name='messageDetail'),
+
   url(r'^meeting/search/title/(?P<query>.+)$', searchMeeting_title, name='searchMeeting_title'),
   url(r'^meeting/search/author/(?P<query>.+)$', searchMeeting_author, name='searchMeeting_author'),
   url(r'^meeting/search/subject/(?P<subject_id>[0-9]+)(_(?P<query>.+))?$', searchMeeting_subject, name='searchMeeting_subject'),

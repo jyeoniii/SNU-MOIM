@@ -1,9 +1,18 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
+<<<<<<< HEAD
 <br><br>
 <button *ngIf="loginedUser" (click)="signOut()" class="btn btn-primary btn-primary"
         style="float:right; margin-right: 5%;">SignOut</button>
 <br>
+=======
+<div *ngIf="loginedUser" style="float:right">
+  <span>Welcome, </span>{{loginedUser.name}}
+  <button [routerLink]="['/user', loginedUser.id, 'message']" class="btn btn-primary btn-primary">Message</button>
+  <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
+</div>
+
+>>>>>>> edit-pagination
 <h2 class="text-center">View Profile</h2>
 
 <div *ngIf="user">
@@ -100,3 +109,6 @@
   <div *ngIf="status === 4" class="text-center col-sm-offset-4 col-sm-4 alert alert-danger" role="alert">
     Can't get mutual friends because this user is not connected to Facebook.
   </div>
+
+  <button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="sendMessage()">Send Message</button>
+</div>

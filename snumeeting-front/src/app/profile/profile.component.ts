@@ -108,4 +108,8 @@ export class ProfileComponent implements OnInit {
       }
     }
   }
+
+  sendMessage() {
+    this.router.navigate(['/user', this.loginedUser.id, 'message']);
+  }
 }

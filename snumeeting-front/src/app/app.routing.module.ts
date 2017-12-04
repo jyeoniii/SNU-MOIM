@@ -8,6 +8,7 @@ import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { MeetingDetailComponent } from './meeting-detail/meeting-detail.component';
 import { MeetingCreateComponent } from './meeting-create/meeting-create.component';
 import { MeetingsComponent } from './meetings/meetings.component';
+import { MessagesComponent } from './messages/messages.component';
 import { MeetingEditComponent } from "./meeting-edit/meeting-edit.component";
 
 const routes: Routes = [
@@ -17,9 +18,10 @@ const routes: Routes = [
   { path: 'user/:id', component: ProfileComponent },
   { path: 'user/:id/edit', component: EditProfileComponent },
   { path: 'meeting/create', component: MeetingCreateComponent },
-  { path: 'meeting/:id', component: MeetingDetailComponent },
   { path: 'meeting/:id/edit', component: MeetingEditComponent },
-  { path: 'meeting', component: MeetingsComponent},
+  { path: 'meeting/:id', component: MeetingDetailComponent },
+  { path: 'meeting', component: MeetingsComponent },
+  { path: 'user/:id/message', component: MessagesComponent },
   { path: '**', redirectTo: '/sign_in' },
 ];
 
