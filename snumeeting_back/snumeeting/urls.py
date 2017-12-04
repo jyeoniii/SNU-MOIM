@@ -7,6 +7,7 @@ from .views import messageList, messageDetail
 from .views import token
 from .views import meetingCreate, meetingEdit, joinMeeting, leaveMeeting, closeMeeting
 from .views import searchMeeting_title, searchMeeting_author, searchMeeting_subject
+from .views import recommendMeetings
 from .views import get_django_messages
 
 
