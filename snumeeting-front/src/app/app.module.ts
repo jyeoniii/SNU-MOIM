@@ -22,6 +22,7 @@ import { MeetingService } from './services/meeting.service';
 import { CommentService } from './services/comment.service';
 import { MessageService } from './services/message.service';
 import { MetaDataService } from './services/meta-data-service';
+import { RecommendService } from './services/recommend.service';
 
 import { AppRoutingModule } from './app.routing.module';
 
@@ -56,6 +57,7 @@ export function CSRFStrategy() {
     UserService,
     MessageService,
     MetaDataService,
+    RecommendService,
     {
       provide: APP_BASE_HREF,
       useValue : '/'

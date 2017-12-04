@@ -7,6 +7,7 @@ import { Interest } from '../models/interest';
 import { Subject } from '../models/subject';
 import { MetaDataService } from '../services/meta-data-service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { RecommendService } from '../services/recommend.service';
 
 @Component({
   selector: 'app-meetings',
@@ -18,6 +19,7 @@ export class MeetingsComponent implements OnInit {
   constructor(
     private meetingService: MeetingService,
     private metaDataService: MetaDataService,
+    private recommendService: RecommendService,
     private userService: UserService,
     private router: Router,
     private route: ActivatedRoute,
@@ -32,6 +34,12 @@ export class MeetingsComponent implements OnInit {
   private meetings: Meeting[];
   private allMeetings: Meeting[];
   private allMeetingsWithoutFiltering: Meeting[] = null;
+
+  private meetingsRecommended: Meeting[] = null;
+  private meetingsShown: Meeting[] = null;
+  private K = 10; // Num of meetings to be recommended;
+  private N = 3; // Num of recommended meetings to be shown
+  private idx = 0;  // Start index to be shown from recommended meetings
 
   // Searching
   readonly OPTION_DEFAULT = 'options';
@@ -91,7 +99,16 @@ export class MeetingsComponent implements OnInit {
       });
     this.metaDataService.getInterestList()
       .then(interestList => this.interestList = interestList);
-    this.userService.getLoginedUser().then(user => this.loginedUser = user);
+    this.userService.getLoginedUser().then(user => {
+      this.loginedUser = user;
+      if (this.loginedUser) {
+        this.recommendService.getRecMeetings(this.loginedUser.id, 5)
+          .then(res => {
+            this.meetingsRecommended = res;
+            this.meetingsShown = this.meetingsRecommended.slice(this.idx, this.idx + this.N);
+          });
+      }
+    });
   }
 
   // ngOnDestroy {
@@ -148,5 +165,16 @@ export class MeetingsComponent implements OnInit {
     this.userService.signOut();
     this.router.navigate(['/']);
   }
+
+  showOtherRecommendation(next: boolean): void {
+    if (next) {
+      const increasedIdx = this.idx + 1;
+      if (increasedIdx + this.N <= this.meetingsRecommended.length) this.idx = increasedIdx;
+    } else {
+      if (this.idx !== 0) this.idx -= 1;
+    }
+    this.meetingsShown = this.meetingsRecommended.slice(this.idx, this.idx + this.N);
+  }
+
 }
 

@@ -5,6 +5,8 @@ from social_django.models import UserSocialAuth
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message
 from .social import check_user
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
+from snumeeting.recommend.JoinHistoryManager import JoinHistoryManager
+from snumeeting.recommend.syncJoinHistory import *
 import json
 
 class SnuMeetingTestCase(TestCase):
@@ -974,11 +976,17 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 404)
 
   def test_joinMeeting(self):
+    SyncUserHistoryAll()
+    SyncCollegeHistoryAll()
+
+    manager = JoinHistoryManager()
     response = self.client.put('/api/joinMeeting/1', json.dumps({'user_id':2}), content_type='application/json')
 
-    response = self.client.get('/api/meeting/1')
-    result = json.loads(response.content.decode())
-    self.assertEqual(len(result['members']), 3)
+    meeting = Meeting.objects.get(id=1)
+    user = Ex_User.objects.get(id=2)
+    self.assertEqual(len(meeting.members.all()), 3)
+    self.assertEqual(manager.getCount(user.joinHistory, 1), 2)
+    self.assertEqual(manager.getCount(user.college.joinHistory, 1), 4)
 
     # Non existing meeting
     response = self.client.put('/api/joinMeeting/10', json.dumps({'user_id':2}), content_type='application/json')
@@ -999,18 +1007,26 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 405)
 
   def test_leaveMeeting(self):
+    SyncUserHistoryAll()
+    SyncCollegeHistoryAll()
+
+    manager = JoinHistoryManager()
     response = self.client.put('/api/leaveMeeting/1', json.dumps({'user_id':0}), content_type='application/json')
 
-    response = self.client.get('/api/meeting/1')
-    result = json.loads(response.content.decode())
-    self.assertEqual(len(result['members']), 1)
+    meeting = Meeting.objects.get(id=1)
+    user = Ex_User.objects.get(id=0)
+    self.assertEqual(len(meeting.members.all()), 1)
+    self.assertEqual(manager.getCount(user.joinHistory, 1), 1)
+    self.assertEqual(manager.getCount(user.college.joinHistory, 1), 1)
 
     # User hasn't joined the meeting - should be no effect
     response = self.client.put('/api/leaveMeeting/1', json.dumps({'user_id':2}), content_type='application/json')
 
-    response = self.client.get('/api/meeting/0')
-    result = json.loads(response.content.decode())
-    self.assertEqual(len(result['members']), 1)
+    meeting = Meeting.objects.get(id=0)
+    user = Ex_User.objects.get(id=2)
+    self.assertEqual(len(meeting.members.all()), 1)
+    self.assertEqual(manager.getCount(user.joinHistory, 0), 1)
+    self.assertEqual(manager.getCount(user.college.joinHistory, 0), 2)
 
     # Non existing meeting
     response = self.client.put('/api/leaveMeeting/10', json.dumps({'user_id':2}), content_type='application/json')

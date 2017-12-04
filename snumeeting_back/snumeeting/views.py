@@ -1,4 +1,4 @@
-from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed, HttpResponseNotFound
+from django.http import JsonResponse, HttpResponse, HttpResponseNotAllowed, HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.forms.models import model_to_dict
 from django.contrib.sites.shortcuts import get_current_site
@@ -16,10 +16,13 @@ from social_django.models import UserSocialAuth
 
 import json
 import datetime
+import requests
 
 from .tokens import account_activation_token
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
+from snumeeting.recommend.JoinHistoryManager import JoinHistoryManager
+from snumeeting.recommend.computeRecommend import getRecMeetings, getUserSimilarity
 
 # url: /check_user
 def check_user(request):
@@ -129,12 +132,38 @@ def signin(request):
     user = authenticate(request, username=username, password=password)
     if user is not None:
       login(request, user)
+      refresh_fb_friend_status(user)
       converted_user = convert_userinfo_for_front(user.id)
       return JsonResponse(converted_user, safe = False)
     else:
       return HttpResponse(status=401)
   else:
     return HttpResponseNotAllowed(['POST'])
+
+def refresh_fb_friend_status(user):
+  ex_user = Ex_User.objects.get(user=user)
+  if ex_user.access_token != '' and ex_user.access_token != 'EXPIRED':
+    url = 'https://graph.facebook.com/v2.11/me?fields=friends&access_token=' + ex_user.access_token
+    response = requests.get(url)
+    if (response.status_code == 400):
+      ex_user.access_token = 'EXPIRED'
+    elif (response.status_code == 200):
+      friends = response.json()['friends']['data']
+
+      for friend in friends:
+        try:
+          friend_by_id = UserSocialAuth.get_social_auth('facebook', friend['id']).user
+          if friend_by_id is not None:
+            try:
+              ex_user_friend = Ex_User.objects.get(user = friend_by_id)
+              ex_user.fb_friends.add(ex_user_friend)
+            except Exception:
+              pass
+        except Exception:
+          pass
+
+    ex_user.save()
+
 
 # url: /signout
 def signout(request):
@@ -628,8 +657,15 @@ def joinMeeting(request, meeting_id):
     user_id = des_req['user_id']
     try:
       meeting = Meeting.objects.get(id=meeting_id)
+      if meeting.is_closed:
+        return HttpResponseBadRequest()
       user = Ex_User.objects.get(id=user_id)
       meeting.members.add(user)
+      manager = JoinHistoryManager()
+      user.joinHistory = manager.increaseCnt(user.joinHistory, meeting.subject_id)
+      user.college.joinHistory = manager.increaseCnt(user.college.joinHistory, meeting.subject_id)
+      user.save()
+      user.college.save()
       meeting.save()
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
@@ -659,8 +695,15 @@ def leaveMeeting(request, meeting_id):
     user_id = des_req['user_id']
     try:
       meeting = Meeting.objects.get(id=meeting_id)
+      if meeting.is_closed:
+        return HttpResponseBadRequest()
       user = Ex_User.objects.get(id=user_id)
+      manager = JoinHistoryManager()
       meeting.members.remove(user)
+      user.joinHistory = manager.decreaseCnt(user.joinHistory, meeting.subject_id)
+      user.college.joinHistory = manager.decreaseCnt(user.college.joinHistory, meeting.subject_id)
+      user.save()
+      user.college.save()
       meeting.save()
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
@@ -681,4 +724,16 @@ def get_django_messages(request):
 
   for message in messages:
     return JsonResponse({'message':message.message}, safe=False)
+
+def recommendMeetings(request, user_id, N):
+  if request.method == 'GET':
+    try:
+      user = Ex_User.objects.get(id=int(user_id))
+      result = getRecMeetings(user, int(N))
+      print(result)
+      return JsonResponse(result, safe=False)
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+  else:
+    return HttpResponseNotAllowed(['GET'])
 
