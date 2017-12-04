@@ -8,6 +8,7 @@ import { MeetingsComponent } from './meetings.component';
 import {MeetingService} from '../services/meeting.service';
 import {MetaDataService} from '../services/meta-data-service';
 import {UserService} from '../services/user.service';
+import {RecommendService} from '../services/recommend.service';
 
 describe('MeetingsComponent', () => {
   let component: MeetingsComponent;
@@ -28,6 +29,7 @@ describe('MeetingsComponent', () => {
         MeetingService,
         MetaDataService,
         UserService,
+        RecommendService,
       ]
     })
     .compileComponents();

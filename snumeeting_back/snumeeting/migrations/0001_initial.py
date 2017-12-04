@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=64)),
                 ('college', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='usersCollege', to='snumeeting.College')),
-            ],
+                ],
         ),
         migrations.CreateModel(
             name='Interest',
@@ -80,6 +80,11 @@ class Migration(migrations.Migration):
             model_name='ex_user',
             name='user',
             field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='extended', to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AddField(
+            model_name='ex_user',
+            name='access_token',
+            field=models.CharField(max_length=255),
         ),
         migrations.AddField(
             model_name='comment',

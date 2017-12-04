@@ -33,7 +33,10 @@
     <div class="col-sm-3 col-md-2 sidebar">
       <ul class="nav nav-sidebar">
         <li class="active"><a href="/meeting">Home<span class="sr-only">(current)</span></a></li>
-        <li *ngIf="loginedUser"><a href="/user/{{loginedUser.id}}">Your profile</a></li>
+        <li *ngIf="loginedUser;else signIn"><a href="/user/{{loginedUser.id}}">Your profile</a></li>
+        <ng-template #signIn>
+          <li><a href="/">SignIn</a></li>
+        </ng-template>
       </ul>
       <ul class="nav nav-sidebar">
         <li><a href="">Nav item</a></li>
@@ -47,29 +50,41 @@
 
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
 
-      <h2> You might like..</h2>
-      <div class="row placeholders">
-        <div class="col-xs-6 col-sm-3 placeholder">
-          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="150" height="150" class="img-responsive" alt="Generic placeholder thumbnail">
-          <h4>Label</h4>
-          <span class="text-muted">Something else</span>
+      <!--Recommendation-->
+      <div *ngIf="meetingsShown" class="container-fluid">
+        <h2> You might like..</h2>
+
+        <div class="row">
+          <div class="col-md-12">
+            <div class="row">
+              <div *ngFor="let meeting of meetingsShown" class="col-md-4">
+                <div class="thumbnail">
+                  <img alt="Bootstrap Thumbnail First" src="http://static.oprah.com/2016/12/201612-orig-throw-away-books-949x534.jpg" />
+                  <div class="caption">
+                    <h4>
+                      {{ meeting.title }}
+                    </h4>
+                    <p style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                      {{ meeting.description}}
+                    </p>
+                    <p>
+                      <a class="btn btn-primary" [routerLink]="['/meeting', meeting.id]">View detail</a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
         </div>
-        <div class="col-xs-6 col-sm-3 placeholder">
-          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="150" height="150" class="img-responsive" alt="Generic placeholder thumbnail">
-          <h4>Label</h4>
-          <span class="text-muted">Something else</span>
-        </div>
-        <div class="col-xs-6 col-sm-3 placeholder">
-          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="150" height="150" class="img-responsive" alt="Generic placeholder thumbnail">
-          <h4>Label</h4>
-          <span class="text-muted">Something else</span>
-        </div>
-        <div class="col-xs-6 col-sm-3 placeholder">
-          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" width="150" height="150" class="img-responsive" alt="Generic placeholder thumbnail">
-          <h4>Label</h4>
-          <span class="text-muted">Something else</span>
-        </div>
+        <span (click)="showOtherRecommendation(false)" class="glyphicon glyphicon-circle-arrow-left"
+              [style.opacity]="idx==0?0.5:1" style="float:left; font-size:35px; color: #336699"></span>
+        <span (click)="showOtherRecommendation(true)" class="glyphicon glyphicon-circle-arrow-right"
+              [style.opacity]="idx+N==meetingsRecommended.length?0.5:1" style="float:right; font-size:35px; color: #336699"></span>
+
       </div>
+      <br><br>
+
 
       <h2 class="sub-header">SNU Moims</h2>
       <span style="float:right">
