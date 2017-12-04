@@ -1,29 +1,29 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-<<<<<<< HEAD
 <br><br>
-<button *ngIf="loginedUser" (click)="signOut()" class="btn btn-primary btn-primary"
-        style="float:right; margin-right: 5%;">SignOut</button>
-<br>
-=======
-<div *ngIf="loginedUser" style="float:right">
+<div *ngIf="loginedUser" style="float:right; margin-right:5%">
   <span>Welcome, </span>{{loginedUser.name}}
   <button [routerLink]="['/user', loginedUser.id, 'message']" class="btn btn-primary btn-primary">Message</button>
   <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
 </div>
 
->>>>>>> edit-pagination
-<h2 class="text-center">View Profile</h2>
+
+<div *ngIf="loginedUser.token_expired">
+  <br><br><br>
+  <div class="col-sm-offset-3 col-sm-6 alert alert-danger" role="alert" style="text-align: center;">
+    It seems your Facebook access token is expired.<br>
+    If you don't renew your token, your friends status will not be updated.<br>
+    Please <a href="/oauth/login/facebook/" class="alert-link">click here to log in to Facebook</a> again.
+  </div>
+  <br><br><br>
+</div>
+
+<br><br><br>
+<div style="text-align:center">
+  <h2>View Profile</h2>
+</div>
 
 <div *ngIf="user">
-  <div *ngIf="user.token_expired" class="col-sm-offset-3 col-sm-6 alert alert-danger" role="alert">
-    <div style="text-align: center;">
-      It seems your Facebook access token is expired.<br>
-      If you don't renew your token, your friends status will not be updated.<br>
-      Please <a href="/oauth/login/facebook/" class="alert-link">click here to log in to Facebook</a> again.
-    </div>
-  </div>
-
   <form class="form-horizontal">
     <div class="form-group">
       <label class="col-sm-6 control-label">mySNU ID</label>
@@ -110,5 +110,9 @@
     Can't get mutual friends because this user is not connected to Facebook.
   </div>
 
-  <button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="sendMessage()">Send Message</button>
+  <br>
+  <br>
+  <div *ngIf="status > 0 && status < 5">
+    <button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="sendMessage()">Send Message</button>
+  </div>
 </div>
