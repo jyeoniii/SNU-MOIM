@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 //import { PaginationDirective } from '../../../node_modules/angular2-bootstrap-pagination/directives/pagination.directive';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 import { MeetingsComponent } from './meetings.component';
 import {MeetingService} from '../services/meeting.service';
@@ -20,6 +21,7 @@ describe('MeetingsComponent', () => {
         RouterTestingModule,
         HttpModule,
         FormsModule,
+        NgxPaginationModule,
       ],
       declarations: [
         MeetingsComponent,

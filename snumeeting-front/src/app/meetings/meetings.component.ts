@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { NgModule, Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { MeetingService } from '../services/meeting.service';
 import { Meeting } from '../models/meeting';
 import { UserService } from '../services/user.service';
@@ -8,11 +8,17 @@ import { Subject } from '../models/subject';
 import { MetaDataService } from '../services/meta-data-service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecommendService } from '../services/recommend.service';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-meetings',
   templateUrl: './meetings.component.html',
   styleUrls: ['./meetings.component.css', './dashboard.css']
+})
+@NgModule({
+  imports: [
+    NgxPaginationModule,
+  ],
 })
 export class MeetingsComponent implements OnInit {
 
