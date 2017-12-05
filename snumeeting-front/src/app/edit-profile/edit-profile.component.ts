@@ -70,6 +70,7 @@ export class EditProfileComponent implements OnInit {
       alert('Please enter a new password!');
       return;
     }
+
     if (password === passwordCheck) {
       var selectedSubjects: Subject[] = [];
 

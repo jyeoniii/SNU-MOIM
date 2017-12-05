@@ -20,9 +20,29 @@ def get_env(setting, envs):
     raise ImproperlyConfigured(error_msg)
 
 def check_user(strategy, user, request, **kwargs):
-  if user is None and kwargs.get('is_new'):
+  print(kwargs)
+
+  if user is None and kwargs['is_new']:
     messages.error(request, 'To use this, you need to connect your account first.')
     return redirect('http://localhost:4200/sign_in')
+
+  try:
+    uid = user.social_auth.get(provider='facebook').uid
+    if kwargs['response']['id'] != uid:
+      messages.error(request, 'This snu-moim ID is already connected to another Facebook account.')
+      return redirect('http://localhost:4200/sign_in')
+  except Exception:
+    pass
+
+  try:
+    fb_user = UserSocialAuth.get_social_auth('facebook', kwargs['response']['id']).user
+    if user.id != fb_user.id:
+      messages.error(request, 'This Facebook account is already connected to another snu-moim ID.')
+      return redirect('http://localhost:4200/sign_in')
+  except Exception:
+    pass
+
+
 
 def save_access_token(strategy, user, request, **kwargs):
   DEV_ENVS = os.path.join(BASE_DIR, "envs_dev.json")

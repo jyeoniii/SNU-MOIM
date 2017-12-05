@@ -27,7 +27,7 @@ export class ProfileComponent implements OnInit {
   ) { }
 
   user: User;
-  loginedUser = new User();
+  loginedUser: User;
   mutualFriends: User[] = [];
   status: Status;
 

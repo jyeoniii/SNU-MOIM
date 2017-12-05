@@ -10,5 +10,5 @@ export class User {
   subjects: Subject[];
   fb_friends: User[];
   fb_connected: boolean;
-  token_expired = false;
+  token_expired: boolean;
 }
