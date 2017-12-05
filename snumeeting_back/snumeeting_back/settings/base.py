@@ -16,7 +16,7 @@ import json
 from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 CONFIG_SECRET_DIR = os.path.join(BASE_DIR, '.config_secret')
 CONFIG_SECRET_COMMON_FILE = os.path.join(CONFIG_SECRET_DIR, 'settings_common.json')
@@ -74,7 +74,7 @@ LOGIN_ERROR_URL='http://localhost:4200/signin'
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'x(ail4w!6kt8n+g%aqofbvs3x2lx8crd6sneer-%e!t!npf!7q'
+# SECRET_KEY = 'x(ail4w!6kt8n+g%aqofbvs3x2lx8crd6sneer-%e!t!npf!7q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
