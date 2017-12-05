@@ -39,7 +39,7 @@ export class MessageService {
 
   /* Services for '/api/message'
   *  GET : Get all messages
-  *  POST : Send message 
+  *  POST : Send message
   */
   getMessages(): Promise<Message[]> {
     const url = `${this.messagesUrl}`;

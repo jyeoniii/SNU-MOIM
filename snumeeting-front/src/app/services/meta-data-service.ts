@@ -37,10 +37,10 @@ export class MetaDataService {
       .catch(this.handleError);
   }
 
-  getMessage(): Promise<String> {
+  getMessage(): Promise<Response> {
     return this.http.get(this.messageUrl)
       .toPromise()
-      .then(response => response.json()['message'] as String)
+      .then(response => response, () => null)
       .catch(this.handleError);
   }
 

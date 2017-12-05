@@ -8,4 +8,7 @@ export class User {
   name: string;
   college: College;
   subjects: Subject[];
+  fb_friends: User[];
+  fb_connected: boolean;
+  token_expired = false;
 }

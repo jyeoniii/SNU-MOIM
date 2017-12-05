@@ -34,7 +34,7 @@ describe('MeetingsComponent', () => {
         RecommendService,
       ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
