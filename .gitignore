@@ -47,3 +47,6 @@ Thumbs.db
 .coverage
 package-lock.json
 /snumeeting_back/htmlcov
+
+# Config
+.config_secret/
