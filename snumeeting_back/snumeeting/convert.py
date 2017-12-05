@@ -21,6 +21,8 @@ def convert_userinfo_for_front(user_id):
         user['fb_connected'] = False
     if ex_user.access_token == 'EXPIRED':
       user['token_expired'] = True
+    else:
+      user['token_expired'] = False
   except Ex_User.DoesNotExist:
     user['name'] = 'NONEXISTING'
   return user
