@@ -22,9 +22,9 @@ export class SignInComponent implements OnInit {
   }
 
   showMessageAlert() {
-    this.metaDataService.getMessage().then(message => {
-      if (message !== '') {
-        alert(message);
+    this.metaDataService.getMessage().then(response => {
+      if (response.status === 200) {
+        alert(response.json()['message']);
       }
     });
   }
