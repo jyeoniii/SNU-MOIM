@@ -66,6 +66,10 @@ export class EditProfileComponent implements OnInit {
   }
 
   editProfile(password: string, passwordCheck: string, name: string) {
+    if (password === '') {
+      alert('Please enter a new password!');
+      return;
+    }
     if (password === passwordCheck) {
       var selectedSubjects: Subject[] = [];
 
