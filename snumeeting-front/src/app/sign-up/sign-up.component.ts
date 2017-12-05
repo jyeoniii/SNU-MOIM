@@ -98,4 +98,8 @@ export class SignUpComponent implements OnInit {
     }
   }
 
+  goBack(): void {
+    this.router.navigate(['/sign_in'])
+  }
+
 }
