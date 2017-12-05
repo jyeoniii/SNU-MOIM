@@ -1,20 +1,9 @@
 from django.conf.urls import url, include
-from .views import check_user, check_FB_user, activate, activate_without_code
-from .views import signup, signin, signout, userList, userDetail, loginedUser
-from .views import meetingList, meetingDetail, meetingComment, commentList, commentDetail
-from .views import interestList, subjectList, subjectDetail, collegeList, collegeDetail
-from .views import messageList, messageDetail
-from .views import token
-from .views import meetingCreate, meetingEdit, joinMeeting, leaveMeeting, closeMeeting
-from .views import searchMeeting_title, searchMeeting_author, searchMeeting_subject
-from .views import recommendMeetings
-from .views import get_django_messages
-
+from .views import *
 
 urlpatterns = [
   url('^token$', token, name='token'),
   url(r'^check_user$', check_user, name='check_user'),
-  url(r'^check_FB_user$', check_FB_user, name='check_FB_user'),
   url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
       activate, name='activate'),
   url(r'^activate_without_code', activate_without_code, name='activate_without_code'),
@@ -45,7 +34,8 @@ urlpatterns = [
   url(r'^joinMeeting/(?P<meeting_id>[0-9]+)$', joinMeeting, name='joinMeeting'),
   url(r'^leaveMeeting/(?P<meeting_id>[0-9]+)$', leaveMeeting, name='leaveMeeting'),
   url(r'^closeMeeting/(?P<meeting_id>[0-9]+)$', closeMeeting, name='closeMeeting'),
+  url(r'^recommend/meeting/(?P<user_id>[0-9]+)/(?P<N>[0-9]+)$', recommendMeetings, name='recommendMeetings'),
   url(r'^messages$', get_django_messages, name='messages'),
-  url(r'^recommend/meeting/(?P<user_id>[0-9]+)/(?P<N>[0-9]+)$', recommendMeetings, name='recommendMeetings') 
+  url(r'^add_message', add_django_message, name='add_messages')
 ]
 

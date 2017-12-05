@@ -14,6 +14,9 @@ from django.contrib import messages
 from django.contrib.messages import get_messages
 from social_django.models import UserSocialAuth
 
+from snumeeting.recommend.JoinHistoryManager import JoinHistoryManager
+from snumeeting.recommend.computeRecommend import getRecMeetings, getUserSimilarity
+
 import json
 import datetime
 import requests
@@ -21,8 +24,9 @@ import requests
 from .tokens import account_activation_token
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
-from snumeeting.recommend.JoinHistoryManager import JoinHistoryManager
-from snumeeting.recommend.computeRecommend import getRecMeetings, getUserSimilarity
+
+import json
+import requests
 
 # url: /check_user
 def check_user(request):
@@ -35,21 +39,6 @@ def check_user(request):
       return HttpResponse(status=200)
   else:
     return HttpResponseNotAllowed(['POST'])
-
-# url: /check_FB_user
-def check_FB_user(request):
-  if request.method == 'GET':
-    if request.user.is_anonymous:
-      return HttpResponseNotFound()
-    else:
-      try:
-        request.user.social_auth.get(provider='facebook')
-        return HttpResponse(status=200)
-      except UserSocialAuth.DoesNotExist:
-        return HttpResponseNotFound()
-  else:
-    return HttpResponseNotAllowed(['GET'])
-
 
 # url: /signup
 def signup(request):
@@ -66,9 +55,17 @@ def signup(request):
     user = User.objects.create_user(username=username, password=password, email=email)
     user.is_active = False # this will be true after activation by email
     user.save()
-    ex_User = Ex_User.objects.create(name=name, user=user, college=college) # create first, m2m later
+    try: # these keys are only for testing
+      access_token = req_data['access_token']
+      fb_friend_ids = req_data['fb_friend_ids']
+      fb_friends = Ex_User.objects.filter(id__in=fb_friend_ids)
+    except KeyError:
+      access_token = ''
+      fb_friends=[]
+    ex_User = Ex_User.objects.create(name=name, user=user, college=college, access_token=access_token) # create first, m2m later
     ex_User.save()
     ex_User.subjects.add(*subjects) # adding many-to-many at once
+    ex_User.fb_friends.add(*fb_friends)
     ex_User.save()
 
     # Email Verification
@@ -713,18 +710,6 @@ def leaveMeeting(request, meeting_id):
   else:
     return HttpResponseNotAllowed(['PUT'])
 
-
-# Send Django message as JSON data.
-# url: /messages
-def get_django_messages(request):
-  messages = get_messages(request)
-
-  if len(messages) == 0:
-    return HttpResponse(status=204)
-
-  for message in messages:
-    return JsonResponse({'message':message.message}, safe=False)
-
 def recommendMeetings(request, user_id, N):
   if request.method == 'GET':
     try:
@@ -737,3 +722,26 @@ def recommendMeetings(request, user_id, N):
   else:
     return HttpResponseNotAllowed(['GET'])
 
+# Send Django message as JSON data.
+# url: /messages
+def get_django_messages(request):
+  if request.method == 'GET':
+    messages = get_messages(request)
+
+    if len(messages) == 0:
+      return HttpResponse(status=204)
+
+    for message in messages:
+      return JsonResponse({'message':message.message}, safe=False)
+  else:
+    return HttpResponseNotAllowed(['GET'])
+
+# for testing
+# url: /add_message
+def add_django_message(request):
+  if request.method == 'POST':
+    req_data = json.loads(request.body.decode())
+    messages.success(request, req_data['message'])
+    return HttpResponse(status=200)
+  else:
+    return HttpResponseNotAllowed(['POST'])
