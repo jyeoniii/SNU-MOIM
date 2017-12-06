@@ -172,10 +172,8 @@ def signout(request):
 
 def loginedUser(request):
   if request.user.is_anonymous:
-    print('No user logged in')
     return JsonResponse(None, safe=False)
   ex_user = Ex_User.objects.get(user_id=request.user.id)
-  print(ex_user)
   return JsonResponse(convert_userinfo_for_front(ex_user.id), safe=False)
 
 # url: /user
