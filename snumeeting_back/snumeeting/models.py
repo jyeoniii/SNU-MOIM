@@ -55,11 +55,13 @@ class Ex_User(models.Model):
 class Message(models.Model):
   sender = models.ForeignKey(
     Ex_User,
+    on_delete=models.CASCADE,
     related_name='messageSender',
     null=True
   )
   receiver = models.ForeignKey(
     Ex_User,
+    on_delete=models.CASCADE,
     related_name='messageReceiver',
     null=True
   )

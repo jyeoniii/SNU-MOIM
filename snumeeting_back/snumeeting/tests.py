@@ -803,7 +803,7 @@ class SnuMeetingTestCase(TestCase):
 
   def test_convert_userinfo_for_front(self):
     user = convert_userinfo_for_front(0)
-    self.assertEqual(len(user), 8)
+    self.assertEqual(len(user), 9)
     self.assertEqual(user['id'],0)
     self.assertEqual(user['username'],'fake1')
     self.assertEqual(user['password'],'1234')

@@ -43,6 +43,7 @@ export class UserService {
 
     return this.http.post('/api/signup', JSON.stringify({
         username: user.username,
+        password: user.password,
         name: user.name,
         college_id: user.college.id,
         subject_ids: subjectIDList
