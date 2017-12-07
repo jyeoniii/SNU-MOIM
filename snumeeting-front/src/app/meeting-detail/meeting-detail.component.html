@@ -23,16 +23,16 @@
       <!--Join / Leave Button-->
         <span style="float: right" *ngIf="!selectedMeeting.is_closed; else closed">
           <span *ngIf="isOwner(); else notOwner">
-            <button (click)="closeMeeting()" class="btn btn-primary btn-primary">Close</button>
+            <button (click)="closeMeeting()" class="btn btn-primary">Close <span class="glyphicon glyphicon-remove"></span></button>
           </span>
           <br>
           <ng-template #notOwner>
             <span *ngIf="alreadyJoined; else canJoin">
-              <button (click)="leaveMeeting()" class="btn btn-primary btn-primary">Leave</button>
+              <button (click)="leaveMeeting()" class="btn btn-primary">Leave <span class="glyphicon glyphicon-share"></span></button>
             </span>
             <ng-template #canJoin>
-              <button (click)="joinMeeting()" class="btn btn-primary btn-primary">
-                Join
+              <button (click)="joinMeeting()" class="btn btn-primary">
+                Join <span class="glyphicon glyphicon-check"></span>
               </button>
             </ng-template>
           </ng-template>
@@ -55,7 +55,7 @@
       <!--Invitation-->
       <div class="dropdown" *ngIf="!selectedMeeting.is_closed">
         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" (click)="getRecUsers()">
-          Invite
+          <span class="glyphicon glyphicon-envelope"></span> Invite
         </button>
         <!--Invitation list-->
         <label *ngFor="let user of invitationList" class="label label-default" style="margin-left: 5px; padding-top: 4px; background-color: #7f7f7f" >
@@ -76,7 +76,7 @@
       <p><i class="glyphicon glyphicon-map-marker"></i> {{selectedMeeting.location}}</p>
       <p><i class="fa fa-tags"></i> Tags: <a href=""><span class="badge badge-info">Bootstrap</span></a> <a href=""><span class="badge badge-info">Web</span></a> <a href=""><span class="badge badge-info">CSS</span></a> <a href=""><span class="badge badge-info">HTML</span></a></p>
 
-      <p class="lead" style="font-size:18px;">{{selectedMeeting.description}}</p>
+      <p class="lead" style="font-size:18px;display:block;word-wrap: break-word;">{{selectedMeeting.description}}</p>
 
     </div>
 
@@ -99,28 +99,32 @@
 
       <!-- the comments -->
       <li *ngFor="let comment of comments">
-    <span *ngIf="comment.publicity || currentUser.id===selectedMeeting.author.id || currentUser.id===comment.author.id; else private_comment">
-      <!--Author of the comment-->
-      <h5 style="cursor:pointer" [routerLink]="['/user', comment.author.id]"><i class="fa fa-comment"></i> {{ comment.author.name }}
-        <small> 9:41 PM on August 24, 2014</small>
-      </h5>
-      <!--Content of the comment-->
-         <span *ngIf="selectedComment!==comment;else edit_mode">
-            {{comment.content}}
-           <!--Edit / Delete button-->
-            <span *ngIf="currentUser.id===comment.author.id">
-              <button (click)="toEditMode(comment)" class="btn btn-primary btn-sm" style="margin-left:20px;" id="edit-comment-button">Edit</button>
-              <button (click)="deleteComment(comment)" class="btn btn-primary btn-sm" id="delete-comment-button">Delete</button>
-            </span>
-          </span>
+        <!--Author of the comment-->
+        <h5 style="cursor:pointer" [routerLink]="['/user', comment.author.id]"><i class="fa fa-comment"></i> {{ comment.author.name }}
+          <small> 9:41 PM on August 24, 2014</small>
+        </h5>
+        <span *ngIf="comment.publicity || currentUser.id===selectedMeeting.author.id || currentUser.id===comment.author.id; else private_comment">
+          <!--Content of the comment-->
+             <span *ngIf="selectedComment!==comment;else edit_mode">
+                {{comment.content}}
+               <!--Edit / Delete button-->
+                <span *ngIf="currentUser.id===comment.author.id">
+                  <button (click)="toEditMode(comment)" class="btn btn-primary btn-sm" style="margin-left:20px;" id="edit-comment-button">
+                    <span class="glyphicon glyphicon-pencil"></span> Edit
+                  </button>
+                  <button (click)="deleteComment(comment)" class="btn btn-primary btn-sm" id="delete-comment-button">
+                    <span class="glyphicon glyphicon-trash"></span> Delete
+                  </button>
+                </span>
+              </span>
 
-         <ng-template #edit_mode>
-           <input [(ngModel)]="comment.content">
-           <button (click)="editComment(comment)" class="btn btn-primary btn-sm" id="update-button">Update</button>
-           <button (click)="cancleEditMode(comment)" class="btn btn-primary btn-sm" id="cancle-edit-button">Cancle</button>
-           <input type="checkbox" class="checkbox-inline" [checked]="!comment.publicity" (click)="changePrivateMode(false)"> Private
-         </ng-template>
-    </span>
+             <ng-template #edit_mode>
+               <input [(ngModel)]="comment.content">
+               <button (click)="editComment(comment)" class="btn btn-primary btn-sm" id="update-button">Update</button>
+               <button (click)="cancleEditMode(comment)" class="btn btn-primary btn-sm" id="cancle-edit-button">Cancle</button>
+               <input type="checkbox" class="checkbox-inline" [checked]="!comment.publicity" (click)="changePrivateMode(false)"> Private
+             </ng-template>
+        </span>
         <ng-template #private_comment>
           <label style="color:royalblue">Private comment</label>
         </ng-template>
@@ -132,10 +136,16 @@
     <div class="container" *ngIf="selectedMeeting">
       <div style="float:right">
     <span *ngIf="!selectedMeeting.is_closed && isOwner()">
-      <button (click)="edit()" class="btn btn-primary btn-primary" id="edit-button" >Edit</button>
-      <button (click)="delete()" class="btn btn-primary btn-primary" id="delete-button">Delete</button>
+      <button (click)="edit()" class="btn btn-primary btn-primary" id="edit-button" >
+        <span class="glyphicon glyphicon-pencil"></span> Edit
+      </button>
+      <button (click)="delete()" class="btn btn-primary btn-primary" id="delete-button">
+        <span class="glyphicon glyphicon-trash"></span> Delete
+      </button>
     </span>
-        <button (click)="goBack()" class="btn btn-primary btn-primary" id="back-button">Back</button>
+        <button (click)="goBack()" class="btn btn-primary btn-primary" id="back-button">
+          <span class="glyphicon glyphicon-circle-arrow-left"></span> Back
+        </button>
       </div>
     </div>
 
