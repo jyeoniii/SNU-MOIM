@@ -16,7 +16,18 @@ import json
 from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+CONFIG_SECRET_DIR = os.path.join(BASE_DIR, '.config_secret')
+CONFIG_SECRET_COMMON_FILE = os.path.join(CONFIG_SECRET_DIR, 'settings_common.json')
+
+config_secret_common = json.loads(open(CONFIG_SECRET_COMMON_FILE).read())
+SECRET_KEY = config_secret_common['django']['secret_key']
+
+CONFIG_SECRET_DEBUG_FILE = os.path.join(CONFIG_SECRET_DIR, 'settings_debug.json')
+CONFIG_SECRET_DEPLOY_FILE = os.path.join(CONFIG_SECRET_DIR, 'settings_deploy.json')
+
+
 
 def get_env(setting, envs):
   try:
@@ -63,12 +74,12 @@ LOGIN_ERROR_URL='http://localhost:4200/signin'
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'x(ail4w!6kt8n+g%aqofbvs3x2lx8crd6sneer-%e!t!npf!7q'
+# SECRET_KEY = 'x(ail4w!6kt8n+g%aqofbvs3x2lx8crd6sneer-%e!t!npf!7q'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -119,7 +130,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'snumeeting_back.wsgi.application'
+# WSGI_APPLICATION = 'snumeeting_back.wsgi.application'
 
 
 # Database
@@ -181,6 +192,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
     'social_core.pipeline.social_auth.social_uid',
     'social_core.pipeline.social_auth.auth_allowed',
+    'social_core.pipeline.social_auth.social_user',
     'snumeeting.social.check_user',
     'social_core.pipeline.social_auth.associate_user',
     'social_core.pipeline.social_auth.load_extra_data',
