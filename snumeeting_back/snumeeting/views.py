@@ -716,12 +716,29 @@ def recommendMeetings(request, user_id, N):
     try:
       user = Ex_User.objects.get(id=int(user_id))
       result = getRecMeetings(user, int(N))
-      print(result)
       return JsonResponse(result, safe=False)
     except Ex_User.DoesNotExist:
       return HttpResponseNotFound()
   else:
     return HttpResponseNotAllowed(['GET'])
+
+def recommendUsers(request, user_id, N):
+  if request.method == 'GET':
+    try:
+      result = [] 
+      user = Ex_User.objects.get(id=int(user_id))
+      uids = getUserSimilarity(user, int(N))
+
+      for uid in uids:
+        recommendedUser = convert_userinfo_for_front(id=uid)
+        result.append(recommendedUser)
+
+      return JsonResponse(result, safe=False)
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+  else:
+    return HttpResponseNotAllowed(['GET'])
+
 
 # Send Django message as JSON data.
 # url: /messages
