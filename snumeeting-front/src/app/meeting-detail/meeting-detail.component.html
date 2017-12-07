@@ -1,92 +1,113 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
 
-<div *ngIf="currentUser" style="float:right">
-  <span>Welcome, <label>{{currentUser.name}}</label></span><br>
-  <a [routerLink]="['/user', currentUser.id, 'message']" class="btn btn-info btn-sm">
-    <span class="glyphicon glyphicon-envelope"></span> Message
-  </a>
-  <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
-</div>
+<div class="container" *ngIf="selectedMeeting && comments && currentUser">
+  <div style="float:right; margin-top:20px;">
+    <span>Welcome, <label>{{currentUser.name}}</label></span><br>
+    <a [routerLink]="['/user', currentUser.id, 'message']" class="btn btn-info btn-sm">
+      <span class="glyphicon glyphicon-envelope"></span> Message
+    </a>
+    <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
+  </div><br>
 
-<h2 class="text-center">Meeting Detail</h2><br>
 
- <div *ngIf="selectedMeeting && comments && currentUser" class="container center-block" style="width:600px;">
+  <!--Meeting Content-->
+  <div class="row">
+    <div class="col-lg-8">
 
-   <!--Meeting content-->
-   <div>
-     <h3 >{{ selectedMeeting.title }}</h3> <br>
-     <span style="font-weight: bold">author: </span> {{ selectedMeeting.author.name }}<br>
-     <span style="font-weight: bold">location:</span> {{ selectedMeeting.location }}<br>
-     <span style="font-weight: bold">participation: </span>
-       <i *ngFor="let m of selectedMeeting.members" class="fa fa-user" style="font-size:25px; color: #336699; cursor: pointer"
-          (mouseenter)="memberName = m.name" data-tooltip-text="abc" [attr.id]="memberName" [routerLink]="['/user', m.id]"></i>
-       <i *ngFor="let m of emptySeats" class="fa fa-user" style="font-size:25px; color: darkgray "></i><br>
-
-     <span style="font-weight: bold">description: <br></span>{{ selectedMeeting.description }}<br>
-   </div>
-   <br>
-
-   <!--Buttons-->
-   <span *ngIf="!selectedMeeting.is_closed; else closed">
-     <span *ngIf="isOwner(); else notOwner">
-      <button (click)="closeMeeting()" style="float:right" class="btn btn-primary btn-primary">Close</button>
-     </span>
-     <ng-template #notOwner>
-       <span *ngIf="alreadyJoined; else canJoin">
-         <br>
-
-         <div class="container">
-           <div class="dropdown">
+      <label style="font-size: 30px">{{selectedMeeting.title}} </label>
+      <!--Join / Leave Button-->
+        <span style="float: right" *ngIf="!selectedMeeting.is_closed; else closed">
+          <span *ngIf="isOwner(); else notOwner">
+            <button (click)="closeMeeting()" class="btn btn-primary btn-primary">Close</button>
+          </span>
+          <br>
+          <ng-template #notOwner>
+            <span *ngIf="alreadyJoined; else canJoin">
               <button (click)="leaveMeeting()" class="btn btn-primary btn-primary">Leave</button>
-              <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" (click)="getRecUsers()">
-                Invite
+            </span>
+            <ng-template #canJoin>
+              <button (click)="joinMeeting()" class="btn btn-primary btn-primary">
+                Join
               </button>
-              <!--Invitation list-->
-              <label *ngFor="let user of invitationList" class="label label-default" style="margin-left: 5px; padding-top: 4px; background-color: #7f7f7f" >
-                <i class="fa fa-user" style="font-size:15px; margin-right: 3px"></i>{{user.name}}
-              </label>
-             <a *ngIf="invitationList.length > 0" (click)="sendInvitation()">
-               <span class="glyphicon glyphicon-ok" style="color: mediumseagreen; font-size:20px;margin-left: 5px; cursor: pointer;"></span>
-             </a>
+            </ng-template>
+          </ng-template>
+        </span>
+        <ng-template #closed>
+          <label class="label label-default" style="margin-left: 10px; background-color: #C21F39" >
+            CLOSED
+          </label>
+        </ng-template><!--End Join / Leave -->
 
-              <ul class="dropdown-menu">
-                <li ><a *ngFor="let user of recommendedUsers" (click)="addInvitationList(user)">{{user.name}}</a></li>
-              </ul>
-            </div>
-         </div>
-       </span>
-       <ng-template #canJoin>
-         <button (click)="joinMeeting()" style="float:right" class="btn btn-primary btn-primary">
-         JOIN
-         </button>
-       </ng-template>
-     </ng-template>
-   </span>
-   <ng-template #closed>
-     <button class="btn" style="float:right; color: maroon" disabled>CLOSED</button>
-   </ng-template>
+      <p class="lead"><i class="fa fa-user"></i> by <a [routerLink]="['/user', author.id]">{{author.name}}</a>
+        <span style="float:right">
+          <span style="font-size: 15px">Participants</span>
+          <i *ngFor="let m of selectedMeeting.members" class="fa fa-user" style="font-size:35px; color: #336699; cursor: pointer"
+             (mouseenter)="memberName = m.name" data-tooltip-text="abc" [attr.id]="memberName" [routerLink]="['/user', m.id]"></i>
+          <i *ngFor="let m of emptySeats" class="fa fa-user" style="font-size:35px; color: darkgray "></i><br>
+        </span>
+      </p>
 
-   <!--Comments-->
-   <h3>Comments</h3>
-   <div>
-     <!--Create comment-->
-     <input [(ngModel)]="newComment" style="width:400px;">
-     <button (click)="createComment(newComment)" class="btn btn-primary btn-sm" id="create-comment-button">Create</button>
-     <input type="checkbox" class="checkbox-inline" [checked]="isPrivate" (click)="changePrivateMode(true)"> Private
-     <li *ngFor="let comment of comments">
-       <span *ngIf="comment.publicity || currentUser.id===selectedMeeting.author.id || currentUser.id===comment.author.id; else private_comment">
-         <!--Author of the comment-->
-         <span style="font-weight:bold; cursor:pointer" [routerLink]="['/user', comment.author.id]">{{ comment.author.name }}</span>
-         <!--Content of the comment-->
-         :
+      <!--Invitation-->
+      <div class="dropdown" *ngIf="!selectedMeeting.is_closed">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" (click)="getRecUsers()">
+          Invite
+        </button>
+        <!--Invitation list-->
+        <label *ngFor="let user of invitationList" class="label label-default" style="margin-left: 5px; padding-top: 4px; background-color: #7f7f7f" >
+          <i class="fa fa-user" style="font-size:15px; margin-right: 3px"></i>{{user.name}}
+        </label>
+        <a *ngIf="invitationList.length > 0" (click)="sendInvitation()">
+          <span class="glyphicon glyphicon-ok" style="color: mediumseagreen; font-size:20px;margin-left: 5px; cursor: pointer;"></span>
+        </a>
+
+        <!--Dropdown-->
+        <ul class="dropdown-menu">
+          <li ><a *ngFor="let user of recommendedUsers" (click)="addInvitationList(user)">{{user.name}}</a></li>
+        </ul>
+      </div>
+
+      <hr>
+      <p><i class="fa fa-calendar"></i> Posted on August 24, 2014 at 9:00 PM</p>
+      <p><i class="glyphicon glyphicon-map-marker"></i> {{selectedMeeting.location}}</p>
+      <p><i class="fa fa-tags"></i> Tags: <a href=""><span class="badge badge-info">Bootstrap</span></a> <a href=""><span class="badge badge-info">Web</span></a> <a href=""><span class="badge badge-info">CSS</span></a> <a href=""><span class="badge badge-info">HTML</span></a></p>
+
+      <p class="lead" style="font-size:18px;">{{selectedMeeting.description}}</p>
+
+    </div>
+
+    <br><br>
+
+    <!--Comments-->
+    <div class="container" *ngIf="selectedMeeting && comments && currentUser">
+      <!-- the comment box -->
+      <div class="well">
+        <h4><i class="fa fa-paper-plane-o"></i> Leave a Comment:</h4>
+        <form role="form">
+          <div class="form-group">
+            <input [(ngModel)]="newComment" class="form-control" rows="3" [ngModelOptions]="{standalone: true}">
+            <input type="checkbox" class="checkbox-inline" [checked]="isPrivate" (click)="changePrivateMode(true)"> <label>Private</label>
+          </div>
+          <button type="submit" class="btn btn-primary" (click)="createComment(newComment)"><i class="fa fa-reply"></i> Submit</button>
+        </form>
+      </div>
+      <hr>
+
+      <!-- the comments -->
+      <li *ngFor="let comment of comments">
+    <span *ngIf="comment.publicity || currentUser.id===selectedMeeting.author.id || currentUser.id===comment.author.id; else private_comment">
+      <!--Author of the comment-->
+      <h5 style="cursor:pointer" [routerLink]="['/user', comment.author.id]"><i class="fa fa-comment"></i> {{ comment.author.name }}
+        <small> 9:41 PM on August 24, 2014</small>
+      </h5>
+      <!--Content of the comment-->
          <span *ngIf="selectedComment!==comment;else edit_mode">
             {{comment.content}}
-             <!--Edit / Delete button-->
+           <!--Edit / Delete button-->
             <span *ngIf="currentUser.id===comment.author.id">
               <button (click)="toEditMode(comment)" class="btn btn-primary btn-sm" style="margin-left:20px;" id="edit-comment-button">Edit</button>
               <button (click)="deleteComment(comment)" class="btn btn-primary btn-sm" id="delete-comment-button">Delete</button>
@@ -99,20 +120,30 @@
            <button (click)="cancleEditMode(comment)" class="btn btn-primary btn-sm" id="cancle-edit-button">Cancle</button>
            <input type="checkbox" class="checkbox-inline" [checked]="!comment.publicity" (click)="changePrivateMode(false)"> Private
          </ng-template>
-       </span>
+    </span>
+        <ng-template #private_comment>
+          <label style="color:royalblue">Private comment</label>
+        </ng-template>
+      </li>
+    </div>
+    <br>
 
-       <ng-template #private_comment>
-         <label style="color:royalblue">Private comment</label>
-       </ng-template>
-     </li>
-   </div><br>
+
+    <div class="container" *ngIf="selectedMeeting">
+      <div style="float:right">
+    <span *ngIf="!selectedMeeting.is_closed && isOwner()">
+      <button (click)="edit()" class="btn btn-primary btn-primary" id="edit-button" >Edit</button>
+      <button (click)="delete()" class="btn btn-primary btn-primary" id="delete-button">Delete</button>
+    </span>
+        <button (click)="goBack()" class="btn btn-primary btn-primary" id="back-button">Back</button>
+      </div>
+    </div>
+
+
+  </div>
+</div>
 
 
 
-   <span *ngIf="!selectedMeeting.is_closed && isOwner()">
-    <button (click)="edit()" class="btn btn-primary btn-primary" id="edit-button" >Edit</button>
-    <button (click)="delete()" class="btn btn-primary btn-primary" id="delete-button">Delete</button>
-  </span>
-   <button (click)="goBack()" class="btn btn-primary btn-primary" id="back-button">Back</button>
 
- </div>
+
