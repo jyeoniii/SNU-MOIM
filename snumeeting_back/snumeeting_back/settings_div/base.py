@@ -15,6 +15,9 @@ import json
 
 from django.core.exceptions import ImproperlyConfigured
 
+import pymysql
+pymysql.install_as_MySQLdb()
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -138,10 +141,15 @@ TEMPLATES = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'snumoimDB',
+        'USER': 'snumoim_user', # database account 
+        'PASSWORD': 'tmsnahdla', # account password 
+        'HOST': '52.78.119.61', # database address (IP)
+        'PORT': '3306', # database port(normally 3306)
     }
 }
+
 
 
 # Password validation
