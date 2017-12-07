@@ -9,21 +9,21 @@
 
 <h2 class="text-center">Meeting Detail</h2><br>
 
- <div class="container center-block" style="width:600px;">
+ <div *ngIf="selectedMeeting && comments && currentUser" class="container center-block" style="width:600px;">
 
    <h3>Meeting</h3>
-   <span *ngIf="selectedMeeting && !selectedMeeting.is_closed; else closed">
+   <span *ngIf="!selectedMeeting.is_closed; else closed">
      <span *ngIf="isOwner(); else notOwner">
       <button (click)="closeMeeting()" style="float:right" class="btn btn-primary btn-primary">CLOSE</button>
      </span>
      <ng-template #notOwner>
        <span *ngIf="alreadyJoined; else canJoin">
-         <button *ngIf="currentUser && selectedMeeting" (click)="leaveMeeting()" style="float:right" class="btn btn-primary btn-primary">
+         <button (click)="leaveMeeting()" style="float:right" class="btn btn-primary btn-primary">
            LEAVE
          </button>
        </span>
        <ng-template #canJoin>
-         <button *ngIf="currentUser && selectedMeeting" (click)="joinMeeting()" style="float:right" class="btn btn-primary btn-primary">
+         <button (click)="joinMeeting()" style="float:right" class="btn btn-primary btn-primary">
          JOIN
          </button>
        </ng-template>
@@ -33,14 +33,13 @@
      <button class="btn" style="float:right; color: maroon" disabled>CLOSED</button>
    </ng-template>
 
-
-
-   <div *ngIf="selectedMeeting">
+   <div>
      <span style="font-weight: bold">title: </span> {{ selectedMeeting.title }}<br>
      <span style="font-weight: bold">author: </span> {{ selectedMeeting.author.name }}<br>
      <span style="font-weight: bold">location:</span> {{ selectedMeeting.location }}<br>
      <span style="font-weight: bold">participation: </span>
-       <i *ngFor="let m of selectedMeeting.members" class="fa fa-user" style="font-size:25px; color: royalblue"></i>
+       <i *ngFor="let m of selectedMeeting.members" class="fa fa-user" style="font-size:25px; color: royalblue; cursor: pointer"
+          (mouseenter)="changeMemberName(m.name)" data-tooltip-text="abc" [attr.id]="memberName" (click)="showUserDetail(m.id)"></i>
        <i *ngFor="let m of emptySeats" class="fa fa-user" style="font-size:25px; color: darkgray "></i><br>
 
      <span style="font-weight: bold">description: <br></span>{{ selectedMeeting.description }}<br>
@@ -48,7 +47,7 @@
    <br>
    <!--Comments-->
    <h3>Comments</h3>
-   <div *ngIf="comments">
+   <div>
      <!--Create comment-->
      <input [(ngModel)]="newComment" style="width:400px;">
      <button (click)="createComment(newComment)" class="btn btn-primary btn-sm" id="create-comment-button">CREATE</button>
@@ -62,7 +61,7 @@
          <span *ngIf="selectedComment!==comment;else edit_mode">
             {{comment.content}}
              <!--Edit / Delete button-->
-            <span *ngIf="currentUser && (currentUser.id===comment.author.id)">
+            <span *ngIf="currentUser.id===comment.author.id">
               <button (click)="toEditMode(comment)" class="btn btn-primary btn-sm" style="margin-left:20px;" id="edit-comment-button">EDIT</button>
               <button (click)="deleteComment(comment)" class="btn btn-primary btn-sm" id="delete-comment-button">DELETE</button>
             </span>
@@ -82,7 +81,7 @@
      </li>
    </div><br>
 
-   <span *ngIf="isOwner() && selectedMeeting && !selectedMeeting.is_closed">
+   <span *ngIf="!selectedMeeting.is_closed && isOwner()">
     <button (click)="edit()" class="btn btn-primary btn-primary" id="edit-button" >EDIT</button>
     <button (click)="delete()" class="btn btn-primary btn-primary" id="delete-button">DELETE</button>
   </span>

@@ -38,20 +38,22 @@ export class MeetingDetailComponent implements OnInit {
   private isPrivate_edit = false;
 
   private emptySeats = null;
+  private memberName = "BBBB";
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.userService.getLoginedUser()
-        .then(user => this.currentUser = user);
       this.meetingService.getMeeting(+params['id'])
         .then(meeting => {
           this.selectedMeeting = meeting;
           this.author = meeting.author;
           this.emptySeats = new Array(this.selectedMeeting.max_member - this.selectedMeeting.members.length);
-          if (this.selectedMeeting.members.find(member => member.id === this.currentUser.id)) {
-            this.alreadyJoined = true;
-            console.log(this.alreadyJoined);
-          }
+          this.userService.getLoginedUser()
+            .then(user => {
+              this.currentUser = user;
+              if (this.selectedMeeting.members.find(member => member.id === this.currentUser.id)) {
+                this.alreadyJoined = true;
+              }
+            });
         });
       this.commentService.getCommentsOnMeeting(+params['id'])
         .then(comments => {
@@ -112,7 +114,7 @@ export class MeetingDetailComponent implements OnInit {
 
   isOwner(): boolean {
     if (this.currentUser && this.selectedMeeting) {
-      return this.currentUser.id === this.selectedMeeting.author.id;
+      return this.currentUser.id === this.author.id;
     } else {
       // No user logged in
       return false;
@@ -162,5 +164,13 @@ export class MeetingDetailComponent implements OnInit {
       this.meetingService.closeMeeting(this.selectedMeeting.id);
       this.selectedMeeting.is_closed = true;
     }
+  }
+
+  changeMemberName(username: string): void {
+    this.memberName = username;
+  }
+
+  showUserDetail(userid: number): void {
+    this.router.navigate(['/user', userid]);
   }
 }
