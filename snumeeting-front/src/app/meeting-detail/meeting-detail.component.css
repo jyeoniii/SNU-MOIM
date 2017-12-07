@@ -25,6 +25,7 @@
   width: auto;
   max-width: 300px;
   word-wrap: break-word;
+  font-weight: bold;
 
   z-index: 9999;
 
@@ -40,3 +41,4 @@
   left: 0;
   opacity: 1;
 }
+

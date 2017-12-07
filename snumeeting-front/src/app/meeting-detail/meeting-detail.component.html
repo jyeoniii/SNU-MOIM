@@ -3,7 +3,9 @@
 
 <div *ngIf="currentUser" style="float:right">
   <span>Welcome, </span>{{currentUser.name}}<br>
-  <button [routerLink]="['/user', currentUser.id, 'message']" class="btn btn-primary btn-primary">Message</button>
+  <a [routerLink]="['/user', currentUser.id, 'message']" class="btn btn-info btn-sm">
+    <span class="glyphicon glyphicon-envelope"></span> Message
+  </a>
   <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
 </div>
 
@@ -38,8 +40,8 @@
      <span style="font-weight: bold">author: </span> {{ selectedMeeting.author.name }}<br>
      <span style="font-weight: bold">location:</span> {{ selectedMeeting.location }}<br>
      <span style="font-weight: bold">participation: </span>
-       <i *ngFor="let m of selectedMeeting.members" class="fa fa-user" style="font-size:25px; color: royalblue; cursor: pointer"
-          (mouseenter)="changeMemberName(m.name)" data-tooltip-text="abc" [attr.id]="memberName" (click)="showUserDetail(m.id)"></i>
+       <i *ngFor="let m of selectedMeeting.members" class="fa fa-user" style="font-size:25px; color: #336699; cursor: pointer"
+          (mouseenter)="changeMemberName(m.name)" data-tooltip-text="abc" [attr.id]="memberName" [routerLink]="['/user', m.id]"></i>
        <i *ngFor="let m of emptySeats" class="fa fa-user" style="font-size:25px; color: darkgray "></i><br>
 
      <span style="font-weight: bold">description: <br></span>{{ selectedMeeting.description }}<br>

@@ -170,7 +170,4 @@ export class MeetingDetailComponent implements OnInit {
     this.memberName = username;
   }
 
-  showUserDetail(userid: number): void {
-    this.router.navigate(['/user', userid]);
-  }
 }
