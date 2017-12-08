@@ -102,7 +102,8 @@ export class UserService {
   getLoginedUser(): Promise<User> {
     return this.http.request('/api/loginedUser')
       .toPromise()
-      .then(response => response.json() as User);
+      .then(response => response.json() as User)
+      .catch(this.handleError);
   }
 
   private handleError(error: any): Promise<any> {
