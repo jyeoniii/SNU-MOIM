@@ -35,6 +35,7 @@ urlpatterns = [
   url(r'^leaveMeeting/(?P<meeting_id>[0-9]+)$', leaveMeeting, name='leaveMeeting'),
   url(r'^closeMeeting/(?P<meeting_id>[0-9]+)$', closeMeeting, name='closeMeeting'),
   url(r'^recommend/meeting/(?P<user_id>[0-9]+)/(?P<N>[0-9]+)$', recommendMeetings, name='recommendMeetings'),
+  url(r'^recommend/user/meeting/(?P<user_id>[0-9]+)/(?P<meeting_id>[0-9]+)/(?P<N>[0-9]+)$', recommendUsersForMeeting, name='recommendUsersForMeeting'),
   url(r'^messages$', get_django_messages, name='messages'),
   url(r'^add_message', add_django_message, name='add_messages')
 ]
