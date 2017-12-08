@@ -9,13 +9,14 @@ import { Observable } from 'rxjs/Rx';
 
 import { MeetingService } from '../services/meeting.service';
 import { CommentService } from '../services/comment.service';
+import { UserService } from '../services/user.service';
+import { RecommendService } from '../services/recommend.service';
 
 import { Meeting } from '../models/meeting';
 
 import { MockBackend } from '@angular/http/testing';
 
 import { makeMeetingData } from '../models/mock-data';
-import {UserService} from '../services/user.service';
 
 describe('MeetingDetailComponent', () => {
   let component: MeetingDetailComponent;
@@ -33,7 +34,7 @@ describe('MeetingDetailComponent', () => {
                  FormsModule,
       ],
       declarations: [ MeetingDetailComponent],
-      providers: [MeetingService, CommentService, UserService,
+      providers: [MeetingService, CommentService, UserService, RecommendService,
         { provide: XHRBackend, useClass: MockBackend },
         { provide: ActivatedRoute, useValue: { 'params': Observable.from([{ id: 1 }]) } },
       ]

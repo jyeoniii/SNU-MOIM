@@ -4,8 +4,9 @@ import { Meeting } from '../models/meeting';
 import { Comment } from '../models/comment';
 import { User } from '../models/user';
 import { MeetingService } from '../services/meeting.service';
-import { UserService } from "../services/user.service";
-import { CommentService}  from '../services/comment.service';
+import { UserService } from '../services/user.service';
+import { RecommendService } from '../services/recommend.service';
+import { CommentService} from '../services/comment.service';
 
 @Component({
   selector: 'app-meeting-detail',
@@ -20,6 +21,7 @@ export class MeetingDetailComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private userService: UserService,
+    private recommendService: RecommendService,
     private meetingService: MeetingService,
     private commentService: CommentService
   ) { }
@@ -37,21 +39,27 @@ export class MeetingDetailComponent implements OnInit {
   private isPrivate = false;
   private isPrivate_edit = false;
 
+  private memberName = null;
   private emptySeats = null;
+
+  private MAX_INVITATION = 5;
+  private recommendedUsers: User[] = null;
+  private invitationList: User[] = [];
 
   ngOnInit() {
     this.route.params.subscribe(params => {
-      this.userService.getLoginedUser()
-        .then(user => this.currentUser = user);
       this.meetingService.getMeeting(+params['id'])
         .then(meeting => {
           this.selectedMeeting = meeting;
           this.author = meeting.author;
           this.emptySeats = new Array(this.selectedMeeting.max_member - this.selectedMeeting.members.length);
-          if (this.selectedMeeting.members.find(member => member.id === this.currentUser.id)) {
-            this.alreadyJoined = true;
-            console.log(this.alreadyJoined);
-          }
+          this.userService.getLoginedUser()
+            .then(user => {
+              this.currentUser = user;
+              if (this.selectedMeeting.members.find(member => member.id === this.currentUser.id)) {
+                this.alreadyJoined = true;
+              }
+            });
         });
       this.commentService.getCommentsOnMeeting(+params['id'])
         .then(comments => {
@@ -112,7 +120,7 @@ export class MeetingDetailComponent implements OnInit {
 
   isOwner(): boolean {
     if (this.currentUser && this.selectedMeeting) {
-      return this.currentUser.id === this.selectedMeeting.author.id;
+      return this.currentUser.id === this.author.id;
     } else {
       // No user logged in
       return false;
@@ -163,4 +171,35 @@ export class MeetingDetailComponent implements OnInit {
       this.selectedMeeting.is_closed = true;
     }
   }
+
+  getRecUsers(): void {
+    if (this.recommendedUsers !== null ) return;  // Compute only once
+    this.recommendService.getRecUsersForMeeting(this.currentUser.id, this.selectedMeeting.id, 10)
+      .then(users => {
+        this.recommendedUsers = users;
+      });
+  }
+
+  addInvitationList(user: User): void {
+    if (this.invitationList.indexOf(user) !== -1) {
+      alert('This user is already in the list!');
+      return;
+    } else if (this.invitationList.length >= this.emptySeats.length) {
+      alert('Cannot add more users! (Available seats: ' + this.emptySeats.length + ')');
+      return;
+    } else if (this.invitationList.length >= this.MAX_INVITATION) {
+      alert('Cannot add more users! (You can send invitation to maximum ' + this.MAX_INVITATION + ' members)');
+      return;
+    }
+    this.invitationList.push(user);
+  }
+
+  sendInvitation(): void {
+    // TODO: send message
+    if (confirm('Are you sure to invitations to these users?')) {
+      alert('Invitation message has been sent to selected users!');
+      this.invitationList = [];
+    }
+  }
+
 }
