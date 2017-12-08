@@ -216,6 +216,7 @@ def userDetail(request, user_id):
     ex_user.subjects.clear()
     ex_user.subjects.add(*subjects)
     ex_user.save()
+    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
     return HttpResponse(status=204)
   else:
     return HttpResponseNotAllowed(['GET'],['PUT'])
