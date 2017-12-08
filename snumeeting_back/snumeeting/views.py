@@ -179,7 +179,7 @@ def loginedUser(request):
 # url: /user
 def userList(request):
   if request.method == 'GET':
-    users = User.objects.all()
+    users = Ex_User.objects.all()
     dict_users = []
     for user in users:
       u = convert_userinfo_for_front(user.id)
@@ -216,7 +216,6 @@ def userDetail(request, user_id):
     ex_user.subjects.clear()
     ex_user.subjects.add(*subjects)
     ex_user.save()
-    login(request, user, backend='django.contrib.auth.backends.ModelBackend')
     return HttpResponse(status=204)
   else:
     return HttpResponseNotAllowed(['GET'],['PUT'])

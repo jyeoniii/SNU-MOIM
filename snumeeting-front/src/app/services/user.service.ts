@@ -43,8 +43,8 @@ export class UserService {
 
     return this.http.post('/api/signup', JSON.stringify({
         username: user.username,
-        password: user.password,
         name: user.name,
+        password: user.password,
         college_id: user.college.id,
         subject_ids: subjectIDList
       }),
@@ -102,8 +102,7 @@ export class UserService {
   getLoginedUser(): Promise<User> {
     return this.http.request('/api/loginedUser')
       .toPromise()
-      .then(response => response.json() as User)
-      .catch(this.handleError);
+      .then(response => response.json() as User);
   }
 
   private handleError(error: any): Promise<any> {
