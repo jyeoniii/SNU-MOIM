@@ -179,7 +179,7 @@ def loginedUser(request):
 # url: /user
 def userList(request):
   if request.method == 'GET':
-    users = User.objects.all()
+    users = Ex_User.objects.all()
     dict_users = []
     for user in users:
       u = convert_userinfo_for_front(user.id)
