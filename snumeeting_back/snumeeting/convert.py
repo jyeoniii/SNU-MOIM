@@ -62,6 +62,7 @@ def convert_meeting_for_mainpage(meeting):
   subject_id = d['subject']
   d['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
   d['members']=list(meeting.members.all().values())
+  d.pop('tags')
   return d
 
 

@@ -25,6 +25,7 @@ urlpatterns = [
   url(r'^college/(?P<college_id>[0-9]+)$', collegeDetail, name='collegeDetail'),
   url(r'^message$', messageList, name='messageList'),
   url(r'^message/(?P<message_id>[0-9]+)$', messageDetail, name='messageDetail'),
+  url(r'^tags$', tagList, name='tagList'),
 
   url(r'^meeting/search/title/(?P<query>.+)$', searchMeeting_title, name='searchMeeting_title'),
   url(r'^meeting/search/author/(?P<query>.+)$', searchMeeting_author, name='searchMeeting_author'),
