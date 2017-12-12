@@ -157,4 +157,12 @@ export class MeetingService {
       .then(() => null)
       .catch(this.handleError);
   }
+
+  getMeetingsOnTag(tagName: string): Promise<Meeting[]> {
+    const url = `api/meeting/tag/${tagName}`;
+    return this.http.get(url)
+      .toPromise()
+      .then(response => response.json() as Meeting[])
+      .catch(this.handleError);
+  }
 }

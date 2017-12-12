@@ -41,6 +41,7 @@ export class MeetingsComponent implements OnInit {
   private allMeetings: Meeting[];
   private allMeetingsWithoutFiltering: Meeting[] = null;
 
+  // Recommendation
   private meetingsRecommended: Meeting[] = null;
   private meetingsShown: Meeting[] = null;
   private K = 10; // Num of meetings to be recommended;
@@ -159,7 +160,8 @@ export class MeetingsComponent implements OnInit {
     this.availableOnly = !this.availableOnly;
     if (this.availableOnly) {
       this.allMeetingsWithoutFiltering = this.allMeetings;
-      this.allMeetings = this.allMeetings.filter(meeting => meeting.members.length < meeting.max_member);
+      this.allMeetings = this.allMeetings.filter(
+        meeting => (meeting.members.length < meeting.max_member) && (!meeting.is_closed));
       this.pageChanged();
     } else {
       this.allMeetings = this.allMeetingsWithoutFiltering;

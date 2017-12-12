@@ -811,3 +811,18 @@ def tagList(request):
     return JsonResponse(res, safe=False)
   else:
     return HttpResponseNotAllowd(['GET'])
+
+# url: /meeting/tag/:tag_name
+def meetingsOnTag(request, tag_name):
+  if request.method == 'GET':
+    res = []
+    try:
+      tag = Tag.objects.get(name=tag_name)
+      meetings = tag.meetings_on_tag.all()
+      for m in meetings:
+        res.append(convert_meeting_for_mainpage(m))
+      return JsonResponse(res, safe=False)
+    except Tag.DoesNotExist:
+      return HttpResponseNotFound()
+  else:
+    return HttpResponseNotAllowd(['GET'])
