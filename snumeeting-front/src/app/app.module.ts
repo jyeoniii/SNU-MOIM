@@ -26,6 +26,9 @@ import { RecommendService } from './services/recommend.service';
 
 import { AppRoutingModule } from './app.routing.module';
 
+import { TagInputModule } from 'ngx-chips';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 export function CSRFStrategy() {
   return new CookieXSRFStrategy('csrftoken', 'X-CSRFToken');
 }
@@ -50,6 +53,8 @@ export function CSRFStrategy() {
     FormsModule,
     AppRoutingModule,
     NgxPaginationModule,
+    TagInputModule,
+    BrowserAnimationsModule
   ],
   providers: [
     MeetingService,
