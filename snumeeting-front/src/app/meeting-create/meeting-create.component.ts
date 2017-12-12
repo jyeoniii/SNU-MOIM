@@ -8,13 +8,8 @@ import { User } from '../models/user';
 import { Meeting } from '../models/meeting';
 import { Subject } from '../models/subject';
 import { Interest } from '../models/interest';
-import { Tag } from '../models/tag';
 
 import { MetaDataService } from "../services/meta-data-service";
-
-import { TagInputModule } from 'ngx-chips';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {Observable} from 'rxjs/Observable';
 
 
 @Component({
@@ -109,7 +104,6 @@ export class MeetingCreateComponent implements OnInit {
     for (const tag of this.tagInputs){
       res.push(tag.value);
     }
-    console.log(res);
 
     return res;
   }

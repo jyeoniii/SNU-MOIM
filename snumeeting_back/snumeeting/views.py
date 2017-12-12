@@ -251,7 +251,7 @@ def meetingList(request):
     tag_names = des_req['tag_names']
     for tag_name in tag_names:
       try:
-        found_tag = Tag.objects.get(name=tag_names)
+        found_tag = Tag.objects.get(name=tag_name)
         new_meeting.tags.add(found_tag)
       except Tag.DoesNotExist:
         new_tag = Tag.objects.create(name=tag_name)
@@ -292,6 +292,8 @@ def meetingDetail(request, meeting_id):
     #    members = User.objects.filter(id__in=member_ids)
     subject_id = des_req['subject_id']
     subject = Subject.objects.get(id=subject_id)
+    tag_names = des_req['tag_names']
+
     try:
       meeting = Meeting.objects.get(id=meeting_id)
     except Meeting.DoesNotExist:
@@ -303,6 +305,17 @@ def meetingDetail(request, meeting_id):
     #    meeting.members.clear()
     #    meeting.members.add(*members)
     meeting.subject = subject
+
+    # Change tags
+    meeting.tags.clear()
+    for tag_name in tag_names:
+      try:
+        found_tag = Tag.objects.get(name=tag_name)
+        meeting.tags.add(found_tag)
+      except Tag.DoesNotExist:
+        new_tag = Tag.objects.create(name=tag_name)
+        meeting.tags.add(new_tag)
+
     meeting.save()
     return HttpResponse(status=204)
   elif request.method == 'DELETE':

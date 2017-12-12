@@ -107,7 +107,7 @@ export class MeetingService {
       .catch(this.handleError);
   }
 
-  editMeeting(editedMeeting: Meeting): Promise<Meeting> {
+  editMeeting(editedMeeting: Meeting, tag_names: string[]): Promise<Meeting> {
     const url = `${this.meetingsUrl}/${editedMeeting.id}`;
     return this.http.put(url,
       JSON.stringify({
@@ -116,6 +116,7 @@ export class MeetingService {
         location: editedMeeting.location,
         max_member: editedMeeting.max_member,
         subject_id: editedMeeting.subject.id,
+        tag_names: tag_names
       }),
       {headers: headerWithCSRF()})
       .toPromise()
