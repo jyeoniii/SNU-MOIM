@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
 import { UserService } from "../services/user.service";
@@ -8,13 +8,19 @@ import { User } from '../models/user';
 import { Meeting } from '../models/meeting';
 import { Subject } from '../models/subject';
 import { Interest } from '../models/interest';
+import { Tag } from '../models/tag';
 
 import { MetaDataService } from "../services/meta-data-service";
+
+import { TagInputModule } from 'ngx-chips';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {Observable} from 'rxjs/Observable';
+
 
 @Component({
   selector: 'app-meeting-create',
   templateUrl: './meeting-create.component.html',
-  styleUrls: ['./meeting-create.component.css']
+  styleUrls: ['./meeting-create.component.css'],
 })
 export class MeetingCreateComponent implements OnInit {
   constructor(
@@ -34,12 +40,15 @@ export class MeetingCreateComponent implements OnInit {
   interestChecked = [];
   subjectChecked = [];
 
+  allTags: string[];
+  tagInputs = [];
 
 
   ngOnInit() {
     this.userService.getLoginedUser().then(user => this.currentUser = user);
     this.metaDataService.getSubjectList().then(subjects => this.subjects = subjects);
     this.metaDataService.getInterestList().then(interests => this.interests = interests);
+    this.metaDataService.getTagNameList().then(tags => this.allTags = tags);
     // this.metaDataService.getMemberList().then(members => this.members = members);
   }
 
@@ -73,6 +82,7 @@ export class MeetingCreateComponent implements OnInit {
 
   create(): void {
 
+    const tagNames = this.convertTagInputs();
     this.meeting.subject = this.selectedSubject;
     // console.log(this.meeting.subject);
 
@@ -84,11 +94,24 @@ export class MeetingCreateComponent implements OnInit {
       this.meeting.subject,
       this.meeting.description,
       this.meeting.location,
-      this.meeting.max_member
+      this.meeting.max_member,
+      tagNames
     )
       .then(() => {
         alert('Successfully Created a meeting!');
         this.router.navigate(['/meeting']);
       });
   }
+
+  convertTagInputs(): string[] {
+    const res = [];
+
+    for (const tag of this.tagInputs){
+      res.push(tag.value);
+    }
+    console.log(res);
+
+    return res;
+  }
+
 }

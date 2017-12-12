@@ -74,7 +74,10 @@
       <hr>
       <p><i class="fa fa-calendar"></i> Posted on August 24, 2014 at 9:00 PM</p>
       <p><i class="glyphicon glyphicon-map-marker"></i> {{selectedMeeting.location}}</p>
-      <p><i class="fa fa-tags"></i> Tags: <a href=""><span class="badge badge-info">Bootstrap</span></a> <a href=""><span class="badge badge-info">Web</span></a> <a href=""><span class="badge badge-info">CSS</span></a> <a href=""><span class="badge badge-info">HTML</span></a></p>
+      <p >
+        <i class="fa fa-tags"></i> Tags:
+        <a *ngFor="let tag of tags" href=""><span class="badge badge-info">#{{tag.name}}</span></a>
+      </p>
 
       <p class="lead" style="font-size:18px;display:block;word-wrap: break-word;">{{selectedMeeting.description}}</p>
 

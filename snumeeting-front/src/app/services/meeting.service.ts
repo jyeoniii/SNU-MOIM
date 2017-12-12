@@ -76,7 +76,8 @@ export class MeetingService {
                 subject: Subject,
                 description: string,
                 location: string,
-                max_number: number): Promise<void> {
+                max_number: number,
+                tag_names: string[]): Promise<void> {
     return this.http.post(this.meetingsUrl,
       JSON.stringify({
         author_id: author.id,
@@ -84,7 +85,9 @@ export class MeetingService {
         subject_id: subject.id,
         description: description,
         location: location,
-        max_member: max_number}),
+        max_member: max_number,
+        tag_names: tag_names
+      }),
       {headers: headerWithCSRF()})
       .toPromise()
       .then(() => null)

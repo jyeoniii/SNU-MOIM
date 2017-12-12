@@ -22,7 +22,7 @@ import datetime
 import requests
 
 from .tokens import account_activation_token
-from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message
+from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message, Tag
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
 
 import json
@@ -244,9 +244,19 @@ def meetingList(request):
     subject_id = des_req['subject_id']
     subject = Subject.objects.get(id=subject_id)
 
-    # TODO: replace author -> request.user
     new_meeting = Meeting(author=author, title=title, description=description, location=location, max_member=max_member, subject=subject)
     new_meeting.save()
+
+    # Add tags
+    tag_names = des_req['tag_names']
+    for tag_name in tag_names:
+      try:
+        found_tag = Tag.objects.get(name=tag_names)
+        new_meeting.tags.add(found_tag)
+      except Tag.DoesNotExist:
+        new_tag = Tag.objects.create(name=tag_name)
+        new_meeting.tags.add(new_tag)
+
     new_meeting.members.add(author)
     new_meeting.save()
     return HttpResponse(status=201)
@@ -268,6 +278,7 @@ def meetingDetail(request, meeting_id):
       dict_meeting['members']=list(meeting.members.all().values())
       subject_id = dict_meeting['subject']
       dict_meeting['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
+      dict_meeting['tags'] = list(meeting.tags.all().values())
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
     return JsonResponse(dict_meeting)
@@ -775,3 +786,15 @@ def add_django_message(request):
     return HttpResponse(status=200)
   else:
     return HttpResponseNotAllowed(['POST'])
+
+# get name of all tags
+# url: /tags
+def tagList(request):
+  if request.method == 'GET':
+    res = []
+    tags = Tag.objects.all()
+    for tag in tags:
+      res.append(tag.name)
+    return JsonResponse(res, safe=False)
+  else:
+    return HttpResponseNotAllowd(['GET'])
