@@ -3,7 +3,7 @@
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<div class="container-fluid" *ngIf="meetings && currentUser">
+<div class="container-fluid" *ngIf="allMeetings && meetings && currentUser">
 
   <div style="float:right; margin-top:20px;">
     <span>Welcome, <label>{{currentUser.name}}</label></span><br>
@@ -23,7 +23,7 @@
         <ng-template #single> is </ng-template>
         related to this tag!</p>
       <br>
-      <span style="width:500px;float:right">
+      <span style="width:500px;float:right" *ngIf="allMeetings.length > 0">
        <input type="checkbox" class="checkbox-inline" [checked]="availableOnly" (click)="available()"> Available meetings only
       </span>
       <br><br>
@@ -53,7 +53,7 @@
 
       </div>
 
-    </div>
+  </div>
 
   <div class="container">
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">

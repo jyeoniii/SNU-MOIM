@@ -136,22 +136,24 @@
         </optgroup>
       </select>
 
-      <span *ngIf="(selectedOption===searchOptions[2]) && interestList">
-      <select name="interest" [(ngModel)]="selectedInterest">
-        <optgroup label="interest">
-          <option disabled selected hidden>interest</option>
-          <option *ngFor="let interest of interestList" [ngValue]="interest">{{interest.name}}</option>
-        </optgroup>
-      </select>
+      <span *ngIf="(selectedOption==='category') && interestList">
+        <select name="interest" [(ngModel)]="selectedInterest">
+          <optgroup label="interest">
+            <option disabled selected hidden>interest</option>
+            <option *ngFor="let interest of interestList" [ngValue]="interest">{{interest.name}}</option>
+          </optgroup>
+        </select>
 
-      <select *ngIf="selectedInterest" name="subject" [(ngModel)]="selectedSubject">
-        <optgroup label="subjct">
-          <option disabled selected hidden>subject</option>
-          <option *ngFor="let subject of selectedInterest.subjects" [ngValue]="subject">{{subject.name}}</option>
-        </optgroup>
-      </select>
-    </span>
-      <input class="form-control" [(ngModel)]="query" style="display:inline;width:200px;">
+        <select *ngIf="selectedInterest" name="subject" [(ngModel)]="selectedSubject">
+          <optgroup label="subjct">
+            <option disabled selected hidden>subject</option>
+            <option *ngFor="let subject of selectedInterest.subjects" [ngValue]="subject">{{subject.name}}</option>
+          </optgroup>
+        </select>
+      </span>
+      <input class="form-control" [(ngModel)]="query" style="display:inline;width:200px;"
+               placeholder="query" id="query">
+
       <button class="btn" style="display: inline; width:80px" (click)="search()">search</button>
     </div>
     </div>

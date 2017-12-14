@@ -50,7 +50,7 @@ export class MeetingsComponent implements OnInit {
 
   // Searching
   readonly OPTION_DEFAULT = 'options';
-  private searchOptions = ['title', 'author', 'category']
+  private searchOptions = ['title', 'author', 'tag', 'category']
   private selectedOption = this.OPTION_DEFAULT;
   private query = '';
   private interestList: Interest[];
@@ -134,11 +134,11 @@ export class MeetingsComponent implements OnInit {
 
   search(): void {
     let searchQuery = this.query;
-    if ((this.selectedOption !== this.searchOptions[2]) && this.query === '') {
+    if ((this.selectedOption !== 'category') && this.query === '') {
       alert('Please enter a query!')
       return;
     }
-    if (this.selectedOption === this.searchOptions[2]) {
+    if (this.selectedOption === 'category') {  // subject
       if (this.selectedInterest === null) {
         alert('Please choose an interest and a subject!');
         return;
@@ -151,6 +151,10 @@ export class MeetingsComponent implements OnInit {
       if (this.query !== '') {
         searchQuery = `${searchQuery}_${this.query}`;
       }
+    }
+    if (this.selectedOption === 'tag'){ // tag
+      this.router.navigate(['/meeting/tag'], { queryParams: { tag: searchQuery }});
+      return;
     }
     this.router.navigate(['meeting'],
       { queryParams: { option: this.selectedOption, query: searchQuery }});

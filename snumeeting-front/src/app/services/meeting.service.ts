@@ -18,6 +18,7 @@ export class MeetingService {
     return Promise.reject(error.message || error);
   }
 
+
   /* Services for '/api/meeting'
   *  GET : Get all meeting data
   *  POST : Create new meeting
@@ -163,6 +164,10 @@ export class MeetingService {
     return this.http.get(url)
       .toPromise()
       .then(response => response.json() as Meeting[])
-      .catch(this.handleError);
+      .catch(response => {
+        if (response.status === 404) return [];
+        else this.handleError(response);
+      })
   }
+
 }
