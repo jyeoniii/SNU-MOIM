@@ -1,13 +1,10 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
 <div *ngIf="loginedUser" style="float:right">
   <span>Welcome, </span>{{loginedUser.name}}<br>
   <button [routerLink]="['/user', loginedUser.id, 'message']" class="btn btn-primary btn-primary">Message</button>
   <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
 </div>
-
 <h2 class="text-center">Edit Profile</h2>
-
 <div *ngIf="user">
   <form class="form-horizontal">
     <div class="form-group">
@@ -17,7 +14,6 @@
       </div>
     </div>
   </form>
-
   <form class="form-horizontal">
     <div class="form-group">
       <label class="col-sm-2 control-label">Password</label>
@@ -26,7 +22,6 @@
       </div>
     </div>
   </form>
-
   <form class="form-horizontal">
     <div class="form-group">
       <label class="col-sm-2 control-label">Password Check</label>
@@ -35,7 +30,6 @@
       </div>
     </div>
   </form>
-
   <form class="form-horizontal">
     <div class="form-group">
       <label class="col-sm-2 control-label">Name</label>
@@ -44,7 +38,6 @@
       </div>
     </div>
   </form>
-
   <form class="form-horizontal">
     <div class="form-group">
       <label class="col-sm-2 control-label">College</label>
@@ -57,7 +50,6 @@
       </div>
     </div>
   </form>
-
   <form class="form-horizontal">
     <div class="form-group">
       <label class="col-sm-2 control-label">Interest</label>
@@ -74,8 +66,6 @@
         </div>
     </div>
   </form>
-
   <button class="col-sm-offset-5 col-sm-2 btn btn-primary"
           (click)="editProfile(password.value, passwordCheck.value, name.value)">Edit Profile</button>
-
 </div>

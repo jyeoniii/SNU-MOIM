@@ -1,4 +1,4 @@
-<head>
+<!--<head>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -147,3 +147,142 @@
         (click)="toEdit()">Edit</button>
 
 <button (click)="goBack()" class="col-sm-offset-2 col-sm-2 btn btn-primary" id="go-back-button">Back</button>
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+</head>
+
+<body>
+<nav class="navbar navbar-expand-md bg-primary navbar-dark">
+  <div class="container" *ngIf="currentUser">
+    <a class="navbar-brand" [routerLink]="['/meeting']"><i class="fa d-inline fa-lg fa-users"></i><b>SNU MO-IM</b></a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
+    <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/user', currentUser.id]"><i class="fa d-inline fa-lg fa-address-book-o"></i> Welcome, {{currentUser.name}}</a>
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/user', currentUser.id, 'message']"><i class="fa d-inline fa-lg fa-commenting-o"></i> Message</a>
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" (click)="signOut()"><i class="fa d-inline fa-lg fa-user-circle-o"></i> Sign out</a>
+    </div>
+  </div>
+</nav>
+<div class="py-5" style="background-image: url(&quot;https://pingendo.github.io/templates/sections/assets/cover_restaurant.jpg&quot;);">
+  <div class="container">
+    <div class="row">
+      <div class="align-self-center col-md-6 text-white">
+        <h1 class="text-center text-md-left display-3">SNU MO-IM</h1>
+        <p class="lead">Edit the meeting</p>
+      </div>
+      <div class="col-md-6" id="book">
+        <div class="card">
+          <div class="card-body p-5">
+            <h3 class="pb-3">Edit a MO-IM</h3>
+            <div *ngIf="selectedMeeting">
+              <form action="https://formspree.io/YOUREMAILHERE">
+                <div class="form-group"> <label>Title</label>
+                  <input class="form-control" [(ngModel)]="selectedMeeting.title" [ngModelOptions]="{standalone: true}"> </div>
+                <div class="form-group"> <label>Interest</label>
+                  <div class="checkbox checkbox-inline">
+                    <div *ngFor="let interest of interests">
+                      <input type="radio" class="radio-inline" name="interest" (click)="interestCheck(interest.name)">{{interest.name}}
+                      <div *ngFor="let subject of interest.subjects">
+                        <div class="col-sm-offset-1" *ngIf="interestChecked[interest.name]">
+                          <input type="radio" class="radio-inline" name="subject" (click)="subjectCheck(subject)">{{subject.name}}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-group"> <label for="Textarea">Description</label> <textarea class="form-control" id="Textarea" rows="5" [(ngModel)]="selectedMeeting.description" [ngModelOptions]="{standalone: true}"></textarea> </div>
+                <div class="form-group"> <label>Location</label>
+                  <input class="form-control" [(ngModel)]="selectedMeeting.location" [ngModelOptions]="{standalone: true}"> </div>
+                <div class="form-group"> <label>People</label>
+                  <input class="form-control" type="number" [(ngModel)]="selectedMeeting.max_member" [ngModelOptions]="{standalone: true}"> </div>
+                <div class="form-group"> <label>Tag</label>
+                  <tag-input class="form-control" [(ngModel)]="tagInputs" [ngModelOptions]="{standalone: true}" [maxItems]='8'
+                             [onlyFromAutocomplete]="false" theme='bootstrap'>
+                    <tag-input-dropdown [autocompleteItems]="allTags">
+                      <ng-template let-item="item">
+                        #{{ item.display }}
+                      </ng-template>
+                    </tag-input-dropdown>
+                  </tag-input>
+                </div>
+                <button type="submit" class="btn mt-2 btn-outline-dark" (click)="toEdit()">Edit</button>
+                <button type="submit" class="btn mt-2 btn-outline-dark" (click)="goBack()">Back</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cancel</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">×</span> </button>
+      </div>
+      <div class="modal-body">
+        <p>Cancel create the MO-IM?.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="text-white bg-secondary">
+  <div class="container">
+    <div class="row">
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 light">SNU MO-IM</h2>
+        <p class="text-white">A group who aims to ease of the lives of SNU students</p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">Mapsite</h2>
+        <ul class="list-unstyled">
+          <a href="#" class="text-white">Home</a>
+          <br>
+          <a href="#" class="text-white">About us</a>
+          <br>
+          <a href="#" class="text-white">Our services</a>
+          <br>
+          <a href="#" class="text-white">Stories</a>
+        </ul>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4">Contact</h2>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"><i class="fa d-inline mr-3 fa-envelope-o text-light"></i>SNU mail</a>
+        </p>
+        <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+          <a href="https://goo.gl/5U1Q7X" class="text-white" target="_blank"><i class="fa d-inline mr-3 fa-map-marker text-light"></i>Seoul National University</a>
+        </p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">SNU MO-IM</h2>
+        <form>
+          <fieldset class="form-group text-white"> <label for="exampleInputEmail1">M: Matching<br>O: Of<br>I: Identical<br>M: Motives<br></label> </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mt-3">
+        <p class="text-center text-white">© Copyright 2017 SNUMOIM - All rights reserved. </p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+
+</html>
