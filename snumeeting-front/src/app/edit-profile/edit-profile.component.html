@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <div *ngIf="loginedUser" style="float:right">
   <span>Welcome, </span>{{loginedUser.name}}<br>
   <button [routerLink]="['/user', loginedUser.id, 'message']" class="btn btn-primary btn-primary">Message</button>
@@ -69,3 +69,127 @@
   <button class="col-sm-offset-5 col-sm-2 btn btn-primary"
           (click)="editProfile(password.value, passwordCheck.value, name.value)">Edit Profile</button>
 </div>
+-->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+</head>
+
+<body>
+<nav class="navbar navbar-expand-md bg-primary navbar-dark">
+  <div class="container" *ngIf="loginedUser">
+    <a class="navbar-brand" [routerLink]="['/meeting']"><i class="fa d-inline fa-lg fa-users"></i><b>SNU MO-IM</b></a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
+    <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/user', loginedUser.id]"><i class="fa d-inline fa-lg fa-address-book-o"></i> Welcome, {{loginedUser.name}}</a>
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/user', loginedUser.id, 'message']"><i class="fa d-inline fa-lg fa-commenting-o"></i> Message</a>
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" (click)="signOut()"><i class="fa d-inline fa-lg fa-user-circle-o"></i> Sign out</a>
+    </div>
+  </div>
+</nav>
+<div class="py-5" style="background-image: url(&quot;https://iammagnus.com/wp-content/uploads/2016/05/website-design-background-1.jpg&quot;);">
+  <div class="container">
+    <div class="row">
+      <div class="align-self-center col-md-6 text-white">
+        <h1 class="text-center text-md-left display-3">SNU MO-IM</h1>
+        <p class="lead">Make your profile outstanding</p>
+      </div>
+      <div class="col-md-6" id="book" *ngIf="user">
+        <div class="card">
+          <div class="card-body p-5">
+            <h3 class="pb-3">Edit you profile</h3>
+            <form action="https://formspree.io/YOUREMAILHERE">
+              <div class="form-group"> <label>mySNU ID</label>
+                <p class="form-control-static">{{user.username}}</p> </div>
+              <div class="form-group"> <label>Password</label>
+                <input type="password" class="form-control" placeholder="Password need when edit" #password> </div>
+              <div class="form-group"> <label>Password Check</label>
+                <input type="password" class="form-control" placeholder="Please retype password" #passwordCheck> </div>
+              <div class="form-group"> <label>Name</label>
+                <input class="form-control" value="{{user.name}}" placeholder="Enter Name" #name> </div>
+              <div class="form-group"> <label>College</label>
+                <div>
+                  <select class="form-control" [(ngModel)]="user.college" [ngModelOptions]="{standalone: true}">
+                    <option *ngFor="let college of colleges" [ngValue]="college"
+                            [selected]="college.id === user.college.id">{{college.name}}</option><br>
+                  </select>
+                  <small class="text-muted">* Don't select college if you don't want to change.</small>
+                </div>
+              </div>
+              <div class="form-group"> <label>Interest</label>
+                <div class="checkbox checkbox-inline">
+                  <div *ngFor="let interest of interests">
+                    <input type="checkbox" class="checkbox-inline" [checked]="interestChecked[interest.id]" (click)="interestCheck(interest.id)">{{interest.name}}
+                    <div *ngFor="let subject of interest.subjects">
+                      <div class="col-sm-offset-1" *ngIf="interestChecked[interest.id]">
+                        <input type="checkbox" [checked]="subjectChecked[subject.name]" class="checkbox-inline"
+                               (click)="subjectCheck(subject.name)">{{subject.name}}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="submit" class="btn mt-2 btn-outline-dark" (click)="editProfile(password.value, passwordCheck.value, name.value)">Edit</button>
+              <button type="submit" class="btn mt-2 btn-outline-dark" (click)="goBack()">Back</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="text-white bg-secondary">
+  <div class="container">
+    <div class="row">
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 light">SNU MO-IM</h2>
+        <p class="text-white">A group who aims to ease of the lives of SNU students</p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">Mapsite</h2>
+        <ul class="list-unstyled">
+          <a href="#" class="text-white">Home</a>
+          <br>
+          <a href="#" class="text-white">About us</a>
+          <br>
+          <a href="#" class="text-white">Our services</a>
+          <br>
+          <a href="#" class="text-white">Stories</a>
+        </ul>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4">Contact</h2>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"><i class="fa d-inline mr-3 fa-envelope-o text-light"></i>SNU mail</a>
+        </p>
+        <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+          <a href="https://goo.gl/5U1Q7X" class="text-white" target="_blank"><i class="fa d-inline mr-3 fa-map-marker text-light"></i>Seoul National University</a>
+        </p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">SNU MO-IM</h2>
+        <form>
+          <fieldset class="form-group text-white"> <label for="exampleInputEmail1">M: Matching<br>O: Of<br>I: Identical<br>M: Motives<br></label> </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mt-3">
+        <p class="text-center text-white">© Copyright 2017 SNUMOIM - All rights reserved. </p>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+</body>
+
+</html>
