@@ -25,12 +25,13 @@ urlpatterns = [
   url(r'^college/(?P<college_id>[0-9]+)$', collegeDetail, name='collegeDetail'),
   url(r'^message$', messageList, name='messageList'),
   url(r'^message/(?P<message_id>[0-9]+)$', messageDetail, name='messageDetail'),
+  url(r'^tags$', tagList, name='tagList'),
+  url(r'^meeting/tag/(?P<tag_name>.+)$', meetingsOnTag, name='meetingsOnTag'),
 
   url(r'^meeting/search/title/(?P<query>.+)$', searchMeeting_title, name='searchMeeting_title'),
   url(r'^meeting/search/author/(?P<query>.+)$', searchMeeting_author, name='searchMeeting_author'),
   url(r'^meeting/search/subject/(?P<subject_id>[0-9]+)(_(?P<query>.+))?$', searchMeeting_subject, name='searchMeeting_subject'),
-  url(r'^meeting/create$', meetingCreate, name='meetingCreate'),
-  url(r'^meeting/(?P<meeting_id>[0-9]+)/edit$', meetingEdit, name='meetingEdit'),
+
   url(r'^joinMeeting/(?P<meeting_id>[0-9]+)$', joinMeeting, name='joinMeeting'),
   url(r'^leaveMeeting/(?P<meeting_id>[0-9]+)$', leaveMeeting, name='leaveMeeting'),
   url(r'^closeMeeting/(?P<meeting_id>[0-9]+)$', closeMeeting, name='closeMeeting'),

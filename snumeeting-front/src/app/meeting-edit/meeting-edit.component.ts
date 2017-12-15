@@ -36,12 +36,18 @@ export class MeetingEditComponent implements OnInit {
   subjectChecked = [];
   author: User;
 
+  allTags: string[];
+  tagInputs = [];
+
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.meetingService.getMeeting(+params['id']).then(meeting => {
         this.selectedMeeting = meeting;
         this.selectedSubject = meeting.subject;
-      })
+        for (const tag of meeting.tags){
+          this.tagInputs.push(tag.name);
+        }
+      });
     })
     this.userService.getLoginedUser().then(user => this.currentUser = user);
     this.metaDataService.getSubjectList().then(subjects => this.subjects = subjects);
@@ -54,7 +60,7 @@ export class MeetingEditComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/meeting'])
+    this.router.navigate(['/meeting']);
   }
 
   interestCheck(interest: string) {
@@ -83,11 +89,29 @@ export class MeetingEditComponent implements OnInit {
     // console.log(this.selectedMeeting.subject.name);
     // console.log(this.selectedMeeting.subject.id);
 
-    this.meetingService.editMeeting(this.selectedMeeting)
-     .then(()=> {
+    const tag_names = this.convertTagInputs();
+    console.log(tag_names);
+
+    this.meetingService.editMeeting(this.selectedMeeting, tag_names)
+     .then(() => {
      alert('Successfully edited the MO-IM!')
-       this.router.navigate(['/meeting'])
-     })
+       this.router.navigate(['/meeting', this.selectedMeeting.id]);
+     });
+  }
+
+  convertTagInputs(): string[] {
+    const res = [];
+
+    for (const tag of this.tagInputs){
+      if (tag.hasOwnProperty('value')) {
+        res.push(tag.value);
+      } else {
+        res.push(tag);
+      }
+
+    }
+
+    return res;
   }
 
 

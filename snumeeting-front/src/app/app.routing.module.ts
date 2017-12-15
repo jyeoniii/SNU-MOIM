@@ -9,7 +9,8 @@ import { MeetingDetailComponent } from './meeting-detail/meeting-detail.componen
 import { MeetingCreateComponent } from './meeting-create/meeting-create.component';
 import { MeetingsComponent } from './meetings/meetings.component';
 import { MessagesComponent } from './messages/messages.component';
-import { MeetingEditComponent } from "./meeting-edit/meeting-edit.component";
+import { MeetingEditComponent } from './meeting-edit/meeting-edit.component';
+import { TagSearchComponent } from './tag-search/tag-search.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/sign_in', pathMatch: 'full' },
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'user/:id', component: ProfileComponent },
   { path: 'user/:id/edit', component: EditProfileComponent },
   { path: 'meeting/create', component: MeetingCreateComponent },
+  { path: 'meeting/tag', component: TagSearchComponent },
   { path: 'meeting/:id/edit', component: MeetingEditComponent },
   { path: 'meeting/:id', component: MeetingDetailComponent },
   { path: 'meeting', component: MeetingsComponent },

@@ -81,7 +81,22 @@
       </div>
     </form>
 
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Tags</label>
+        <tag-input [(ngModel)]="tagInputs" [ngModelOptions]="{standalone: true}" [maxItems]='8'
+                   [onlyFromAutocomplete]="false" theme='bootstrap'>
+          <tag-input-dropdown [autocompleteItems]="allTags">
+            <ng-template let-item="item">
+            #{{ item.display }}
+            </ng-template>
+          </tag-input-dropdown>
+        </tag-input><br>
+      </div>
+    </form>
+
   </div>
+
 
   <div id="preview" class="tab-pane fade">
     <h3 class="text-center">PREVIEW</h3>

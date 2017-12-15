@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Meeting } from '../models/meeting';
 import { Comment } from '../models/comment';
 import { User } from '../models/user';
+import { Tag } from '../models/tag';
 import { MeetingService } from '../services/meeting.service';
 import { UserService } from '../services/user.service';
 import { RecommendService } from '../services/recommend.service';
@@ -39,6 +40,8 @@ export class MeetingDetailComponent implements OnInit {
   private isPrivate = false;
   private isPrivate_edit = false;
 
+  private tags: Tag[];
+
   private memberName = null;
   private emptySeats = null;
 
@@ -52,6 +55,7 @@ export class MeetingDetailComponent implements OnInit {
         .then(meeting => {
           this.selectedMeeting = meeting;
           this.author = meeting.author;
+          this.tags = meeting.tags;
           this.emptySeats = new Array(this.selectedMeeting.max_member - this.selectedMeeting.members.length);
           this.userService.getLoginedUser()
             .then(user => {
@@ -196,7 +200,7 @@ export class MeetingDetailComponent implements OnInit {
 
   sendInvitation(): void {
     // TODO: send message
-    if (confirm('Are you sure to invitations to these users?')) {
+    if (confirm('Are you sure to send invitations to these users?')) {
       alert('Invitation message has been sent to selected users!');
       this.invitationList = [];
     }

@@ -22,7 +22,7 @@ import datetime
 import requests
 
 from .tokens import account_activation_token
-from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message
+from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message, Tag
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
 
 import json
@@ -244,9 +244,19 @@ def meetingList(request):
     subject_id = des_req['subject_id']
     subject = Subject.objects.get(id=subject_id)
 
-    # TODO: replace author -> request.user
     new_meeting = Meeting(author=author, title=title, description=description, location=location, max_member=max_member, subject=subject)
     new_meeting.save()
+
+    # Add tags
+    tag_names = des_req['tag_names']
+    for tag_name in tag_names:
+      try:
+        found_tag = Tag.objects.get(name=tag_name)
+        new_meeting.tags.add(found_tag)
+      except Tag.DoesNotExist:
+        new_tag = Tag.objects.create(name=tag_name)
+        new_meeting.tags.add(new_tag)
+
     new_meeting.members.add(author)
     new_meeting.save()
     return HttpResponse(status=201)
@@ -268,6 +278,7 @@ def meetingDetail(request, meeting_id):
       dict_meeting['members']=list(meeting.members.all().values())
       subject_id = dict_meeting['subject']
       dict_meeting['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
+      dict_meeting['tags'] = list(meeting.tags.all().values())
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
     return JsonResponse(dict_meeting)
@@ -281,6 +292,8 @@ def meetingDetail(request, meeting_id):
     #    members = User.objects.filter(id__in=member_ids)
     subject_id = des_req['subject_id']
     subject = Subject.objects.get(id=subject_id)
+    tag_names = des_req['tag_names']
+
     try:
       meeting = Meeting.objects.get(id=meeting_id)
     except Meeting.DoesNotExist:
@@ -292,6 +305,17 @@ def meetingDetail(request, meeting_id):
     #    meeting.members.clear()
     #    meeting.members.add(*members)
     meeting.subject = subject
+
+    # Change tags
+    meeting.tags.clear()
+    for tag_name in tag_names:
+      try:
+        found_tag = Tag.objects.get(name=tag_name)
+        meeting.tags.add(found_tag)
+      except Tag.DoesNotExist:
+        new_tag = Tag.objects.create(name=tag_name)
+        meeting.tags.add(new_tag)
+
     meeting.save()
     return HttpResponse(status=204)
   elif request.method == 'DELETE':
@@ -574,80 +598,6 @@ def messageDetail(request, message_id):
   else:
     return HttpResponseNotAllowed(['GET'],['DELETE'])
 
-# url: /meeting/create
-def meetingCreate(request):
-
-  if request.method == 'POST':
-    data = json.loads(request.body.decode())
-    author_id = data['author_id']
-    author = Ex_User.objects.get(id=author_id)
-    title = data['title']
-    description = data['description']
-    location = data['location']
-    max_member = data['max_member']
-    # member_id = data['member_id']
-    # member = User.objects.filter(id__in=member_id)
-    subject_id = data['subject_id']
-    subject = Subject.objects.get(id=subject_id)
-
-    new_meeting = Meeting(
-      author=author,
-      title=title,
-      description=description,
-      location=location,
-      max_member=max_member,
-      subject=subject,
-    )
-    new_meeting.save()
-    new_meeting.members.add(author)
-    new_meeting.save()
-    return HttpResponse(status=201)
-  else:
-    return HttpResponseNotAllowed(['POST'])
-
-
-# url: /meeting/:id/edit
-def meetingEdit(request, meeting_id):
-  meeting_id = int(meeting_id)
-  if request.method == 'GET':
-    try:
-      meeting = Meeting.objects.get(id=meeting_id)
-      dict_meeting = model_to_dict(meeting)
-      author_id = dict_meeting['author']
-      user = convert_userinfo_for_front(author_id)
-      dict_meeting['author'] = user
-
-      dict_meeting['members']=list(meeting.members.all().values())
-      subject_id = dict_meeting['subject']
-      dict_meeting['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
-    except Meeting.DoesNotExist:
-      return HttpResponseNotFound()
-    return JsonResponse(dict_meeting, safe = False);
-
-  elif request.method == 'PUT':
-    request = json.loads(request.body.decode())
-    title = request['title']
-    description = request['description']
-    location = request['location']
-    max_member = request['max_member']
-    subject_id = request['subject_id']
-    subject = Subject.objects.get(id= subject_id)
-    try:
-      meeting = Meeting.objects.get(id=meeting_id)
-    except Meeting.DoesNotExist:
-      return HttpResponseNotFound()
-
-    meeting.title = title
-    meeting.description = description
-    meeting.location = location
-    meeting.max_member = max_member
-    meeting.subject = subject
-    meeting.save()
-    return HttpResponse(status=204)
-
-  else:
-    return HttpResponseNotAllowed(['GET'],['PUT'])
-
 # url: /joinMeeting/:meeting_id
 def joinMeeting(request, meeting_id):
   if request.method == 'PUT':
@@ -775,3 +725,30 @@ def add_django_message(request):
     return HttpResponse(status=200)
   else:
     return HttpResponseNotAllowed(['POST'])
+
+# get name of all tags
+# url: /tags
+def tagList(request):
+  if request.method == 'GET':
+    res = []
+    tags = Tag.objects.all()
+    for tag in tags:
+      res.append(tag.name)
+    return JsonResponse(res, safe=False)
+  else:
+    return HttpResponseNotAllowed(['GET'])
+
+# url: /meeting/tag/:tag_name
+def meetingsOnTag(request, tag_name):
+  if request.method == 'GET':
+    res = []
+    try:
+      tag = Tag.objects.get(name=tag_name)
+      meetings = tag.meetings_on_tag.all()
+      for m in meetings:
+        res.append(convert_meeting_for_mainpage(m))
+      return JsonResponse(res, safe=False)
+    except Tag.DoesNotExist:
+      return HttpResponseNotFound()
+  else:
+    return HttpResponseNotAllowed(['GET'])

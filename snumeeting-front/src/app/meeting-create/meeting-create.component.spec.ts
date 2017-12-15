@@ -17,6 +17,9 @@ import { MockBackend, MockConnection } from "@angular/http/testing";
 import { makeMeetingData } from "../models/mock-data";
 import { MetaDataService } from '../services/meta-data-service';
 
+import { TagInputModule } from 'ngx-chips';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 describe('MeetingCreateComponent', () => {
   let component: MeetingCreateComponent;
   let fixture: ComponentFixture<MeetingCreateComponent>;
@@ -32,6 +35,8 @@ describe('MeetingCreateComponent', () => {
         RouterTestingModule,
         HttpModule,
         FormsModule,
+        TagInputModule,
+        BrowserAnimationsModule,
       ],
       declarations: [MeetingCreateComponent],
       providers: [
