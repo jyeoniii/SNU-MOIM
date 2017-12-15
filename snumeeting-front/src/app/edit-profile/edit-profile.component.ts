@@ -65,6 +65,11 @@ export class EditProfileComponent implements OnInit {
     }
   }
 
+  goBack(): void {
+    this.router.navigate(['/user', this.user.id]);
+  }
+
+
   editProfile(password: string, passwordCheck: string, name: string) {
     if (password === '') {
       alert('Please enter a new password!');
