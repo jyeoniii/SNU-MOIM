@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from social_django.models import UserSocialAuth
 from django.contrib import messages
 
-from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message
+from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message, Tag
 from .social import check_user
 from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
 
@@ -37,20 +37,24 @@ class SnuMeetingTestCase(TestCase):
     fake2_ex = Ex_User.objects.create(id=1, user=fake2, name='Joshua',college=business, subjects=[std_chi, pfm_band])
     fake3_ex = Ex_User.objects.create(id=2, user=fake3, name='Alice', college=business, subjects=[pfm_band],
                                       fb_friends=[fake1_ex], access_token='EXPIRED')
+    # Tag
+    tag_study = Tag.objects.create(id=0, name='study')
+    tag_english = Tag.objects.create(id=1, name='english')
+    tag_urgent = Tag.objects.create(id=2, name='urgent')
 
     # Meeting
     meeting1 = Meeting.objects.create(id=0, author=fake1_ex, title='Study English',
                                       subject=std_eng, description='I will study English', location='SNUstation',
-                                      max_member=4, members=[fake1_ex])
+                                      max_member=4, members=[fake1_ex], tags=[tag_study, tag_english])
     meeting2 = Meeting.objects.create(id=1, author=fake2_ex, title='Study Chinese',
                                       subject=std_chi, description='I will study Chinese', location='SNU',
-                                      max_member=5, members=[fake2_ex, fake1_ex])
+                                      max_member=5, members=[fake2_ex, fake1_ex], tags=[tag_study])
     meeting3 = Meeting.objects.create(id=2, author=fake3_ex, title='Need my band',
                                       subject=std_chi, description='I need all the sessions', location='Nokdu',
-                                      max_member=6, members=[fake3_ex, fake1_ex, fake2_ex])
+                                      max_member=6, members=[fake3_ex, fake1_ex, fake2_ex], tags=[])
     meeting4 = Meeting.objects.create(id=3, author=fake3_ex, title='English Master',
                                       subject=std_eng, description='Mastering English is fun', location='SNU',
-                                      max_member=3, members=[fake3_ex, fake1_ex, fake2_ex])
+                                      max_member=3, members=[fake3_ex, fake1_ex, fake2_ex], tags=[tag_english])
 
     # Comment
     comment1 = Comment.objects.create(id=0, author=fake1_ex, meeting=meeting3,
@@ -384,7 +388,7 @@ class SnuMeetingTestCase(TestCase):
     # POST
     response = self.client.post(
       '/api/meeting',
-      json.dumps({'author_id':2, 'title': 'Performance Band', 'subject_id':'2', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 1]}),
+      json.dumps({'author_id':2, 'title': 'Performance Band', 'subject_id':'2', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 1], 'tag_names':['performance', 'band']}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 201)
@@ -431,14 +435,14 @@ class SnuMeetingTestCase(TestCase):
     # PUT
     response = self.client.put(
       '/api/meeting/0',
-      json.dumps({'author_id':2, 'title': 'Performance Band', 'subject_id':'2', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 1]}),
+      json.dumps({'author_id':2, 'title': 'Performance Band', 'subject_id':'2', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 1], 'tag_names':['performance', 'band']}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 204)
 
     response = self.client.put(
       '/api/meeting/20',
-      json.dumps({'author_id':2, 'title': 'Performance Band', 'subject_id':'2', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 1]}),
+      json.dumps({'author_id':2, 'title': 'Performance Band', 'subject_id':'2', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 1], 'tag_names':['performance', 'band']}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 404)
@@ -858,71 +862,7 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(result['username'], 'test')
     self.assertEqual(result['name'], 'test')
     
-    
-  def test_meeting_create(self):
-    # POST
-    response = self.client.post(
-      '/api/meeting/create',
-      json.dumps({'author_id':2,
-                  'title': 'Performance Band',
-                  'description':'Who wants to get along with me?',
-                  'location':'SNU',
-                  'max_member':5,
-                  'subject_id':2,
-                  }),
-      content_type='application/json',
-    )
-    self.assertEqual(response.status_code, 201)
-
-    # GET
-    response = self.client.get('/api/meeting/create')
-    self.assertEqual(response.status_code, 405)
-
-    # PUT
-    response = self.client.put('/api/meeting/create')
-    self.assertEqual(response.status_code, 405)
-
-    # DELETE
-    response = self.client.delete('/api/meeting/create')
-    self.assertEqual(response.status_code, 405)
-
-
-  def test_meeting_edit(self):
-    # GET
-    response = self.client.get('/api/meeting/0/edit')
-    data = json.loads(response.content.decode())
-    self.assertEqual(data['author']['id'], 0)
-    self.assertEqual(data['title'], 'Study English')
-    self.assertEqual(data['description'], 'I will study English')
-    self.assertEqual(data['location'], 'SNUstation')
-    self.assertEqual(data['max_member'], 4)
-    self.assertEqual(data['subject']['id'], 0)
-    self.assertEqual(response.status_code, 200)
-
-    # PUT
-    response = self.client.put(
-      '/api/meeting/0',
-      json.dumps({'author_id':2, 'title': 'Performance Band', 'subject_id':'2', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 1]}),
-      content_type='application/json',
-    )
-    self.assertEqual(response.status_code, 204)
-
-    response = self.client.put(
-      '/api/meeting/30/meeting',
-      json.dumps({'author_id':2, 'title': 'Performance Band', 'subject_id':'2', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 1]}),
-      content_type='application/json',
-    )
-    self.assertEqual(response.status_code, 404)
-
-    # POST
-    response = self.client.post('/api/meeting/0')
-    self.assertEqual(response.status_code, 405)
-
-    # DELETE
-    response = self.client.delete('/api/meeting/0/edit')
-    self.assertEqual(response.status_code, 405)
-
-
+   
   def test_message_list(self):
     # GET
     response = self.client.get('/api/message')
@@ -961,7 +901,7 @@ class SnuMeetingTestCase(TestCase):
     # GET
     response = self.client.get('/api/message/0')
     data = json.loads(response.content.decode())
-    self.assertEqual(data['sender']['id'], 0) 
+    self.assertEqual(data['sender']['id'], 0)
     self.assertEqual(data['receiver']['id'], 2)
     self.assertEqual(data['content'], 'I want to join you')
     self.assertEqual(response.status_code, 200)
@@ -1099,3 +1039,38 @@ class SnuMeetingTestCase(TestCase):
 
     response = self.client.delete('/api/add_message')
     self.assertEqual(response.status_code, 405)
+
+  def test_tag_list(self):
+    response = self.client.get('/api/tags')
+    result = json.loads(response.content.decode())
+    self.assertEqual(len(result),3)
+
+    response = self.client.put('/api/tags')
+    self.assertEqual(response.status_code, 405)
+
+    response = self.client.post('/api/tags')
+    self.assertEqual(response.status_code, 405)
+
+    response = self.client.delete('/api/tags')
+    self.assertEqual(response.status_code, 405)
+
+  def test_meetings_on_tag(self):
+    response = self.client.get('/api/meeting/tag/study')
+    result = json.loads(response.content.decode())
+    self.assertEqual(len(result),2)
+
+    response = self.client.put('/api/tags')
+    self.assertEqual(response.status_code, 405)
+
+    response = self.client.post('/api/tags')
+    self.assertEqual(response.status_code, 405)
+
+    response = self.client.delete('/api/tags')
+    self.assertEqual(response.status_code, 405)
+
+
+
+
+
+
+

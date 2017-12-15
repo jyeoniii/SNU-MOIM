@@ -598,80 +598,6 @@ def messageDetail(request, message_id):
   else:
     return HttpResponseNotAllowed(['GET'],['DELETE'])
 
-# url: /meeting/create
-def meetingCreate(request):
-
-  if request.method == 'POST':
-    data = json.loads(request.body.decode())
-    author_id = data['author_id']
-    author = Ex_User.objects.get(id=author_id)
-    title = data['title']
-    description = data['description']
-    location = data['location']
-    max_member = data['max_member']
-    # member_id = data['member_id']
-    # member = User.objects.filter(id__in=member_id)
-    subject_id = data['subject_id']
-    subject = Subject.objects.get(id=subject_id)
-
-    new_meeting = Meeting(
-      author=author,
-      title=title,
-      description=description,
-      location=location,
-      max_member=max_member,
-      subject=subject,
-    )
-    new_meeting.save()
-    new_meeting.members.add(author)
-    new_meeting.save()
-    return HttpResponse(status=201)
-  else:
-    return HttpResponseNotAllowed(['POST'])
-
-
-# url: /meeting/:id/edit
-def meetingEdit(request, meeting_id):
-  meeting_id = int(meeting_id)
-  if request.method == 'GET':
-    try:
-      meeting = Meeting.objects.get(id=meeting_id)
-      dict_meeting = model_to_dict(meeting)
-      author_id = dict_meeting['author']
-      user = convert_userinfo_for_front(author_id)
-      dict_meeting['author'] = user
-
-      dict_meeting['members']=list(meeting.members.all().values())
-      subject_id = dict_meeting['subject']
-      dict_meeting['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
-    except Meeting.DoesNotExist:
-      return HttpResponseNotFound()
-    return JsonResponse(dict_meeting, safe = False);
-
-  elif request.method == 'PUT':
-    request = json.loads(request.body.decode())
-    title = request['title']
-    description = request['description']
-    location = request['location']
-    max_member = request['max_member']
-    subject_id = request['subject_id']
-    subject = Subject.objects.get(id= subject_id)
-    try:
-      meeting = Meeting.objects.get(id=meeting_id)
-    except Meeting.DoesNotExist:
-      return HttpResponseNotFound()
-
-    meeting.title = title
-    meeting.description = description
-    meeting.location = location
-    meeting.max_member = max_member
-    meeting.subject = subject
-    meeting.save()
-    return HttpResponse(status=204)
-
-  else:
-    return HttpResponseNotAllowed(['GET'],['PUT'])
-
 # url: /joinMeeting/:meeting_id
 def joinMeeting(request, meeting_id):
   if request.method == 'PUT':
@@ -810,7 +736,7 @@ def tagList(request):
       res.append(tag.name)
     return JsonResponse(res, safe=False)
   else:
-    return HttpResponseNotAllowd(['GET'])
+    return HttpResponseNotAllowed(['GET'])
 
 # url: /meeting/tag/:tag_name
 def meetingsOnTag(request, tag_name):
@@ -825,4 +751,4 @@ def meetingsOnTag(request, tag_name):
     except Tag.DoesNotExist:
       return HttpResponseNotFound()
   else:
-    return HttpResponseNotAllowd(['GET'])
+    return HttpResponseNotAllowed(['GET'])

@@ -101,7 +101,7 @@ describe('MeetingService', () => {
       service.getMeeting(3)
         .then(meeting => {
           meeting.title = 'New title';
-          service.editMeeting(meeting).then(modifiedMeeting => {
+          service.editMeeting(meeting, []).then(modifiedMeeting => {
             console.log(modifiedMeeting);
             expect(modifiedMeeting.title).toBe('New title');
           });
