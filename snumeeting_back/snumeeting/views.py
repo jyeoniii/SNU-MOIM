@@ -23,7 +23,7 @@ import requests
 
 from .tokens import account_activation_token
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message, Tag
-from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
+from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage, convert_datetime
 
 import json
 import requests
@@ -279,6 +279,7 @@ def meetingDetail(request, meeting_id):
       subject_id = dict_meeting['subject']
       dict_meeting['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
       dict_meeting['tags'] = list(meeting.tags.all().values())
+      dict_meeting['datetime'] = convert_datetime(meeting.created_at)
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
     return JsonResponse(dict_meeting)
@@ -341,6 +342,7 @@ def meetingComment(request, meeting_id):
       user = convert_userinfo_for_front(comment['author_id'])
       comment.pop('author_id')
       comment['author'] = user
+      comment['datetime'] = convert_datetime(comment.pop('created_at'))
     return JsonResponse(commentsList, safe=False)
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())

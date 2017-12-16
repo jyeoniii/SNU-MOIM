@@ -1,6 +1,7 @@
 from .models import Ex_User, User, Subject
 from django.forms.models import model_to_dict
 from social_django.models import UserSocialAuth
+from django.utils import timezone
 
 def convert_userinfo_for_front(user_id):
   try:
@@ -61,8 +62,24 @@ def convert_meeting_for_mainpage(meeting):
 
   subject_id = d['subject']
   d['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
-  d['members']=list(meeting.members.all().values())
+  d['members'] = list(meeting.members.all().values())
+  d['datetime'] = convert_datetime(meeting.created_at)
   d.pop('tags')
   return d
 
+def convert_datetime(datetime):
+  res = {}
+  datetime = timezone.localtime(datetime)
+  res['year'] = datetime.year
+  res['month'] = datetime.month
+  res['day'] = datetime.day
+  res['hour'] = datetime.hour
+  if res['hour'] > 12:
+    res['hour'] = res['hour'] - 12
+    res['afternoon'] = True
+  else:
+    res['afternoon'] = False
+  res['minute'] = datetime.minute
+  res['second'] = datetime.second
 
+  return res
