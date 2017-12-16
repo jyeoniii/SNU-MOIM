@@ -589,7 +589,7 @@ def messageDetail(request, message_id):
       message_dict = model_to_dict(message)
       message_dict['sender'] = sender
       message_dict['receiver'] = receiver
-      message_dict['datetime'] = convert_datetime(message_dict.pop('sended_at'))
+      message_dict['datetime'] = convert_datetime(message.sended_at)
     except Message.DoesNotExist:
       return HttpResponseNotFound()
     return JsonResponse(message_dict)
