@@ -57,7 +57,7 @@
                 <div class="form-group"> <label>Location</label>
                   <input class="form-control" [(ngModel)]="selectedMeeting.location" [ngModelOptions]="{standalone: true}"> </div>
                 <div class="form-group"> <label>People</label>
-                  <input class="form-control" type="number" [(ngModel)]="selectedMeeting.max_member" [ngModelOptions]="{standalone: true}"> </div>
+                  <input class="form-control" type="number" min="1" max="50" [(ngModel)]="selectedMeeting.max_member" [ngModelOptions]="{standalone: true}"> </div>
                 <div class="form-group"> <label>Tag</label>
                   <tag-input class="form-control" [(ngModel)]="tagInputs" [ngModelOptions]="{standalone: true}" [maxItems]='8'
                              [onlyFromAutocomplete]="false" theme='bootstrap'>

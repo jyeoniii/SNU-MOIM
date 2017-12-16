@@ -84,7 +84,12 @@ export class MeetingEditComponent implements OnInit {
       return;
     }
     else if(this.selectedMeeting.max_member==1) {
-      this.notice = 'How many people you want? (of course not 1 right?)';
+      this.notice = 'How many members you want? (of course not 1 right?)';
+      console.log('no members');
+      return;
+    }
+    else if(this.selectedMeeting.max_member==0) {
+      this.notice = 'No member? You must be kidding!';
       console.log('no members');
       return;
     }
