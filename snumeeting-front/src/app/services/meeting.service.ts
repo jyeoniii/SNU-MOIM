@@ -18,6 +18,7 @@ export class MeetingService {
     return Promise.reject(error.message || error);
   }
 
+
   /* Services for '/api/meeting'
   *  GET : Get all meeting data
   *  POST : Create new meeting
@@ -76,7 +77,8 @@ export class MeetingService {
                 subject: Subject,
                 description: string,
                 location: string,
-                max_number: number): Promise<void> {
+                max_number: number,
+                tag_names: string[]): Promise<void> {
     return this.http.post(this.meetingsUrl,
       JSON.stringify({
         author_id: author.id,
@@ -84,7 +86,9 @@ export class MeetingService {
         subject_id: subject.id,
         description: description,
         location: location,
-        max_member: max_number}),
+        max_member: max_number,
+        tag_names: tag_names
+      }),
       {headers: headerWithCSRF()})
       .toPromise()
       .then(() => null)
@@ -104,7 +108,7 @@ export class MeetingService {
       .catch(this.handleError);
   }
 
-  editMeeting(editedMeeting: Meeting): Promise<Meeting> {
+  editMeeting(editedMeeting: Meeting, tag_names: string[]): Promise<Meeting> {
     const url = `${this.meetingsUrl}/${editedMeeting.id}`;
     return this.http.put(url,
       JSON.stringify({
@@ -113,6 +117,7 @@ export class MeetingService {
         location: editedMeeting.location,
         max_member: editedMeeting.max_member,
         subject_id: editedMeeting.subject.id,
+        tag_names: tag_names
       }),
       {headers: headerWithCSRF()})
       .toPromise()
@@ -153,4 +158,16 @@ export class MeetingService {
       .then(() => null)
       .catch(this.handleError);
   }
+
+  getMeetingsOnTag(tagName: string): Promise<Meeting[]> {
+    const url = `api/meeting/tag/${tagName}`;
+    return this.http.get(url)
+      .toPromise()
+      .then(response => response.json() as Meeting[])
+      .catch(response => {
+        if (response.status === 404) return [];
+        else this.handleError(response);
+      })
+  }
+
 }

@@ -1,0 +1,74 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<div class="container-fluid" *ngIf="allMeetings && meetings && currentUser">
+
+  <div style="float:right; margin-top:20px;">
+    <span>Welcome, <label>{{currentUser.name}}</label></span><br>
+    <a [routerLink]="['/user', currentUser.id, 'message']" class="btn btn-info btn-sm">
+      <span class="glyphicon glyphicon-envelope"></span> Message
+    </a>
+    <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
+  </div><br>
+
+  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+      <label style="font-size: 35px;color:#2D4068;text-decoration: underline">
+        <i class="fa fa-hashtag" aria-hidden="true" style="font-size: 30px;margin-right: 4px"></i>{{tagName}}</label><br>
+      <p style="color: #555555">{{allMeetings.length}}
+        <span *ngIf="availableOnly"> available </span>
+        MO-IM<span *ngIf="allMeetings.length>1;else single">s are </span>
+        <ng-template #single> is </ng-template>
+        related to this tag!</p>
+      <br>
+      <span style="width:500px;float:right" *ngIf="allMeetings.length > 0">
+       <input type="checkbox" class="checkbox-inline" [checked]="availableOnly" (click)="available()"> Available meetings only
+      </span>
+      <br><br>
+
+
+      <div  *ngFor="let meeting of meetings | paginate: { itemsPerPage: maxSize, currentPage: currentPage, totalItems: totalItems }"
+            style="display: block; width:700px;height:140px">
+        <a [routerLink]="['/meeting', meeting.id]">
+          <label style="font-size: 20px;color: #336699; cursor: pointer">{{meeting.title}}</label>
+        </a>
+        <label class="label label-default" style="margin-left: 5px; padding-top: 3px; background-color: mediumseagreen" >
+          <i class="glyphicon glyphicon-th-list" style="font-size:10px; margin-right: 3px"></i>{{meeting.subject.name}}
+        </label>
+        <br>
+        Posted by
+        <a [routerLink]="['/user', meeting.author.id]">
+          <i class="fa fa-user" style="font-size: 20px"></i>
+          <label> {{meeting.author.name}}</label>
+        </a>
+        <p style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+          - {{ meeting.description}}
+        </p>
+        <span style="float:right">
+          <span class="glyphicon glyphicon-menu-right" style="color: #4A6AAA"></span>
+          <a [routerLink]="['/meeting', meeting.id]">Click to view detail</a>
+        </span>
+
+      </div>
+
+  </div>
+
+  <div class="container">
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <pagination-controls (pageChange)="currentPage = $event; pageChanged($event)" style="display:block; margin:auto"></pagination-controls>
+      <div style="float:right">
+        <button [routerLink]="['/meeting']" class="btn btn-primary btn-primary">
+          <i class="fa fa-home" aria-hidden="true"></i> Main
+        </button>
+        <button (click)="goBack()" class="btn btn-primary btn-primary">
+          <span class="glyphicon glyphicon-circle-arrow-left"></span> Back
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+

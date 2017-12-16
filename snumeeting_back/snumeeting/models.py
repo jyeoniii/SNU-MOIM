@@ -26,6 +26,12 @@ class Subject(models.Model):
   def __str__(self):
     return self.name
 
+class Tag(models.Model):
+  name = models.CharField(max_length=20)
+
+  def __str__(self):
+    return self.name
+
 class Ex_User(models.Model):
   name = models.CharField(max_length=64)
   access_token = models.CharField(max_length=255)
@@ -93,6 +99,10 @@ class Meeting(models.Model):
     null=True
   )
   is_closed= models.BooleanField(default=False)
+  tags = models.ManyToManyField(
+    Tag,
+    related_name = 'meetings_on_tag'
+  )
 
   def __str__(self):
     return self.title

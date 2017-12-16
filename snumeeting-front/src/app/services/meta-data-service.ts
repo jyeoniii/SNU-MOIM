@@ -4,6 +4,7 @@ import { Http } from '@angular/http';
 import { College } from '../models/college';
 import { Subject } from '../models/subject';
 import { Interest } from '../models/interest';
+import { Tag } from '../models/tag';
 
 @Injectable()
 export class MetaDataService {
@@ -12,6 +13,7 @@ export class MetaDataService {
   private interestUrl = '/api/interest';
   private subjectUrl = '/api/subject';
   private messageUrl = '/api/messages';
+  private tagUrl = '/api/tags';
 
   constructor(private http: Http) {
   }
@@ -41,6 +43,13 @@ export class MetaDataService {
     return this.http.get(this.messageUrl)
       .toPromise()
       .then(response => response, () => null)
+      .catch(this.handleError);
+  }
+
+  getTagNameList(): Promise<string[]> {
+    return this.http.get(this.tagUrl)
+      .toPromise()
+      .then(response => response.json() as string[])
       .catch(this.handleError);
   }
 

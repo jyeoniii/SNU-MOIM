@@ -39,11 +39,12 @@ def getRecMeetings(target, N):
   topN = heapq.nlargest(N, scores.items(), key=itemgetter(1)) 
 
   # Helper function: remove Queryset type 'members' which is not serializable
-  def removeMembers(meeting):
+  def removeQuerySets(meeting):
     del meeting['members']
+    del meeting['tags']
     return meeting
 
-  return list(map(lambda x: removeMembers(x), [model_to_dict(t[0]) for t in topN])) 
+  return list(map(lambda x: removeQuerySets(x), [model_to_dict(t[0]) for t in topN])) 
 
 
 
