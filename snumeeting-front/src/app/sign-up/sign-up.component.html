@@ -1,115 +1,48 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!DOCTYPE html>
+<html>
 
-<!--<h2 class="text-center">SNU Meeting SIGN UP</h2>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+</head>
 
-<form class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label">mySNU ID</label>
-    <div class="col-sm-8">
-      <input class="form-control" placeholder="Enter mySNU ID" #username>
-    </div>
-    <button class="btn btn-primary" (click)="checkUser(username.value)">Check</button>
+<body>
+
+<nav class="navbar navbar-expand-md bg-primary navbar-dark">
+  <div class="container">
+    <a class="navbar-brand" [routerLink]="['/sign_in']"><i class="fa d-inline fa-lg fa-users"></i><b>SNU MO-IM</b></a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
   </div>
-</form>
+</nav>
 
-<form class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label">Password</label>
-    <div class="col-sm-8">
-      <input type="password" class="form-control" placeholder="Enter Password" #password>
-    </div>
-  </div>
-</form>
+<div class="py-5 photo-overlay" id="book" style="background-image: url(&quot;https://newevolutiondesigns.com/images/freebies/galaxy-wallpaper-11.jpg&quot;);">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3"> </div>
+      <div class="col-lg-6 p-3 animate-in-down">
+        <form class="p-4 bg-dark-opaque">
+          <h4 class="mb-4 text-center">Sign up</h4>
+          <div class="form-group"> <label>mySNU ID</label>
+            <input type="text" id="username" class="form-control" name="username" placeholder="Enter mySNU ID" #username> </div>
 
-<form class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label">Password Check</label>
-    <div class="col-sm-8">
-      <input type="password" class="form-control" placeholder="Re-Enter Password" #passwordCheck>
-    </div>
-  </div>
-</form>
-
-<form class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label">Name</label>
-    <div class="col-sm-8">
-      <input class="form-control" placeholder="Enter Name" #name>
-    </div>
-  </div>
-</form>
-
-<form class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label">College</label>
-    <div class="col-sm-8">
-      <select class="form-control" [(ngModel)]="selectedCollege" [ngModelOptions]="{standalone: true}">
-        <option *ngFor="let college of colleges" [ngValue]="college">
-          {{college.name}}
-        </option>
-      </select>
-    </div>
-  </div>
-</form>
-
-<form class="form-horizontal">
-  <div class="form-group">
-    <label class="col-sm-2 control-label">Interest</label>
-        <div class="checkbox checkbox-inline">
-          <div *ngFor="let interest of interests">
-            <input type="checkbox" class="checkbox-inline" (click)="interestCheck(interest.name)">{{interest.name}}
-              <div *ngFor="let subject of interest.subjects">
-                <div class="col-sm-offset-1" *ngIf="interestChecked[interest.name]">
-                  <input type="checkbox" class="checkbox-inline" (click)="subjectCheck(subject.name)">{{subject.name}}
-                </div>
-              </div>
-          </div>
-        </div>
-  </div>
-</form>
-
-<p><p>
-  <button class="col-sm-offset-5 col-sm-2 btn btn-primary"
-              (click)="signUp(username.value, password.value, passwordCheck.value, name.value)">Sign Up
-  </button>
-
-  <button (click)="goBack()" class="col-sm-offset-2 col-sm-2 btn btn-primary" id="go-back-button">Back</button>-->
-
-<div class="container">
-  <div class="row">
-    <div class="col-md-6 col-md-offset-3">
-      <div class="panel panel-primary">
-        <div class="panel-heading">SNU MO-IM SIGN UP!</div>
-        <div class="panel-body">
-          <form role="form" method="post" action="" accept-charset="UTF-8">
-
-            <label for="username">mySNU ID</label>
-            <input type="text" id="username" class="form-control" name="username" placeholder="Enter mySNU ID" #username>
-            <br>
-            <button class="btn btn-primary" (click)="checkUser(username.value)">Check</button>
-
-            <br>
-
-            <label for="password" class="m-t-10">Password</label>
-            <input type="password" id="password" class="form-control" name="password" placeholder="Enter password" #password>
-
-            <label for="passwordCheck" class="m-t-10">Verify Password</label>
-            <input type="password" id="passwordCheck" class="form-control" name="passwordCheck" placeholder="Re-enter password" #passwordCheck>
-
-
-            <label for="name">Name</label>
-            <input type="text" id="name" class="form-control" name="name" placeholder="Enter name" #name>
-
-           <label for="college" class="m-t-10">College</label>
+          <button class="btn btn-primary" (click)="checkUser(username.value)">Check</button>
+          <br><br>
+          <div class="form-group"> <label>Password</label>
+            <input type="password" id="password" class="form-control" name="password" placeholder="Enter password" #password> </div>
+          <div class="form-group"> <label>Verify Password</label>
+            <input type="password" id="passwordCheck" class="form-control" name="passwordCheck" placeholder="Re-enter password" #passwordCheck> </div>
+          <div class="form-group"> <label>Name</label>
+            <input type="text" id="name" class="form-control" name="name" placeholder="Enter name" #name> </div>
+          <div class="form-group"> <label>College</label>
             <select class="form-control" [(ngModel)]="selectedCollege" [ngModelOptions]="{standalone: true}">
               <option *ngFor="let college of colleges" [ngValue]="college">
                 {{college.name}}
               </option>
             </select>
-
-            <br><br>
-
-            <label for="interest" class="m-t-10">Interest</label>
+          </div><br>
+          <div class="form-group"> <label>Interest</label>
             <div class="checkbox checkbox-inline">
               <div *ngFor="let interest of interests">
                 <input type="checkbox" class="checkbox-inline" (click)="interestCheck(interest.name)">{{interest.name}}
@@ -120,17 +53,72 @@
                 </div>
               </div>
             </div>
+          </div>
+          <br>
+          <button class="btn mt-4 btn-block p-2 btn-outline-primary"
+                  (click)="signUp(username.value, password.value, passwordCheck.value, name.value)">Sign Up
+          </button>
 
-            <br><br>
+          <button type="submit" class="btn mt-4 btn-block p-2 btn-outline-primary" (click)="goBack()">Back</button>
 
-            <button class="btn btn-primary m-t-10"
-                    (click)="signUp(username.value, password.value, passwordCheck.value, name.value)">Sign Up
-            </button>
-          <!--  <input type="submit" class="btn btn-primary m-t-10" id="submitbtn" name="submit" value="Submit"> -->
-            <button (click)="goBack()" class="btn btn-primary m-t-10" id="go-back-button">Back</button>
-          </form>
-        </div>
+        </form>
       </div>
     </div>
   </div>
 </div>
+
+
+<div class="text-white bg-primary">
+  <div class="container">
+    <div class="row">
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 light">SNU MO-IM</h2>
+        <p class="text-white">A group who aims to ease of the lives of SNU students</p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">Mapsite</h2>
+        <ul class="list-unstyled">
+          <a href="#" class="text-white">Home</a>
+          <br>
+          <a href="#" class="text-white">About us</a>
+          <br>
+          <a href="#" class="text-white">Our services</a>
+          <br>
+          <a href="#" class="text-white">Stories</a>
+        </ul>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4">Contact</h2>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"><i class="fa d-inline mr-3 fa-envelope-o text-light"></i>SNU mail</a>
+        </p>
+        <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+          <a href="https://goo.gl/5U1Q7X" class="text-white" target="_blank"><i class="fa d-inline mr-3 fa-map-marker text-light"></i>Seoul National University</a>
+        </p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">SNU MO-IM</h2>
+        <form>
+          <fieldset class="form-group text-white"> <label for="exampleInputEmail1">M: Matching<br>O: Of<br>I: Identical<br>M: Motives<br></label> </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mt-3">
+        <p class="text-center text-white">© Copyright 2017 SNUMOIM - All rights reserved. </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
+</body>
+
+</html>
