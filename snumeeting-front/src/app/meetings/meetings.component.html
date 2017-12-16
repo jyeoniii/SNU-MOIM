@@ -88,7 +88,7 @@
       <br><br>
 
 
-      <h2 class="sub-header">SNU Moims</h2>
+      <h2 class="sub-header">SNU MO-IMs</h2>
       <span style="float:right">
        <input type="checkbox" class="checkbox-inline" [checked]="availableOnly" (click)="available()"> Available meetings only
       </span>
@@ -97,18 +97,41 @@
         <table class="table table-striped">
           <thead class="thead-default">
           <tr>
-            <th>ID</th>
-            <th>title</th>
-            <th>author</th>
-            <th>subject</th>
-            <th>members</th>
+            <th>NO</th>
+            <th>TITLE</th>
+            <th>AUTHOR</th>
+            <th>SUBJECT</th>
+            <th>STATUS</th>
+            <th>DATE</th>
           </tr>
           <tr *ngFor="let meeting of meetings | paginate: { itemsPerPage: maxSize, currentPage: currentPage, totalItems: totalItems }">
             <td>{{meeting.id}}</td>
-            <td><a [routerLink]="['/meeting', meeting.id]" routerLinkActive="active">{{meeting.title}}</a></td>
+            <td>
+              <a [routerLink]="['/meeting', meeting.id]" routerLinkActive="active">{{meeting.title}}</a>
+            </td>
+
             <td>{{meeting.author.name}}</td>
             <td>{{meeting.subject.name}}</td>
-            <td>{{meeting.members.length}}/{{meeting.max_member}}</td>
+            <td>
+              <span *ngIf="!meeting.is_closed; else closed" style="margin-left:15px">
+                <span [style.color]="(meeting.members.length < meeting.max_member) ? '#155724' : 'maroon'">
+                  {{meeting.members.length}}
+                </span>
+                / {{meeting.max_member}}
+              </span>
+              <ng-template #closed>
+                <label class="label label-default" style="background-color: #C21F39" >
+                  CLOSED
+                </label>
+              </ng-template><!--End Join / Leave -->
+            </td>
+            <td>
+              <span style="font-size:3px; color: #7f7f7f;">
+                {{ meeting.datetime.year }}-{{meeting.datetime.month}}-{{meeting.datetime.day}} -
+                {{ meeting.datetime.hour}}:{{meeting.datetime.minute}}
+                <span *ngIf="meeting.datetime.afternoon;else AM">PM</span><ng-template #AM>AM</ng-template>
+              </span>
+            </td>
           </tr>
           </thead>
         </table>

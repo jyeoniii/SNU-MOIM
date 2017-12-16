@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-from django.utils.timezone import now
+from django.utils import timezone
 
 class College(models.Model):
   name = models.CharField(max_length=64)
@@ -105,7 +105,7 @@ class Meeting(models.Model):
     Tag,
     related_name = 'meetings_on_tag'
   )
-  created_at = models.DateTimeField(default=now)
+  created_at = models.DateTimeField(auto_now_add=True)
 
   def __str__(self):
     return self.title
@@ -125,7 +125,7 @@ class Comment(models.Model):
   )
   content = models.CharField(max_length=64)
   publicity = models.BooleanField()
-  created_at = models.DateTimeField(default=now)
+  created_at = models.DateTimeField(auto_now_add=True)
 
   def __str__(self):
     return self.content
