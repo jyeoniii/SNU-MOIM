@@ -34,9 +34,46 @@
 
   <div *ngIf="selectedUser == null">
     <h2>Send messages to others!</h2>
+
+    <div *ngIf="fbFriends">
+      <h2>Facebook friends</h2>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead class="thead-default">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+          </tr>
+          <tr *ngFor="let u of fbFriends">
+            <td><a (dblclick)="onDoubleClick(u)">{{u.username}}</a></td>
+            <td>{{u.name}}</td>
+          </tr>
+          </thead>
+        </table>
+      </div>
+    </div>
+
     <div *ngIf="users">
-      <div *ngFor="let u of users">
-        <a (dblclick)="onDoubleClick(u)">{{u.name}}</a>
+      <h2>All users</h2>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead class="thead-default">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Interest</th>
+          </tr>
+          <tr *ngFor="let u of users">
+            <td><a (dblclick)="onDoubleClick(u)">{{u.username}}</a></td>
+            <td>{{u.name}}</td>
+            <td>
+              <div *ngIf="u.subjects">
+                <div *ngFor="let subject of u.subjects">{{subject.name}}</div>
+              </div>
+            </td>
+          </tr>
+          </thead>
+        </table>
       </div>
     </div>
   </div>
