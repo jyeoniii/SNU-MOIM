@@ -11,11 +11,18 @@ import { headerWithCSRF } from './header';
 export class UserService {
   private static loginedUser = null;
   private userUrl = '/api/user';
+  private tokenUrl = '/api/token';
 
   constructor(private http: Http) {
   }
 
   user: User = new User();
+
+  getToken() {
+    this.http.get(this.tokenUrl)
+      .toPromise()
+      .catch(this.handleError);
+  }
 
   checkUser(username: string): Promise<boolean> {
     return this.http.post('/api/check_user',
