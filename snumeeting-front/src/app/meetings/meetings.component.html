@@ -145,7 +145,7 @@
         </select>
 
         <select *ngIf="selectedInterest" name="subject" [(ngModel)]="selectedSubject">
-          <optgroup label="subjct">
+          <optgroup label="subject">
             <option disabled selected hidden>subject</option>
             <option *ngFor="let subject of selectedInterest.subjects" [ngValue]="subject">{{subject.name}}</option>
           </optgroup>

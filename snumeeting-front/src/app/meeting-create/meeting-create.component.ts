@@ -32,11 +32,10 @@ export class MeetingCreateComponent implements OnInit {
   selectedSubject: Subject;
   selectedInterest: Interest;
   currentUser: User;
-  interestChecked = [];
-  subjectChecked = [];
 
   allTags: string[];
   tagInputs = [];
+  notice: string = '';
 
 
   ngOnInit() {
@@ -44,7 +43,6 @@ export class MeetingCreateComponent implements OnInit {
     this.metaDataService.getSubjectList().then(subjects => this.subjects = subjects);
     this.metaDataService.getInterestList().then(interests => this.interests = interests);
     this.metaDataService.getTagNameList().then(tags => this.allTags = tags);
-    // this.metaDataService.getMemberList().then(members => this.members = members);
   }
 
   signOut(): void {
@@ -56,46 +54,67 @@ export class MeetingCreateComponent implements OnInit {
     this.router.navigate(['/meeting'])
   }
 
-
-  interestCheck(interest: string) {
-    if (this.interestChecked[interest]) {
-      this.interestChecked[interest] = false;
-    } else {
-      this.interestChecked[interest] = true;
-      // this.selectedInterest = interest;
+  checkInput(): void {
+    if(this.meeting.title==null) {
+      this.notice = "Did you forget a title?";
+      console.log('no title');
+      return;
     }
+    else if(this.meeting.subject==null) {
+      this.notice = 'What about subject?';
+      console.log('no subject');
+      return;
+    }
+    else if(this.meeting.description==null) {
+      this.notice = 'Let us know your MO-IM detail';
+      console.log('no description');
+      return;
+    }
+    else if(this.meeting.location==null) {
+      this.notice = 'Where shall the MO-IM take place?';
+      console.log('no location');
+      return;
+    }
+    else if(this.meeting.max_member==null) {
+      this.notice = 'How many people you want? (of course not 1 right?)';
+      console.log('no members');
+      return;
+    }
+    else if(this.meeting.max_member>50) {
+      this.notice = 'Well, that seems like a huge conference...';
+      console.log('max member exceeded');
+      return;
+    }
+    console.log('input checked');
   }
 
-  subjectCheck(subject: Subject) {
-    if (this.subjectChecked[subject.name]) {
-      this.subjectChecked[subject.name] = false;
-    } else {
-      this.subjectChecked[subject.name] = true;
-      this.selectedSubject = subject;
-    }
-  }
 
   create(): void {
 
     const tagNames = this.convertTagInputs();
     this.meeting.subject = this.selectedSubject;
-    // console.log(this.meeting.subject);
+    this.checkInput();
 
-    // console.log(this.meeting.description);
-
-    this.meetingService.createMeeting(
-      this.currentUser,
-      this.meeting.title,
-      this.meeting.subject,
-      this.meeting.description,
-      this.meeting.location,
-      this.meeting.max_member,
-      tagNames
-    )
-      .then(() => {
-        alert('Successfully Created a meeting!');
-        this.router.navigate(['/meeting']);
-      });
+    if(this.notice=='') {
+      this.meetingService.createMeeting(
+        this.currentUser,
+        this.meeting.title,
+        this.meeting.subject,
+        this.meeting.description,
+        this.meeting.location,
+        this.meeting.max_member,
+        tagNames
+      )
+        .then(() => {
+          alert('Successfully Created a meeting!');
+          this.router.navigate(['/meeting']);
+        });
+    }
+    else {
+      alert(this.notice);
+      this.notice = '';
+      return;
+    }
   }
 
   convertTagInputs(): string[] {
