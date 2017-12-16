@@ -196,9 +196,6 @@ export class MeetingDetailComponent implements OnInit {
     if (this.invitationList.indexOf(user) !== -1) {
       alert('This user is already in the list!');
       return;
-    } else if (this.invitationList.length >= this.emptySeats.length) {
-      alert('Cannot add more users! (Available seats: ' + this.emptySeats.length + ')');
-      return;
     } else if (this.invitationList.length >= this.MAX_INVITATION) {
       alert('Cannot add more users! (You can send invitation to maximum ' + this.MAX_INVITATION + ' members)');
       return;
