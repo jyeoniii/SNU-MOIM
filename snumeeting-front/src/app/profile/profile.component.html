@@ -168,58 +168,57 @@
               </li>
             </div>
           </div>
+          <!-- Logged in user is on their own profile page -->
+          <div *ngIf="status === 0">
+            <button class="btn mt-4 btn-block p-2 btn-outline-primary" (click)="editProfile()"><b>Edit profile</b></button>
+            <br><br>
+            <a href="/oauth/login/facebook/"> <!-- Show Facebook Connect Button -->
+              <button *ngIf="!loginedUser.fb_connected" class="btn mt-4 btn-block p-2 btn-outline-primary"><b>Connect to </b>
+                <i class="fa d-inline fa-lg fa-facebook-square"></i>
+              </button>
+            </a>
+          </div>
+          <!-- Facebook friend -->
+          <div *ngIf="status === 1" class="text-center col-sm-offset-4 col-sm-4 alert alert-info" role="alert">
+            You're a friend with this user!
+          </div>
+
+          <!-- Show mutual friends -->
+          <div *ngIf="status === 2">
+            <div *ngIf="mutualFriends.length === 0"
+                 class="text-center col-sm-offset-4 col-sm-4 alert alert-warning" role="alert">
+              There's no mutual friends between you and this user.
+            </div>
+            <div *ngIf="mutualFriends.length > 0" class="col-sm-offset-4 col-sm-4">
+              <li class="list-group-item list-group-item-success" style="text-align: center;">
+                <b>Mutual friends between you and this user</b>
+              </li>
+              <div *ngFor="let friend of mutualFriends">
+                <li class="list-group-item" style="text-align: center;">
+                  {{friend.name}} (username: {{friend.username}})
+                </li>
+              </div>
+            </div>
+          </div>
+
+          <!-- This user is not connected to Facebook -->
+          <div *ngIf="status === 3" class="text-center col-sm-offset-4 col-sm-4 alert alert-danger" role="alert">
+            You're not connected to Facebook.<br>
+            <a href="/oauth/login/facebook/" class="alert-link">Connect to Facebook now</a> to see  the mutual friends<br>
+            between you and this user!
+          </div>
+
+          <!-- The user on profile page is not connected to Facebook -->
+          <div *ngIf="status === 4" class="text-center col-sm-offset-4 col-sm-4 alert alert-danger" role="alert">
+            Can't get mutual friends because this user is not connected to Facebook.
+          </div>
+
+          <div *ngIf="status > 0 && status < 5">
+            <button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="sendMessage()">Send Message</button>
+          </div>
         </form>
       </div>
     </div>
-  </div>
-
-  <!-- Logged in user is on their own profile page -->
-  <div *ngIf="status === 0">
-    <button class="btn mt-4 btn-block p-2 btn-outline-primary" (click)="editProfile()"><b>Edit profile</b></button>
-    <br><br>
-    <a href="/oauth/login/facebook/"> <!-- Show Facebook Connect Button -->
-      <button *ngIf="!loginedUser.fb_connected" class="btn mt-4 btn-block p-2 btn-outline-primary"><b>Connect to </b>
-        <i class="fa d-inline fa-lg fa-facebook-square"></i>
-      </button>
-    </a>
-  </div>
-  <!-- Facebook friend -->
-  <div *ngIf="status === 1" class="text-center col-sm-offset-4 col-sm-4 alert alert-info" role="alert">
-    You're a friend with this user!
-  </div>
-
-  <!-- Show mutual friends -->
-  <div *ngIf="status === 2">
-    <div *ngIf="mutualFriends.length === 0"
-         class="text-center col-sm-offset-4 col-sm-4 alert alert-warning" role="alert">
-      There's no mutual friends between you and this user.
-    </div>
-    <div *ngIf="mutualFriends.length > 0" class="col-sm-offset-4 col-sm-4">
-      <li class="list-group-item list-group-item-success" style="text-align: center;">
-        <b>Mutual friends between you and this user</b>
-      </li>
-      <div *ngFor="let friend of mutualFriends">
-        <li class="list-group-item" style="text-align: center;">
-          {{friend.name}} (username: {{friend.username}})
-        </li>
-      </div>
-    </div>
-  </div>
-
-  <!-- This user is not connected to Facebook -->
-  <div *ngIf="status === 3" class="text-center col-sm-offset-4 col-sm-4 alert alert-danger" role="alert">
-    You're not connected to Facebook.<br>
-    <a href="/oauth/login/facebook/" class="alert-link">Connect to Facebook now</a> to see  the mutual friends<br>
-    between you and this user!
-  </div>
-
-  <!-- The user on profile page is not connected to Facebook -->
-  <div *ngIf="status === 4" class="text-center col-sm-offset-4 col-sm-4 alert alert-danger" role="alert">
-    Can't get mutual friends because this user is not connected to Facebook.
-  </div>
-
-  <div *ngIf="status > 0 && status < 5">
-    <button class="col-sm-offset-5 col-sm-2 btn btn-primary" (click)="sendMessage()">Send Message</button>
   </div>
 </div>
 
