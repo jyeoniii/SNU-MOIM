@@ -63,8 +63,6 @@ export class MessagesComponent implements OnInit {
   }
 
   onSelect(user: User): void {
-    console.log(this.betweenMessages);
-    console.log(this.messages);
     this.selectedUser = user;
     this.betweenMessages = this.messages.filter(m => 
       (m.sender.id === this.loginedUser.id && m.receiver.id === user.id) ||

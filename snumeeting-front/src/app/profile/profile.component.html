@@ -3,7 +3,9 @@
 <br><br>
 <div *ngIf="loginedUser" style="float:right; margin-right:5%">
   <span>Welcome, </span>{{loginedUser.name}}
-  <button [routerLink]="['/user', loginedUser.id, 'message']" class="btn btn-primary btn-primary">Message</button>
+  <a [routerLink]="['/user', loginedUser.id, 'message']" class="btn btn-info btn-sm">
+    <span class="glyphicon glyphicon-envelope"></span> Message
+  </a>
   <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
 </div>
 
