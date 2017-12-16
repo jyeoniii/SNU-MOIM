@@ -65,6 +65,10 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  goBack(): void {
+    this.router.navigate(['/meeting']);
+  }
+
   setStatus(): void {
     if (this.loginedUser && this.user) {
       if (this.loginedUser.id === this.user.id) {
