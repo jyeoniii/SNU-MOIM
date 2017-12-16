@@ -1,6 +1,7 @@
 import { Subject } from './subject';
 import { User } from './user';
 import { Tag } from './tag';
+import { Datetime } from './datetime';
 
 export class Meeting {
   id: number;
@@ -13,4 +14,5 @@ export class Meeting {
   members: User[];
   is_closed: boolean;
   tags: Tag[];
+  datetime: Datetime
 }

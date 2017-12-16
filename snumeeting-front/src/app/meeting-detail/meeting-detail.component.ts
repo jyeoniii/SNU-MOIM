@@ -8,6 +8,7 @@ import { MeetingService } from '../services/meeting.service';
 import { UserService } from '../services/user.service';
 import { RecommendService } from '../services/recommend.service';
 import { CommentService} from '../services/comment.service';
+import {Datetime} from '../models/datetime';
 
 @Component({
   selector: 'app-meeting-detail',
@@ -33,6 +34,7 @@ export class MeetingDetailComponent implements OnInit {
   private author: User;
   private currentUser: User;
   private alreadyJoined = false;
+  private datetime: Datetime;
 
   private selectedComment: Comment = null;   // Comment to be edited
 
@@ -49,6 +51,9 @@ export class MeetingDetailComponent implements OnInit {
   private recommendedUsers: User[] = null;
   private invitationList: User[] = [];
 
+  private month = ['January', 'February', 'March', 'April',
+                'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.meetingService.getMeeting(+params['id'])
@@ -56,6 +61,9 @@ export class MeetingDetailComponent implements OnInit {
           this.selectedMeeting = meeting;
           this.author = meeting.author;
           this.tags = meeting.tags;
+
+          this.datetime = meeting.datetime;
+
           this.emptySeats = new Array(this.selectedMeeting.max_member - this.selectedMeeting.members.length);
           this.userService.getLoginedUser()
             .then(user => {
@@ -188,9 +196,6 @@ export class MeetingDetailComponent implements OnInit {
     if (this.invitationList.indexOf(user) !== -1) {
       alert('This user is already in the list!');
       return;
-    } else if (this.invitationList.length >= this.emptySeats.length) {
-      alert('Cannot add more users! (Available seats: ' + this.emptySeats.length + ')');
-      return;
     } else if (this.invitationList.length >= this.MAX_INVITATION) {
       alert('Cannot add more users! (You can send invitation to maximum ' + this.MAX_INVITATION + ' members)');
       return;
@@ -204,6 +209,10 @@ export class MeetingDetailComponent implements OnInit {
       alert('Invitation message has been sent to selected users!');
       this.invitationList = [];
     }
+  }
+
+  padLeft(n: number, padChar: string, size: number): string {
+    return (String(padChar).repeat(size) + String(n)).substr( (size * -1), size) ;
   }
 
 }

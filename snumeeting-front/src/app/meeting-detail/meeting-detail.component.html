@@ -72,7 +72,12 @@
       </div>
 
       <hr>
-      <p><i class="fa fa-calendar"></i> Posted on August 24, 2014 at 9:00 PM</p>
+      <p>
+        <i class="fa fa-calendar"></i>
+        Posted on {{month[datetime.month-1]}} {{datetime.day}}, {{datetime.year}} at {{padLeft(datetime.hour, '0',2)}}:{{padLeft(datetime.minute, '0',2)}}
+        <span *ngIf="datetime.afternoon;else AM">PM</span>
+        <ng-template #AM>AM</ng-template>
+      </p>
       <p><i class="glyphicon glyphicon-map-marker"></i> {{selectedMeeting.location}}</p>
       <p >
         <i class="fa fa-tags"></i> Tags:
@@ -106,7 +111,14 @@
       <li *ngFor="let comment of comments">
         <!--Author of the comment-->
         <h5 style="cursor:pointer" [routerLink]="['/user', comment.author.id]"><i class="fa fa-comment"></i> {{ comment.author.name }}
-          <small> 9:41 PM on August 24, 2014</small>
+          <small>
+            {{padLeft(comment.datetime.hour, '0',2)}}:{{padLeft(comment.datetime.minute, '0',2)}}
+            <span *ngIf="datetime.afternoon;else AM">PM</span>
+            <ng-template #AM>AM</ng-template>
+            on
+            {{month[comment.datetime.month-1]}} {{comment.datetime.day}}, {{comment.datetime.year}}
+          </small>
+
         </h5>
         <span *ngIf="comment.publicity || currentUser.id===selectedMeeting.author.id || currentUser.id===comment.author.id; else private_comment">
           <!--Content of the comment-->
