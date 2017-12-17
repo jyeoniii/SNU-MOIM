@@ -4,6 +4,7 @@ matrix:
   include:
     - language: python
       python: 3.6
+      services: mysql
       cache:
         pip: true
       install:
@@ -11,11 +12,18 @@ matrix:
         - pip install coverage coveralls
         - pip install social-auth-app-django
         - pip install pymysql
+      env:
+        global:
+          - DJANGO_SETTINGS_MODULE="snumeeting_back.travis_settings"
+          - PIP_USE_MIRRORS=true
+        matrix:
+          - DJANGO=1.11.1 DB=mysql
       before_script:
         - cd snumeeting_back
-        - python3 manage.py migrate
+        - mysql -e 'create database travis_ci_db;'
+        - python3 manage.py migrate --settings=snumeeting_back.travis_settings
       script:
-        - coverage run --branch --source="./snumeeting" manage.py test
+        - coverage run --branch --source="./snumeeting" manage.py test --settings=snumeeting_back.travis_settings
       after_success:
         - coveralls
       after_script:
