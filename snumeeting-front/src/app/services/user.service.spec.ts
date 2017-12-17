@@ -100,7 +100,7 @@ describe('UserService (mockBackend)', () => {
       async(inject([], () => {
         response = new Response(new ResponseOptions({status: 201, body: {}}));
         backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
-        service.signUp(fakeUsers[0]).then(response => expect(response).toBeNull());
+        service.signUp(fakeUsers[0], '1234').then(response => expect(response).toBeNull());
       })));
   });
 
@@ -156,7 +156,7 @@ describe('UserService (mockBackend)', () => {
         backend.connections.subscribe((c: MockConnection) => c.mockRespond(response));
         let fakeUser = fakeUsers.find(user => user.id === 2);
         fakeUser.name = 'swpp';
-        service.editUserInfo(fakeUser).then(response => {
+        service.editUserInfo(fakeUser, '1234').then(response => {
           expect(response).toBeNull;
           expect(fakeUser.name).toBe('swpp');
         });

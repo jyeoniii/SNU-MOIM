@@ -15,7 +15,6 @@ def convert_userinfo_for_front(user_id):
     ex_user = Ex_User.objects.get(id=user_id)
     user['id'] = ex_user.id
     user['username'] = ex_user.user.username
-    user['password'] = ex_user.user.password
     user['name'] = ex_user.name
     user['college'] = model_to_dict(ex_user.college)
     user['subjects'] = list(ex_user.subjects.all().values())

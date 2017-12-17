@@ -28,6 +28,7 @@ import { AppRoutingModule } from './app.routing.module';
 import { TagInputModule } from 'ngx-chips';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { TagSearchComponent } from './tag-search/tag-search.component';
+import { LoginRequiredComponent } from './login-required/login-required.component';
 
 export function CSRFStrategy() {
   return new CookieXSRFStrategy('csrftoken', 'X-CSRFToken');
@@ -46,6 +47,7 @@ export function CSRFStrategy() {
     MessagesComponent,
     MeetingEditComponent,
     TagSearchComponent,
+    LoginRequiredComponent,
   ],
   imports: [
     BrowserModule,

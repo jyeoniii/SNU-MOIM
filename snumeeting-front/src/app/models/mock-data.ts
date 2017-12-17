@@ -24,9 +24,9 @@ const interest = [
 ];
 
 const user = [
-  {id: 1, username: 'fake', password: '1234', name: 'name', college: college[0], subjects: [subject[0]]},
-  {id: 2, username: 'fake2', password: '1234', name: 'name2', college: college[1], subjects: [subject[1], subject[2]]},
-  {id: 3, username: 'fake3', password: '1234', name: 'name3', college: college[1], subjects: [subject[2]]},
+  {id: 1, username: 'fake', name: 'name', college: college[0], subjects: [subject[0]]},
+  {id: 2, username: 'fake2', name: 'name2', college: college[1], subjects: [subject[1], subject[2]]},
+  {id: 3, username: 'fake3', name: 'name3', college: college[1], subjects: [subject[2]]},
 ];
 
 const meeting = [

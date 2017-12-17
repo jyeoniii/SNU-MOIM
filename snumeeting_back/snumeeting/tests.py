@@ -143,6 +143,9 @@ class SnuMeetingTestCase(TestCase):
     message = Message.objects.get(id=1)
     self.assertEqual(str(message), message.content)
 
+    tag = Tag.objects.get(id=1)
+    self.assertEqual(str(tag), tag.name)
+
   def test_check_user(self):
     # POST
     response = self.client.post('/api/check_user',
@@ -303,7 +306,6 @@ class SnuMeetingTestCase(TestCase):
     response = self.client.get('/api/user')
     data = json.loads(response.content.decode())
     self.assertEqual(data[0]['username'], 'fake1')
-    self.assertEqual(data[0]['password'], '1234')
     # self.assertEqual(data[0]['email'], 'fake1@snu.ac.kr')
     # self.assertEqual(data[0]['ex_User']['name'], 'John')
     self.assertEqual(len(data), 3)
@@ -807,10 +809,9 @@ class SnuMeetingTestCase(TestCase):
 
   def test_convert_userinfo_for_front(self):
     user = convert_userinfo_for_front(0)
-    self.assertEqual(len(user), 9)
+    self.assertEqual(len(user), 8)
     self.assertEqual(user['id'],0)
     self.assertEqual(user['username'],'fake1')
-    self.assertEqual(user['password'],'1234')
     self.assertEqual(user['name'],'John')
     self.assertEqual(user['college']['name'],'Engineering')
     self.assertEqual(len(user['subjects']),1)

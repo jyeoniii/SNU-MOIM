@@ -36,13 +36,22 @@ export class EditProfileComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.userService.getUserInfo(+params['id']).then(user => {
         this.user = user;
-        for (const subject of user.subjects){
+        for (const subject of user.subjects) {
           this.subjectChecked[subject.name] = true;
           this.interestChecked[subject.interest_id] = true;
         }
       });
     });
-    this.userService.getLoginedUser().then(user => this.loginedUser = user);
+    this.userService.getLoginedUser().then(user => {
+      this.loginedUser = user;
+      if (!this.loginedUser) {
+        this.router.navigate(['/signin_first']);
+      }
+
+      if (this.loginedUser.id !== this.user.id) {
+        this.router.navigate(['/user', this.loginedUser.id, 'edit']);
+      }
+    });
 
     this.metaDataService.getCollegeList().then(colleges => this.colleges = colleges);
     this.metaDataService.getSubjectList().then(subjects => this.subjects = subjects);
@@ -71,25 +80,35 @@ export class EditProfileComponent implements OnInit {
 
 
   editProfile(password: string, passwordCheck: string, name: string) {
+    if (this.loginedUser.id !== this.user.id) {
+      alert('There has been a problem; You can\'t do this action.');
+      this.router.navigate(['/user/' + this.loginedUser.id + '/edit']);
+      return;
+    }
+
     if (password === '') {
       alert('Please enter a new password!');
       return;
     }
 
-    if (password === passwordCheck) {
-      var selectedSubjects: Subject[] = [];
+    var selectedSubjects: Subject[] = [];
 
-      for (let subject of this.subjects) {
-        if (this.subjectChecked[subject.name]) {
-          selectedSubjects.push(subject);
-        }
+    for (let subject of this.subjects) {
+      if (this.subjectChecked[subject.name]) {
+        selectedSubjects.push(subject);
       }
+    }
 
-      this.user.password = password;
+    if (selectedSubjects.length === 0) {
+      alert('Please select interests.');
+      return;
+    }
+
+    if (password === passwordCheck) {
       this.user.name = name;
       this.user.subjects = selectedSubjects;
 
-      this.userService.editUserInfo(this.user).then(() => {
+      this.userService.editUserInfo(this.user, password).then(() => {
         alert('Edit Profile Success!')
         this.router.navigate(['/user', this.user.id]);
       });
@@ -98,5 +117,8 @@ export class EditProfileComponent implements OnInit {
     }
   }
 
-
+  signOut() {
+    this.userService.signOut()
+      .then(() => this.router.navigate(['/signin']));
+  }
 }

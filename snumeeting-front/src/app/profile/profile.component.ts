@@ -54,7 +54,11 @@ export class ProfileComponent implements OnInit {
     this.userService.getLoginedUser()
       .then(user => {
         this.loginedUser = user;
-        this.setStatus();
+        if (this.loginedUser) {
+          this.setStatus();
+        } else {
+          this.router.navigate(['/signin_first']);
+        }
       });
   }
 
@@ -67,8 +71,8 @@ export class ProfileComponent implements OnInit {
   }
 
   signOut() {
-    this.userService.signOut();
-    this.router.navigate(['/']);
+    this.userService.signOut()
+      .then(() => this.router.navigate(['/signin']));
   }
 
   canEdit(): boolean {

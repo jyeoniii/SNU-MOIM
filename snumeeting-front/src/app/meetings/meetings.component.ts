@@ -124,13 +124,16 @@ export class MeetingsComponent implements OnInit {
             this.meetingsRecommended = res;
             this.meetingsShown = this.meetingsRecommended.slice(this.idx, this.idx + this.N);
           });
-        if (this.loginedUser.fb_connected) {
-          this.meetingService.getMeetingsFromFBfriends(this.loginedUser.id)
-            .then(meetings => {
-              this.meetingsFBfriends = meetings;
-              this.meetingsShownFB = this.meetingsFBfriends.slice(0, 0 + this.FB_N);
-            });
-        }
+      } else {
+        this.router.navigate(['/signin_first']);
+      }
+       
+      if (this.loginedUser.fb_connected) {
+        this.meetingService.getMeetingsFromFBfriends(this.loginedUser.id)
+          .then(meetings => {
+            this.meetingsFBfriends = meetings;
+            this.meetingsShownFB = this.meetingsFBfriends.slice(0, 0 + this.FB_N);
+        });
       }
     });
   }
@@ -191,8 +194,8 @@ export class MeetingsComponent implements OnInit {
   }
 
   signOut(): void {
-    this.userService.signOut();
-    this.router.navigate(['/']);
+    this.userService.signOut()
+    .then(() => this.router.navigate(['/signin']));
   }
 
   showOtherRecommendation(next: boolean): void {

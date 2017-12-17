@@ -71,30 +71,37 @@ export class SignUpComponent implements OnInit {
   }
 
   signUp(username: string, password: string, passwordCheck: string, name: string) {
+    var selectedSubjects: Subject[] = [];
+
+    for (let subject of this.subjects) {
+      if (this.subjectChecked[subject.name]) {
+        selectedSubjects.push(subject);
+      }
+    }
+
+    if (selectedSubjects.length === 0) {
+      alert('Please select interests.');
+      return;
+    }
+
     if (!this.userNotExist) {
       alert('Please check if your ID exists.');
-    } else if (password === passwordCheck) {
-      var selectedSubjects: Subject[] = [];
+      return;
+    }
 
-      for (let subject of this.subjects) {
-        if (this.subjectChecked[subject.name]) {
-          selectedSubjects.push(subject);
-        }
-      }
-
+    if (password === passwordCheck) {
       var newUser = new User();
       newUser.username = username;
-      newUser.password = password;
       newUser.name = name;
       newUser.college = this.selectedCollege;
       newUser.subjects = selectedSubjects;
 
-      this.userService.signUp(newUser).then(() => {
+      this.userService.signUp(newUser, password).then(() => {
         alert('Authentication mail was sent! Please check your mailbox.')
         this.router.navigate(['/sign_in']);
       });
-  } else {
-    alert('Password and Check doesn\'t match.');
+    } else {
+      alert('Password and Check doesn\'t match.');
     }
   }
 

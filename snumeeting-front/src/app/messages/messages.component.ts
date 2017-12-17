@@ -33,6 +33,10 @@ export class MessagesComponent implements OnInit {
     this.getMessages();
     this.userService.getLoginedUser().then(user => {
       this.loginedUser = user;
+      if (!this.loginedUser) {
+        this.router.navigate(['/signin_first']);
+      }
+
       this.fbFriends = user.fb_friends;
     });
     this.userService.getUsers().then(users => this.users = users);
@@ -64,7 +68,7 @@ export class MessagesComponent implements OnInit {
 
   onSelect(user: User): void {
     this.selectedUser = user;
-    this.betweenMessages = this.messages.filter(m => 
+    this.betweenMessages = this.messages.filter(m =>
       (m.sender.id === this.loginedUser.id && m.receiver.id === user.id) ||
       (m.sender.id === user.id && m.receiver.id === this.loginedUser.id)
     );
@@ -91,7 +95,7 @@ export class MessagesComponent implements OnInit {
   }
 
   signOut(): void {
-    this.userService.signOut();
-    this.router.navigate(['/']);
+    this.userService.signOut()
+      .then(() => this.router.navigate(['/signin']));
   }
 }

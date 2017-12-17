@@ -106,7 +106,7 @@ def activate(request, uidb64, token):
     uid = force_text(urlsafe_base64_decode(uidb64))
     user = User.objects.get(id=uid)
   except(User.DoesNotExist):
-    return HttpResponseNotFound
+    return HttpResponseNotFound()
   if user is not None and account_activation_token.check_token(user, token):
     user.is_active = True
     user.save()
@@ -140,28 +140,31 @@ def signin(request):
     return HttpResponseNotAllowed(['POST'])
 
 def refresh_fb_friend_status(user):
-  ex_user = Ex_User.objects.get(user=user)
-  if ex_user.access_token != '' and ex_user.access_token != 'EXPIRED':
-    url = 'https://graph.facebook.com/v2.11/me?fields=friends&access_token=' + ex_user.access_token
-    response = requests.get(url)
-    if (response.status_code == 400):
-      ex_user.access_token = 'EXPIRED'
-    elif (response.status_code == 200):
-      friends = response.json()['friends']['data']
+  try:
+    ex_user = Ex_User.objects.get(user=user)
+    if ex_user.access_token != '' and ex_user.access_token != 'EXPIRED':
+      url = 'https://graph.facebook.com/v2.11/me?fields=friends&access_token=' + ex_user.access_token
+      response = requests.get(url)
+      if (response.status_code == 400):
+        ex_user.access_token = 'EXPIRED'
+      elif (response.status_code == 200):
+        friends = response.json()['friends']['data']
 
-      for friend in friends:
-        try:
-          friend_by_id = UserSocialAuth.get_social_auth('facebook', friend['id']).user
-          if friend_by_id is not None:
-            try:
-              ex_user_friend = Ex_User.objects.get(user = friend_by_id)
-              ex_user.fb_friends.add(ex_user_friend)
-            except Exception:
-              pass
-        except Exception:
-          pass
+        for friend in friends:
+          try:
+            friend_by_id = UserSocialAuth.get_social_auth('facebook', friend['id']).user
+            if friend_by_id is not None:
+              try:
+                ex_user_friend = Ex_User.objects.get(user = friend_by_id)
+                ex_user.fb_friends.add(ex_user_friend)
+              except Exception:
+                pass
+          except Exception:
+            pass
 
-    ex_user.save()
+      ex_user.save()
+  except(Ex_User.DoesNotExist):
+    pass
 
 
 # url: /signout
@@ -175,7 +178,10 @@ def signout(request):
 def loginedUser(request):
   if request.user.is_anonymous:
     return JsonResponse(None, safe=False)
-  ex_user = Ex_User.objects.get(user_id=request.user.id)
+  try:
+    ex_user = Ex_User.objects.get(user_id=request.user.id)
+  except(Ex_User.DoesNotExist):
+    return HttpResponseNotFound()
   return JsonResponse(convert_userinfo_for_front(ex_user.id), safe=False)
 
 # url: /user
@@ -682,17 +688,17 @@ def recommendMeetings(request, user_id, N):
 def recommendUsersForMeeting(request, user_id, meeting_id, N):
   if request.method == 'GET':
     try:
-      result = [] 
+      result = []
       user = Ex_User.objects.get(id=int(user_id))
       meeting = Meeting.objects.get(id=meeting_id)
       uids = getUserSimilarity(user, int(N))
 
       for uid in uids:
         uid = uid[0]
-        exist = False 
+        exist = False
         for member in meeting.members.all():
           if uid == member.id: # Skip users who has already joined this meeting
-            exist = True 
+            exist = True
             break
         if not exist:
           recommendedUser = convert_userinfo_for_front(uid)
@@ -703,7 +709,7 @@ def recommendUsersForMeeting(request, user_id, meeting_id, N):
       return HttpResponseNotFound()
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
- 
+
   else:
     return HttpResponseNotAllowed(['GET'])
 
