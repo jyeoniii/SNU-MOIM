@@ -41,7 +41,6 @@ export class TagSearchComponent implements OnInit {
 
   constructor(
     private meetingService: MeetingService,
-    private metaDataService: MetaDataService,
     private userService: UserService,
     private router: Router,
     private route: ActivatedRoute,
@@ -94,6 +93,11 @@ export class TagSearchComponent implements OnInit {
 
   goBack(): void {
     this.location.back();
+  }
+
+  signOut(): void {
+    this.userService.signOut();
+    this.router.navigate(['/']);
   }
 
 }
