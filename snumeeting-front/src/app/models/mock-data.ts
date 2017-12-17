@@ -49,12 +49,12 @@ const comment = [
 ];
 
 const message = [
-  {id: 1, sender: user[0], receiver: user[1], content: 'Bye', sended_at: '2017-11-15T01:34:52Z'},
-  {id: 2, sender: user[1], receiver: user[0], content: 'Ok, bye', sended_at: '2017-11-15T01:35:06Z'},
-  {id: 3, sender: user[1], receiver: user[2], content: 'You want to join us?', sended_at: '2017-11-16T21:34:52Z'},
-  {id: 4, sender: user[2], receiver: user[0], content: 'Get it on', sended_at: '2017-11-17T09:22:01Z'},
-  {id: 5, sender: user[0], receiver: user[2], content: 'Ok', sended_at: '2017-11-17T11:56:11Z'},
-  {id: 6, sender: user[2], receiver: user[1], content: 'Right', sended_at: '2017-11-17T15:03:12Z'},
+  {id: 1, sender: user[0], receiver: user[1], content: 'Bye'},
+  {id: 2, sender: user[1], receiver: user[0], content: 'Ok, bye'},
+  {id: 3, sender: user[1], receiver: user[2], content: 'You want to join us?'},
+  {id: 4, sender: user[2], receiver: user[0], content: 'Get it on'},
+  {id: 5, sender: user[0], receiver: user[2], content: 'Ok'},
+  {id: 6, sender: user[2], receiver: user[1], content: 'Right'},
 ];
 
 export const makeCollegeData = () => college as College[];

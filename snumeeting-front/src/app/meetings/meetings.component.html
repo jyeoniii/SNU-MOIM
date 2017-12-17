@@ -122,13 +122,9 @@
       <button class=" col-sm-2 btn btn-primary" style="float:right; width:100px; margin-right: 100px;"
               (click)="goToCreatePage()">create</button><br><br>
 
-    <pagination-controls (pageChange)="currentPage = $event; pageChanged($event)" style="display:block; margin:auto"></pagination-controls>
     <!--Pagination-->
-<!--
-    <ng-pagination *ngIf="totalItems >= 0" [totalItems]="totalItems" [(ngModel)]="currentPage" [maxSize]="maxSize" [boundaryLinks]="true"
-                     (pageChanged)="pageChanged($event)" previous-text="&lsaquo;" next-text="&rsaquo;"
-                     style="display:block;margin:auto"first-text="First" last-text="Last"></ng-pagination><br>
--->
+    <pagination-controls (pageChange)="currentPage = $event; pageChanged($event)" style="display:block; margin:auto"></pagination-controls>
+
     <!--Search filter-->
     <div style="display:block; margin:0 auto; width:800px">
       <select name="interest" [(ngModel)]="selectedOption">
