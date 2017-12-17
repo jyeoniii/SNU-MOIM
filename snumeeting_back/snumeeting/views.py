@@ -795,4 +795,19 @@ def getFBProfile(request, user_id):
   else:
     return HttpResponseNotAllowed(['GET'])
 
+# url: /user/:user_id/meeting
+def getJoinedMeetings(request, user_id):
+  if request.method == 'GET':
+    try:
+      res = []
+      user = Ex_User.objects.get(id=int(user_id))
+      for m in user.meetings_joined.all():
+        res.append(convert_meeting_for_mainpage(m))
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+    return JsonResponse(res, safe=False)
+  else:
+    return HttpResponseNotAllowed(['GET'])
+
+
 

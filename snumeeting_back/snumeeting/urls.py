@@ -13,6 +13,7 @@ urlpatterns = [
   url(r'^loginedUser$', loginedUser, name='loginedUser'),
   url(r'^user$', userList, name='userList'),
   url(r'^user/(?P<user_id>[0-9]+)$', userDetail, name='userDetail'),
+  url(r'^user/(?P<user_id>[0-9]+)/meeting$', getJoinedMeetings, name='getJoinedMeetings'),
   url(r'^meeting$', meetingList, name='meetingList'),
   url(r'^meeting/(?P<meeting_id>[0-9]+)$', meetingDetail, name='meetingDetail'),
   url(r'^meeting/(?P<meeting_id>[0-9]+)/comment$', meetingComment, name='meetingComment'),

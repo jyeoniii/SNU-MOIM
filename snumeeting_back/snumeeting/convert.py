@@ -64,11 +64,18 @@ def convert_meeting_for_mainpage(meeting):
   user = convert_userinfo_minimal(author_id)
   d['author'] = user
 
+  def removeAccessToken(user):
+    del user['access_token']
+    return user
+
   subject_id = d['subject']
   d['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
-  d['members'] = list(meeting.members.all().values())
+  members = list(meeting.members.all().values())
+  d['members'] = list(map(lambda x: removeAccessToken(x), members))
   d['datetime'] = convert_datetime(meeting.created_at)
   d.pop('tags')
+
+
   return d
 
 def convert_datetime(datetime):

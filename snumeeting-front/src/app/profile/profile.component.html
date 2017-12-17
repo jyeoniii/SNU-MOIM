@@ -136,9 +136,22 @@
           <button type="submit" class="btn mt-4 btn-block p-2 btn-outline-primary" (click)="goBack()">Back</button>
 
         </form>
+        <br>
+        <form class="p-4 bg-dark-opaque">
+          <div class="form-group"> <label class="font-weight-bold">MEETINGS JOINED</label>
+            <p *ngFor="let meeting of joinedMeetings"><em class="form-control-static">
+              <i class="fa fa-check" aria-hidden="true"></i> <a href="/meeting/{{meeting.id}}">{{ meeting.title }}</a>
+              <span style="margin-left:10px"> - </span>
+              <small style="margin-left: 5px; padding-top: 3px; color: lemonchiffon; font-style: normal; font-weight: bold" >
+                {{meeting.subject.name}}
+              </small>
+            </em></p>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+
 </div>
 
 

@@ -168,7 +168,7 @@ export class MeetingService {
       .catch(response => {
         if (response.status === 404) return [];
         else this.handleError(response);
-      })
+      });
   }
 
   getMeetingsFromFBfriends(user_id: number): Promise<MeetingFB[]> {
@@ -176,6 +176,14 @@ export class MeetingService {
     return this.http.get(url)
       .toPromise()
       .then(response => response.json() as MeetingFB[])
+      .catch(this.handleError);
+  }
+
+  getJoinedMeeting(user_id: number): Promise<Meeting[]> {
+    const url = `api/user/${user_id}/meeting`;
+    return this.http.get(url)
+      .toPromise()
+      .then(response => response.json() as Meeting[])
       .catch(this.handleError);
   }
 

@@ -4,6 +4,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { User } from '../models/user';
 import { UserService } from '../services/user.service';
 import { UserFB } from '../models/userFB';
+import { Meeting } from '../models/meeting';
+import {MeetingService} from "../services/meeting.service";
 
 enum Status {
   Self = 0,
@@ -24,7 +26,8 @@ export class ProfileComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private userService: UserService
+    private userService: UserService,
+    private meetingService: MeetingService,
   ) { }
 
   user: User;
@@ -33,12 +36,17 @@ export class ProfileComponent implements OnInit {
   status: Status;
 
   FBprofile: UserFB;
+  joinedMeetings: Meeting[];
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.userService.getUserInfo(+params['id']).then(user => {
           this.user = user;
           this.setStatus();
+          this.meetingService.getJoinedMeeting(this.user.id)
+            .then(meetings => {
+              this.joinedMeetings = meetings;
+            });
         }
       );
     });
