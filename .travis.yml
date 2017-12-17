@@ -10,6 +10,7 @@ matrix:
         - pip install django==1.11.1
         - pip install coverage coveralls
         - pip install social-auth-app-django
+        - pip install pymysql
       before_script:
         - cd snumeeting_back
         - python3 manage.py migrate
