@@ -20,7 +20,12 @@ export class SignInComponent implements OnInit {
   ngOnInit() {
     this.showMessageAlert();
 
-
+    this.userService.getLoginedUser()
+      .then(user => {
+        if (user) {
+          this.router.navigate(['/meeting']);
+        }
+      });
   }
 
   showMessageAlert() {
