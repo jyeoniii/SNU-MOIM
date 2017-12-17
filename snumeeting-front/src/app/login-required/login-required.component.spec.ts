@@ -22,4 +22,9 @@ describe('LoginRequiredComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should navigate to sign in page', () => {
+    component.signIn();
+    expect(routerStub.navigate).toHaveBeenCalledWith(['/sign_in']);
+  });
 });

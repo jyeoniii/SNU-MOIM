@@ -5,9 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
-
 </head>
-
 <body>
 <nav class="navbar navbar-expand-md bg-primary navbar-dark">
   <div class="container">
@@ -20,17 +18,19 @@
           <a class="nav-link" href="#"><i class="fa d-inline fa-lg fa-info"></i> About us</a>
         </li>
       </ul>
-      <a class="btn navbar-btn ml-2 text-white btn-secondary"><i class="fa d-inline fa-lg fa-user-circle-o"></i> Sign in</a>
+      <button class="btn navbar-btn ml-2 text-white btn-secondary" (click)="signIn()">
+        <i class="fa d-inline fa-lg fa-user-circle-o"></i> Sign in
+      </button>
     </div>
   </div>
 </nav>
-<div class="py-5 text-center opaque-overlay" style="background-image: url(&quot;https://pingendo.github.io/templates/sections/assets/cover_event.jpg&quot;);">
-  <div class="container py-5">
+<div class="text-center opaque-overlay" style="height: 700px; background-image: url(&quot;https://pingendo.github.io/templates/sections/assets/cover_event.jpg&quot;);">
+  <div class="container" style="margin-top: 15%">
     <div class="row">
       <div class="col-md-12 text-white">
-        <h1 class="display-3 mb-4">WELCOME TO SNU MO-IM</h1>
-        <p class="lead mb-5">Where everyone can meet and enjoy activities! &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
-        <button type="submit" class="btn btn-secondary" (click)="signUp()">JOIN US</button>
+        <h1 class="display-3 mb-4">Please Sign In!</h1>
+        <p class="lead mb-5">Sorry, but you can't access to this page without this page.</p>
+        <button type="submit" class="btn btn-secondary" (click)="signIn()">SIGN IN</button>
       </div>
     </div>
   </div>

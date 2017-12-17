@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { LoginRequiredComponent } from './login-required/login-required.component';
 import { SignInComponent } from './sign-in/sign-in.component';
 import { SignUpComponent } from './sign-up/sign-up.component';
 import { ProfileComponent } from './profile/profile.component';
@@ -14,6 +15,7 @@ import { TagSearchComponent } from './tag-search/tag-search.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/sign_in', pathMatch: 'full' },
+  { path: 'signin_first',  component: LoginRequiredComponent },
   { path: 'sign_in',  component: SignInComponent },
   { path: 'sign_up', component: SignUpComponent },
   { path: 'user/:id', component: ProfileComponent },
