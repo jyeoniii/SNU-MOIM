@@ -83,6 +83,7 @@ export class EditProfileComponent implements OnInit {
     if (this.loginedUser.id !== this.user.id) {
       alert('There has been a problem; You can\'t do this action.');
       this.router.navigate(['/user/' + this.loginedUser.id + '/edit']);
+      return;
     }
 
     if (password === '') {
@@ -90,15 +91,20 @@ export class EditProfileComponent implements OnInit {
       return;
     }
 
-    if (password === passwordCheck) {
-      var selectedSubjects: Subject[] = [];
+    var selectedSubjects: Subject[] = [];
 
-      for (let subject of this.subjects) {
-        if (this.subjectChecked[subject.name]) {
-          selectedSubjects.push(subject);
-        }
+    for (let subject of this.subjects) {
+      if (this.subjectChecked[subject.name]) {
+        selectedSubjects.push(subject);
       }
+    }
 
+    if (selectedSubjects.length === 0) {
+      alert('Please select interests.');
+      return;
+    }
+
+    if (password === passwordCheck) {
       this.user.name = name;
       this.user.subjects = selectedSubjects;
 
