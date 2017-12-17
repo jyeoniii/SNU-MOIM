@@ -114,6 +114,8 @@ export class MeetingsComponent implements OnInit {
             this.meetingsRecommended = res;
             this.meetingsShown = this.meetingsRecommended.slice(this.idx, this.idx + this.N);
           });
+      } else {
+        this.router.navigate(['/signin_first']);
       }
     });
   }
@@ -174,8 +176,8 @@ export class MeetingsComponent implements OnInit {
   }
 
   signOut(): void {
-    this.userService.signOut();
-    this.router.navigate(['/']);
+    this.userService.signOut()
+    .then(() => this.router.navigate(['/signin']));
   }
 
   showOtherRecommendation(next: boolean): void {

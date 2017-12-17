@@ -63,7 +63,12 @@ export class TagSearchComponent implements OnInit {
             this.pageChanged();
           });
           this.userService.getLoginedUser()
-            .then(user => this.currentUser = user);
+            .then(user => {
+              this.currentUser = user;
+              if (!this.currentUser) {
+                this.router.navigate(['/signin_first']);
+              }
+            });
         }
       });
   }

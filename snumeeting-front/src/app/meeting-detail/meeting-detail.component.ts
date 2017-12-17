@@ -68,6 +68,10 @@ export class MeetingDetailComponent implements OnInit {
           this.userService.getLoginedUser()
             .then(user => {
               this.currentUser = user;
+              if (!this.currentUser) {
+                this.router.navigate(['/signin_first']);
+              }
+
               if (this.selectedMeeting.members.find(member => member.id === this.currentUser.id)) {
                 this.alreadyJoined = true;
               }
@@ -111,7 +115,7 @@ export class MeetingDetailComponent implements OnInit {
     this.selectedComment = comment;
   }
 
-  cancleEditMode(comment: Comment): void{
+  cancleEditMode(comment: Comment): void {
     this.selectedComment = null;
   }
 
@@ -140,8 +144,8 @@ export class MeetingDetailComponent implements OnInit {
   }
 
   signOut(): void {
-    this.userService.signOut();
-    this.router.navigate(['/']);
+    this.userService.signOut()
+      .then(() => this.router.navigate(['/signin']));
   }
 
   changePrivateMode(create: boolean): void {
@@ -185,7 +189,7 @@ export class MeetingDetailComponent implements OnInit {
   }
 
   getRecUsers(): void {
-    if (this.recommendedUsers !== null ) return;  // Compute only once
+    if (this.recommendedUsers !== null) return;  // Compute only once
     this.recommendService.getRecUsersForMeeting(this.currentUser.id, this.selectedMeeting.id, 10)
       .then(users => {
         this.recommendedUsers = users;

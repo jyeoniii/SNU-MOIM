@@ -48,9 +48,14 @@ export class MeetingEditComponent implements OnInit {
         }
       });
     })
-    this.userService.getLoginedUser().then(user => this.currentUser = user);
+    this.userService.getLoginedUser().then(user => {
+      this.currentUser = user;
+      if (!this.currentUser) {
+        this.router.navigate(['/signin_first']);
+      }
+    });
     this.metaDataService.getSubjectList().then(subjects => this.subjects = subjects);
-    this.metaDataService.getInterestList().then(interests => this.interests=interests);
+    this.metaDataService.getInterestList().then(interests => this.interests = interests);
   }
 
   signOut(): void {
@@ -63,41 +68,36 @@ export class MeetingEditComponent implements OnInit {
   }
 
   checkInput(): void {
-    if(this.selectedMeeting.title=='') {
-      this.notice = "Did you forget a title?";
+    if (this.selectedMeeting.title=='') {
+      this.notice = 'Did you forget a title?';
       console.log('no title');
       return;
-    }
-    else if(this.selectedMeeting.subject==null) {
+    } else if (this.selectedMeeting.subject==null) {
       this.notice = 'What about subject?';
       console.log('no subject');
       return;
-    }
-    else if(this.selectedMeeting.description=='') {
+    } else if (this.selectedMeeting.description=='') {
       this.notice = 'Let us know your MO-IM detail';
       console.log('no description');
       return;
-    }
-    else if(this.selectedMeeting.location=='') {
+    } else if (this.selectedMeeting.location=='') {
       this.notice = 'Where shall the MO-IM take place?';
       console.log('no location');
       return;
-    }
-    else if(this.selectedMeeting.max_member==1) {
+    } else if (this.selectedMeeting.max_member==1) {
       this.notice = 'How many members you want? (of course not 1 right?)';
       console.log('no members');
       return;
-    }
-    else if(this.selectedMeeting.max_member==0) {
+    } else if (this.selectedMeeting.max_member==0) {
       this.notice = 'No member? You must be kidding!';
       console.log('no members');
       return;
-    }
-    else if(this.selectedMeeting.max_member>50) {
+    } else if (this.selectedMeeting.max_member>50) {
       this.notice = 'Well, that seems like a huge conference...';
       console.log('max member exceeded');
       return;
     }
+
     console.log('input checked');
   }
 
@@ -108,14 +108,13 @@ export class MeetingEditComponent implements OnInit {
     this.selectedMeeting.subject = this.selectedSubject;
     this.checkInput();
 
-    if(this.notice=='') {
+    if (this.notice=='') {
       this.meetingService.editMeeting(this.selectedMeeting, tag_names)
         .then(() => {
           alert('Successfully edited (or no changed) the MO-IM!')
           this.router.navigate(['/meeting', this.selectedMeeting.id]);
         });
-    }
-    else {
+    } else {
       alert(this.notice);
       this.notice='';
       return;
@@ -127,7 +126,7 @@ export class MeetingEditComponent implements OnInit {
   convertTagInputs(): string[] {
     const res = [];
 
-    for (const tag of this.tagInputs){
+    for (const tag of this.tagInputs) {
       if (tag.hasOwnProperty('value')) {
         res.push(tag.value);
       } else {
