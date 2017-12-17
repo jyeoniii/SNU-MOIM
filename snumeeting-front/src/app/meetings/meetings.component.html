@@ -53,7 +53,7 @@
 
         <!--Recommendation-->
         <div *ngIf="meetingsShown" class="col-md-12 text-black">
-          <h2> You might like..</h2><br>
+          <h2 class="text-center text-black" style="font-weight: bold; color: #695F5C"> You might like..</h2><br>
 
           <div class="row">
             <div *ngFor="let meeting of meetingsShown" class="col-md-4 text-center">
@@ -173,8 +173,6 @@
           </div>
         </div> <!--Pagination+Search end-->
 
-
-
       </div> <!--end main-->
 
     </div>
@@ -182,34 +180,92 @@
   </div>
 </div>
 
-<div class="py-5">
+<div class="py-5" *ngIf="meetingsFBfriends && (meetingsFBfriends.length > 0)">
   <div class="container">
     <div class="row">
       <!--FB Friends' MOIM-->
-      <div class="col-md-12" *ngIf="meetingsFBfriends && (meetingsFBfriends.length > 0)">
-        <h3 class="my-12"> Your Facebook Friends Joined.. </h3>
-        <div class="col-xs-2 text-center" *ngFor="let m_f of meetingsShownFB">
+      <h3 class="col-md-12 text-center text-black" style="font-weight: bold;color: #695F5C; margin-bottom: 20px">
+        Your Facebook Friends Joined..
+      </h3><br><br>
+      <div class="col-md-2 text-center" *ngFor="let m_f of meetingsShownFB">
           <span *ngFor="let friend of m_f.friends" (mouseenter)="changeFBNameShown(friend.fb_name)" data-tooltip-text="abc" [attr.id]="FBname">
             <img [routerLink]="['/user', friend.id]"
-                   class="rounded-circle img-fluid d-block mx-auto" width="30px" height="30px"
-                   style="cursor:pointer"
-                   src="{{friend.picture_url}}" alt="">
+                 class="rounded-circle img-fluid d-block mx-auto" width="30px" height="30px"
+                 style="cursor:pointer"
+                 src="{{friend.picture_url}}" alt="">
           </span>
-          <h6 style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor:pointer"
-              [routerLink]="['/meeting', m_f.meeting.id]">
-            {{m_f.meeting.title}}<br>
-            <small>{{m_f.meeting.author.name}}</small>
-          </h6>
-          <label class="label label-default" style="margin-left: 5px; padding-top: 3px; background-color: mediumseagreen" >
-            <i class="glyphicon glyphicon-th-list" style="font-size:10px; margin-right: 3px"></i>{{m_f.meeting.subject.name}}
-          </label>
-        </div>
-      </div> <!--FB Friends' MOIM end-->
+          <h5 style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor:pointer;"
+            [routerLink]="['/meeting', m_f.meeting.id]">{{m_f.meeting.title}}<br>
+          <small style="color: #7f7f7f; font-size: 3px">{{m_f.meeting.author.name}}</small>
+          </h5>
+        <label class="label" style="margin-left: 5px; padding-top: 3px; background-color: mediumseagreen; color: white" >
+          <i class="fa fa-list-ul" aria-hidden="true"style="font-size:10px; margin-right: 3px"></i>{{m_f.meeting.subject.name}}
+        </label>
+      </div><!--FB Friends' MOIM end-->
     </div>
   </div>
 </div>
 
 <br><br>
+
+<!--Footer-->
+<div class="bg-primary py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 my-3">
+        <h1 class="display-4 text-white text-md-left text-center">Let's connect the world</h1>
+      </div>
+      <div class="col-md-4  text-center align-self-center">
+        <a href="/oauth/login/facebook/" target="_blank"><i class="fa fa-fw fa-facebook fa-3x text-white mx-3"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="text-white bg-secondary">
+  <div class="container">
+    <div class="row">
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 light">SNU MO-IM</h2>
+        <p class="text-white">A group who aims to ease of the lives of SNU students</p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">Mapsite</h2>
+        <ul class="list-unstyled">
+          <a href="#" class="text-white">Home</a>
+          <br>
+          <a href="#" class="text-white">About us</a>
+          <br>
+          <a href="#" class="text-white">Our services</a>
+          <br>
+          <a href="#" class="text-white">Stories</a>
+        </ul>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4">Contact</h2>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"><i class="fa d-inline mr-3 fa-envelope-o text-light"></i>SNU mail</a>
+        </p>
+        <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+          <a href="https://goo.gl/5U1Q7X" class="text-white" target="_blank"><i class="fa d-inline mr-3 fa-map-marker text-light"></i>Seoul National University</a>
+        </p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">SNU MO-IM</h2>
+        <form>
+          <fieldset class="form-group text-white"> <label for="exampleInputEmail1">M: Matching<br>O: Of<br>I: Identical<br>M: Motives<br></label> </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mt-3">
+        <p class="text-center text-white">© Copyright 2017 SNUMOIM - All rights reserved. </p>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
 

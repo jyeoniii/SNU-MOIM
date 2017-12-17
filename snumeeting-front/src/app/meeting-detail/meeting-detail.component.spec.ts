@@ -8,6 +8,7 @@ import { HttpModule, Http, XHRBackend, Response, ResponseOptions } from '@angula
 import { Observable } from 'rxjs/Rx';
 
 import { MeetingService } from '../services/meeting.service';
+import { MessageService } from '../services/message.service';
 import { CommentService } from '../services/comment.service';
 import { UserService } from '../services/user.service';
 import { RecommendService } from '../services/recommend.service';
@@ -34,7 +35,7 @@ describe('MeetingDetailComponent', () => {
                  FormsModule,
       ],
       declarations: [ MeetingDetailComponent],
-      providers: [MeetingService, CommentService, UserService, RecommendService,
+      providers: [MeetingService, CommentService, UserService, RecommendService, MessageService,
         { provide: XHRBackend, useClass: MockBackend },
         { provide: ActivatedRoute, useValue: { 'params': Observable.from([{ id: 1 }]) } },
       ]
