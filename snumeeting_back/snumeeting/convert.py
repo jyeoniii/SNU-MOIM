@@ -3,6 +3,11 @@ from django.forms.models import model_to_dict
 from social_django.models import UserSocialAuth
 from django.utils import timezone
 
+import urllib3
+import json
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 def convert_userinfo_for_front(user_id):
   try:
     user_id = int(user_id)
@@ -39,7 +44,6 @@ def fb_friends_userinfo_for_front(ex_user):
   return fb_friends
 
 
-
 def convert_userinfo_minimal(user_id):
   # convert user info - only minimal information needed (id+name)
   try:
@@ -60,11 +64,18 @@ def convert_meeting_for_mainpage(meeting):
   user = convert_userinfo_minimal(author_id)
   d['author'] = user
 
+  def removeAccessToken(user):
+    del user['access_token']
+    return user
+
   subject_id = d['subject']
   d['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
-  d['members'] = list(meeting.members.all().values())
+  members = list(meeting.members.all().values())
+  d['members'] = list(map(lambda x: removeAccessToken(x), members))
   d['datetime'] = convert_datetime(meeting.created_at)
   d.pop('tags')
+
+
   return d
 
 def convert_datetime(datetime):
@@ -83,3 +94,28 @@ def convert_datetime(datetime):
   res['second'] = datetime.second
 
   return res
+
+def convert_fb_profile(ex_user):
+    user_fb = {}
+    social_user = ex_user.user.social_auth.get(provider='facebook')
+    if social_user:
+      url = u'https://graph.facebook.com/{0}?fields=name,picture' \
+            u'&access_token={1}'.format(social_user.uid,social_user.extra_data['access_token'])
+      http = urllib3.PoolManager()
+
+      r = http.request('GET', url)
+      response = json.loads(r.data)
+
+      url = response['picture']['data']['url']
+      name = response['name']
+
+      user_fb['picture_url'] = url
+      user_fb['fb_name'] = name
+      user_fb['id'] = ex_user.id 
+      user_fb['name'] = ex_user.name
+
+    return user_fb 
+    
+
+
+

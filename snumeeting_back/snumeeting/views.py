@@ -24,10 +24,11 @@ import requests
 
 from .tokens import account_activation_token
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message, Tag
-from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage, convert_datetime
+from .convert import *
 
 import json
 import requests
+
 
 # url: /check_user
 def check_user(request):
@@ -757,3 +758,56 @@ def meetingsOnTag(request, tag_name):
       return HttpResponseNotFound()
   else:
     return HttpResponseNotAllowed(['GET'])
+
+# url: /meeting/fb_friends/:user_id
+def getMeetings_FBfriends(request, user_id):
+  if request.method == 'GET':
+    res = {}
+    try:
+      user = Ex_User.objects.get(id=int(user_id))
+      fb_friends = user.fb_friends.all()
+
+      for friend in fb_friends:
+        for m in friend.meetings_joined.all():
+          if m not in res.keys():
+              res[m] = []
+          res[m].append(convert_fb_profile(friend))
+      
+      final = []
+      for m_f in res.items():
+        d = {'meeting':convert_meeting_for_mainpage(m_f[0]), 'friends':m_f[1]}
+        final.append(d)
+      return JsonResponse(final, safe=False)
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+  else:
+    return HttpResponseNotAllowed('[GET]')
+
+# url: /fb_profile/:user_id
+def getFBProfile(request, user_id):
+  if request.method == 'GET':
+    try:
+      user = Ex_User.objects.get(id=int(user_id))
+      user_fb = convert_fb_profile(user)
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+    return JsonResponse(user_fb, safe=False)
+  else:
+    return HttpResponseNotAllowed(['GET'])
+
+# url: /user/:user_id/meeting
+def getJoinedMeetings(request, user_id):
+  if request.method == 'GET':
+    try:
+      res = []
+      user = Ex_User.objects.get(id=int(user_id))
+      for m in user.meetings_joined.all():
+        res.append(convert_meeting_for_mainpage(m))
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+    return JsonResponse(res, safe=False)
+  else:
+    return HttpResponseNotAllowed(['GET'])
+
+
+

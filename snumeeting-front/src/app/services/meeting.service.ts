@@ -3,6 +3,7 @@ import { Http } from '@angular/http';
 import { Meeting } from '../models/meeting';
 import { User } from '../models/user';
 import { Subject } from '../models/subject';
+import { MeetingFB } from '../models/meetingFB';
 
 import { headerWithCSRF } from './header';
 
@@ -160,14 +161,30 @@ export class MeetingService {
   }
 
   getMeetingsOnTag(tagName: string): Promise<Meeting[]> {
-    const url = `api/meeting/tag/${tagName}`;
+    const url = `${this.meetingsUrl}/tag/${tagName}`;
     return this.http.get(url)
       .toPromise()
       .then(response => response.json() as Meeting[])
       .catch(response => {
         if (response.status === 404) return [];
         else this.handleError(response);
-      })
+      });
+  }
+
+  getMeetingsFromFBfriends(user_id: number): Promise<MeetingFB[]> {
+    const url = `${this.meetingsUrl}/fb_friends/${user_id}`;
+    return this.http.get(url)
+      .toPromise()
+      .then(response => response.json() as MeetingFB[])
+      .catch(this.handleError);
+  }
+
+  getJoinedMeeting(user_id: number): Promise<Meeting[]> {
+    const url = `api/user/${user_id}/meeting`;
+    return this.http.get(url)
+      .toPromise()
+      .then(response => response.json() as Meeting[])
+      .catch(this.handleError);
   }
 
 }

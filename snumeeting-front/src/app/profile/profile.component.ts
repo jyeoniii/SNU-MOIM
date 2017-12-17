@@ -3,6 +3,9 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { User } from '../models/user';
 import { UserService } from '../services/user.service';
+import { UserFB } from '../models/userFB';
+import { Meeting } from '../models/meeting';
+import {MeetingService} from "../services/meeting.service";
 
 enum Status {
   Self = 0,
@@ -23,19 +26,27 @@ export class ProfileComponent implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private userService: UserService
+    private userService: UserService,
+    private meetingService: MeetingService,
   ) { }
 
   user: User;
   loginedUser: User;
-  mutualFriends: User[] = [];
+  mutualFriends: UserFB[] = [];
   status: Status;
+
+  FBprofile: UserFB;
+  joinedMeetings: Meeting[];
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       this.userService.getUserInfo(+params['id']).then(user => {
           this.user = user;
           this.setStatus();
+          this.meetingService.getJoinedMeeting(this.user.id)
+            .then(meetings => {
+              this.joinedMeetings = meetings;
+            });
         }
       );
     });
@@ -77,6 +88,12 @@ export class ProfileComponent implements OnInit {
     if (this.loginedUser && this.user) {
       if (this.loginedUser.id === this.user.id) {
         this.status = Status.Self;
+        if (this.loginedUser.fb_connected) {
+          this.userService.getFBProfile(this.loginedUser.id)
+            .then(profile => {
+              this.FBprofile = profile;
+            });
+        }
       } else {
         if (!this.loginedUser.fb_connected) {
           this.status = Status.LoginUserNoFB;
@@ -87,6 +104,10 @@ export class ProfileComponent implements OnInit {
           for (const friend of this.loginedUser.fb_friends) {
             if (friend.id === this.user.id) {
               this.status = Status.Friend;
+              this.userService.getFBProfile(this.user.id)
+                .then(profile => {
+                  this.FBprofile = profile;
+                });
               break;
             }
           }
@@ -110,7 +131,8 @@ export class ProfileComponent implements OnInit {
     for (const loginedUserFriend of this.loginedUser.fb_friends) {
       for (const profileUserFriend of this.user.fb_friends) {
         if (loginedUserFriend.id === profileUserFriend.id) {
-          this.mutualFriends.push(loginedUserFriend);
+          this.userService.getFBProfile(loginedUserFriend.id)
+            .then(FBprofile => this.mutualFriends.push(FBprofile));
           break;
         }
       }
