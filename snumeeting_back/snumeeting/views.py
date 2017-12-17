@@ -29,6 +29,7 @@ from .convert import convert_userinfo_for_front, convert_userinfo_minimal, conve
 import json
 import requests
 
+
 # url: /check_user
 def check_user(request):
   if request.method == 'POST':
@@ -757,3 +758,33 @@ def meetingsOnTag(request, tag_name):
       return HttpResponseNotFound()
   else:
     return HttpResponseNotAllowed(['GET'])
+
+# url: /meeting/fb_friends
+def getMeetings_FBfriends(request, user_id):
+  if request.method == 'GET':
+    res = {}
+    try:
+      user = Ex_User.objects.get(id=int(user_id))
+      fb_friends = user.fb_friends.all()
+
+      print(fb_friends)
+
+      for friend in fb_friends:
+        for m in friend.meetings_joined.all():
+          if m not in res.keys():
+              res[m] = []
+          res[m].append(convert_userinfo_minimal(friend.id))
+      
+      final = []
+      for m_f in res.items():
+        d = {'meeting':convert_meeting_for_mainpage(m_f[0]), 'friends':m_f[1]}
+        final.append(d)
+      return JsonResponse(final, safe=False)
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+  else:
+    return HttpResponseNotAllowed('[GET]')
+
+
+
+      
