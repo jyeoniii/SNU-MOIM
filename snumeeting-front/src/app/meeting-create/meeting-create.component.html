@@ -190,17 +190,24 @@
             <form data-toggle="validator" role="form">
               <div class="form-group"> <label>Title</label>
                 <input class="form-control" placeholder="Enter the title of your MO-IM" [(ngModel)]="meeting.title" placeholder="Enter title" [ngModelOptions]="{standalone: true}" required> </div>
-              <div class="form-group"> <label>Interest</label>
-                <div class="radio-inline">
-                  <div *ngFor="let interest of interests">
-                    <input type="radio" name="interest" class="radio-inline" (click)="interestCheck(interest.name)">{{interest.name}}
-                    <div *ngFor="let subject of interest.subjects">
-                      <div class="col-sm-offset-1" *ngIf="interestChecked[interest.name]">
-                        <input type="radio" name="subject" class="radio-inline" (click)="subjectCheck(subject)">{{subject.name}}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              <div class="form-group"> <label>Interest</label><br>
+
+                <span>
+                  <select class="form-control" name="interest" [(ngModel)]="selectedInterest" data-width="fit">
+                    <optgroup label="interest" data-style="">
+                      <option disabled selected hidden>interest</option>
+                      <option *ngFor="let interest of interests" [ngValue]="interest">{{interest.name}}</option>
+                    </optgroup>
+                  </select>
+
+                  <select class="form-control" *ngIf="selectedInterest" name="subject" [(ngModel)]="selectedSubject" data-width="fit">
+                    <optgroup label="subject">
+                      <option disabled selected hidden>subject</option>
+                      <option *ngFor="let subject of selectedInterest.subjects" [ngValue]="subject">{{subject.name}}</option>
+                    </optgroup>
+                  </select>
+                </span>
+
               </div>
 
               <div class="form-group"> <label for="Textarea">Description</label> <textarea class="form-control" id="Textarea" rows="5" placeholder="Enter the detail of your MO-IM" [(ngModel)]="meeting.description" [ngModelOptions]="{standalone: true}" required></textarea> </div>
