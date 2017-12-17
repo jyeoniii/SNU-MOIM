@@ -51,6 +51,10 @@ export class ProfileComponent implements OnInit {
     this.router.navigate(['/user', this.user.id, 'edit']);
   }
 
+  connectToFacebook() {
+    window.location.href = '/oauth/login/facebook/';
+  }
+
   signOut() {
     this.userService.signOut();
     this.router.navigate(['/']);

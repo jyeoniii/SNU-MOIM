@@ -54,11 +54,11 @@
           <!-- Logged in user is on their own profile page -->
           <div *ngIf="status === 0">
             <button class="btn mt-4 btn-block p-2 btn-outline-primary" (click)="editProfile()"><b>EDIT PROFILE</b></button>
-            <a href="/oauth/login/facebook/"> <!-- Show Facebook Connect Button -->
-              <button *ngIf="!loginedUser.fb_connected" class="btn mt-4 btn-block p-2 btn-outline-primary"><b>CONNECT TO   </b>
+            <!-- Show Facebook Connect Button -->
+              <button *ngIf="!loginedUser.fb_connected" class="btn mt-4 btn-block p-2 btn-outline-primary"
+                      (click)="connectToFacebook()"><b>CONNECT TO   </b>
                 <i class="fa d-inline fa-lg fa-facebook-square"></i>
               </button>
-            </a>
           </div>
           <!-- Facebook friend -->
           <div *ngIf="status === 1" class="text-center col-sm-offset-4 col-sm-4 alert alert-info" role="alert">
