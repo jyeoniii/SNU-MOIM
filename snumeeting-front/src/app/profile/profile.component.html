@@ -24,9 +24,9 @@
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false"
             aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
     <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
-      <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/user', loginedUser.id]"><i class="fa d-inline fa-lg fa-address-book-o"></i> Welcome, {{loginedUser.name}}</a>
-      <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/user', loginedUser.id, 'message']"><i class="fa d-inline fa-lg fa-commenting-o"></i> Message</a>
-      <a class="btn navbar-btn ml-2 text-white btn-secondary" (click)="signOut()"><i class="fa d-inline fa-lg fa-user-circle-o"></i> Sign out</a>
+      <a class="btn navbar-btn ml-2 text-white btn-primary" [routerLink]="['/user', loginedUser.id]"><i class="fa d-inline fa-lg fa-address-book-o"></i> Welcome, {{loginedUser.name}}</a>
+      <a class="btn navbar-btn ml-2 text-white btn-primary" [routerLink]="['/user', loginedUser.id, 'message']"><i class="fa d-inline fa-lg fa-commenting-o"></i> Message</a>
+      <a class="btn navbar-btn ml-2 text-white btn-primary" (click)="signOut()"><i class="fa d-inline fa-lg fa-user-circle-o"></i> Sign out</a>
     </div>
   </div>
 </nav>
@@ -36,14 +36,14 @@
       <div class="col-md-3"> </div>
       <div class="col-lg-6 p-3 animate-in-down">
         <form class="p-4 bg-dark-opaque">
-          <h4 class="mb-4 text-center">View user profile</h4>
-          <div class="form-group"> <label>MYSNU ID</label>
-           <p class="form-control-static">{{user.username}}</p> </div>
-          <div class="form-group"> <label>NAME</label>
-            <p class="form-control-static">{{user.name}}</p> </div>
-          <div class="form-group"> <label>COLLEGE</label>
-            <p class="form-control-static">{{user.college.name}}</p> </div>
-          <div class="form-group"> <label>INTEREST</label>
+          <h4 class="mb-4 text-center">VIEW PROFILE</h4>
+          <div class="form-group"> <label class="font-weight-bold">MYSNU ID</label>
+           <p><em class="form-control-static">{{user.username}}</em></p> </div>
+          <div class="form-group"> <label class="font-weight-bold">NAME</label>
+            <p><em class="form-control-static">{{user.name}}</em></p> </div>
+          <div class="form-group"> <label class="font-weight-bold">COLLEGE</label>
+            <p><em class="form-control-static">{{user.college.name}}</em></p> </div>
+          <div class="form-group"> <label class="font-weight-bold">INTEREST</label>
             <div *ngFor="let subject of user.subjects">
               <li class="list-group-item">
                 {{subject.name}}
@@ -53,9 +53,9 @@
 
           <!-- Logged in user is on their own profile page -->
           <div *ngIf="status === 0">
-            <button class="btn mt-4 btn-block p-2 btn-outline-primary" (click)="editProfile()"><b>Edit profile</b></button>
+            <button class="btn mt-4 btn-block p-2 btn-outline-primary" (click)="editProfile()"><b>EDIT PROFILE</b></button>
             <a href="/oauth/login/facebook/"> <!-- Show Facebook Connect Button -->
-              <button *ngIf="!loginedUser.fb_connected" class="btn mt-4 btn-block p-2 btn-outline-primary"><b>Connect to </b>
+              <button *ngIf="!loginedUser.fb_connected" class="btn mt-4 btn-block p-2 btn-outline-primary"><b>CONNECT TO   </b>
                 <i class="fa d-inline fa-lg fa-facebook-square"></i>
               </button>
             </a>
@@ -108,7 +108,7 @@
 </div>
 
 
-<div class="text-white bg-secondary">
+<div class="text-white bg-primary">
   <div class="container">
     <div class="row">
       <div class="p-4 col-md-3">

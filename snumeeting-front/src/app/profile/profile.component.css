@@ -1,11 +1,4 @@
 /*!
-* Elegant Pingendo template (https://templates.pingendo.com)
-* Based on: Bootstrap v4.0.0-beta (https://getbootstrap.com)
-* Copyright 2014-2017 Pingendo (https://pingendo.com)
-*/
-@import url("https://fonts.googleapis.com/css?family=Montserrat:200");
-@import url("https://fonts.googleapis.com/css?family=Cormorant Garamond:300,600");
-/*!
 * Bootstrap 4.0.0-beta (https://getbootstrap.com)
 * Copyright 2011-2017 The Bootstrap Authors
 * Copyright 2011-2017 Twitter, Inc.
@@ -2854,7 +2847,7 @@ button.list-group-item-dark.active {
   display: block;
   max-width: 276px;
   padding: 1px;
-  font-family: Montserrat;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-style: normal;
   font-weight: 300;
   line-height: 1.5;
@@ -3070,7 +3063,7 @@ article, aside, dialog, figcaption, figure, footer, header, hgroup, main, nav, s
 
 body {
   margin: 0;
-  font-family: Montserrat;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 0.8rem;
   font-weight: 300;
   line-height: 1.5;
@@ -3489,7 +3482,7 @@ template {
   z-index: 1070;
   display: block;
   margin: 0;
-  font-family: Montserrat;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-style: normal;
   font-weight: 300;
   line-height: 1.5;
@@ -3589,7 +3582,7 @@ tbody.collapse.show {
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   margin-bottom: 0.75rem;
-  font-family: Cormorant Garamond;
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   font-weight: 500;
   line-height: 1.1;
   color: white; }
