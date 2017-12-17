@@ -24,7 +24,7 @@ import requests
 
 from .tokens import account_activation_token
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message, Tag
-from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage, convert_datetime
+from .convert import *
 
 import json
 import requests
@@ -767,13 +767,11 @@ def getMeetings_FBfriends(request, user_id):
       user = Ex_User.objects.get(id=int(user_id))
       fb_friends = user.fb_friends.all()
 
-      print(fb_friends)
-
       for friend in fb_friends:
         for m in friend.meetings_joined.all():
           if m not in res.keys():
               res[m] = []
-          res[m].append(convert_userinfo_minimal(friend.id))
+          res[m].append(convert_fb_profile(friend))
       
       final = []
       for m_f in res.items():
@@ -785,6 +783,3 @@ def getMeetings_FBfriends(request, user_id):
   else:
     return HttpResponseNotAllowed('[GET]')
 
-
-
-      

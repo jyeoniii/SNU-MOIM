@@ -3,6 +3,9 @@ from django.forms.models import model_to_dict
 from social_django.models import UserSocialAuth
 from django.utils import timezone
 
+import urllib3
+import json
+
 def convert_userinfo_for_front(user_id):
   try:
     user_id = int(user_id)
@@ -37,7 +40,6 @@ def fb_friends_userinfo_for_front(ex_user):
     friend_info['username'] = User.objects.get(id=friend.user_id).username
     fb_friends.append(friend_info)
   return fb_friends
-
 
 
 def convert_userinfo_minimal(user_id):
@@ -83,3 +85,27 @@ def convert_datetime(datetime):
   res['second'] = datetime.second
 
   return res
+
+def convert_fb_profile(ex_user):
+    user_fb = {}
+    social_user = ex_user.user.social_auth.get(provider='facebook')
+    if social_user:
+      url = u'https://graph.facebook.com/{0}?fields=name,picture' \
+            u'&access_token={1}'.format(social_user.uid,social_user.extra_data['access_token'])
+      http = urllib3.PoolManager()
+
+      r = http.request('GET', url)
+      response = json.loads(r.data)
+
+      url = response['picture']['data']['url']
+      name = response['name']
+
+      user_fb['picture_url'] = url
+      user_fb['fb_name'] = name
+      user_fb['id'] = ex_user.id 
+
+    return user_fb 
+    
+
+
+
