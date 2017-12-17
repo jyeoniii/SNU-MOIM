@@ -61,7 +61,7 @@
         <span (click)="showOtherRecommendation(false)" class="glyphicon glyphicon-circle-arrow-left"
               [style.opacity]="idx==0?0.5:1" style="float:left; font-size:35px; color: #336699"></span>
         <span (click)="showOtherRecommendation(true)" class="glyphicon glyphicon-circle-arrow-right"
-              [style.opacity]="idx+N==meetingsRecommended.length?0.5:1" style="float:right; font-size:35px; color: #336699"></span>
+              [style.opacity]="idx+N>=meetingsRecommended.length?0.5:1" style="float:right; font-size:35px; color: #336699"></span>
 
       </div>
       <br><br>
@@ -156,40 +156,37 @@
     </div>
 
   </div>
+
+
 </div>
 
 <br><br>
 
 
-<!-- Team Members Row -->
 <div class="row" *ngIf="meetingsFBfriends && (meetingsFBfriends.length > 0)">
-  <div class="col-lg-12">
-    <h3 class="my-4"> Your Facebook Friends Joined.. </h3>
-  </div>
-  <div class="col-lg-2 col-sm-6 text-center mb-4" *ngFor="let m_f of meetingsFBfriends">
+  <div class="main">
+    <div class="col-md-12">
+      <h3 class="my-4"> Your Facebook Friends Joined.. </h3>
+    </div>
+
+    <div class="col-xs-2 text-center" *ngFor="let m_f of meetingsShownFB">
       <span *ngFor="let friend of m_f.friends" (mouseenter)="changeFBNameShown(friend.fb_name)" data-tooltip-text="abc" [attr.id]="FBname">
         <img [routerLink]="['/user', friend.id]"
              class="rounded-circle img-fluid d-block mx-auto" width="30px" height="30px"
              style="cursor:pointer"
              src="{{friend.picture_url}}" alt="">
       </span>
-      <h5 style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"
-        [routerLink]="['/meeting', m_f.meeting.id]">
+      <h5 style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor:pointer"
+          [routerLink]="['/meeting', m_f.meeting.id]">
         {{m_f.meeting.title}}<br>
         <small>{{m_f.meeting.author.name}}</small>
       </h5>
-      <p style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-        {{m_f.meeting.description}}</p>
+      <label class="label label-default" style="margin-left: 5px; padding-top: 3px; background-color: mediumseagreen" >
+        <i class="glyphicon glyphicon-th-list" style="font-size:10px; margin-right: 3px"></i>{{m_f.meeting.subject.name}}
+      </label>
+    </div>
   </div>
-
-  <div class="col-lg-12">
-    <span (click)="showOtherRecommendation(false)" class="glyphicon glyphicon-circle-arrow-left"
-            [style.opacity]="idx==0?0.5:1" style="float:left; font-size:35px; color: #336699"></span>
-    <span (click)="showOtherRecommendation(true)" class="glyphicon glyphicon-circle-arrow-right"
-          [style.opacity]="idx+N==meetingsRecommended.length?0.5:1" style="float:right; font-size:35px; color: #336699"></span>
-  </div>
-
-
+  <br>
 </div>
 
 

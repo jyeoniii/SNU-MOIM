@@ -96,11 +96,10 @@ export class MeetingDetailComponent implements OnInit {
 
   createComment(content: string): void {
     if (this.newComment !== null) {
-      let comment;
       this.commentService.createComment(this.selectedMeeting.id, this.currentUser, content, !this.isPrivate)
         .then(res => {
-          comment = res;
-          this.comments.push(comment);
+          this.commentService.getCommentsOnMeeting(this.selectedMeeting.id)
+            .then(comments => this.comments = comments)
           this.newComment = null;
           this.isPrivate = false;
         });

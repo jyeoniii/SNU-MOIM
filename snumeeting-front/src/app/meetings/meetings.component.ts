@@ -67,7 +67,10 @@ export class MeetingsComponent implements OnInit {
   private totalItems = -1; // total number of items
   private maxSize = 10; // max page size = meetingsPerPage
 
+  // FB recommendation
   private FBname = null;
+  private FB_N = 6;
+  private meetingsShownFB: MeetingFB[];
 
   ngOnInit() {
     this.sub = this.route
@@ -121,11 +124,11 @@ export class MeetingsComponent implements OnInit {
             this.meetingsRecommended = res;
             this.meetingsShown = this.meetingsRecommended.slice(this.idx, this.idx + this.N);
           });
-        if (this.loginedUser.fb_connected){
+        if (this.loginedUser.fb_connected) {
           this.meetingService.getMeetingsFromFBfriends(this.loginedUser.id)
             .then(meetings => {
               this.meetingsFBfriends = meetings;
-              console.log(this.meetingsFBfriends);
+              this.meetingsShownFB = this.meetingsFBfriends.slice(0, 0 + this.FB_N);
             });
         }
       }
