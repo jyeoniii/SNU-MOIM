@@ -22,6 +22,7 @@ export class MessagesComponent implements OnInit {
 
   private messages: Message[] = [];
   private users: User[] = [];
+  private fbFriends: User[] = [];
   private loginedUser: User;
   private betweenMessages: Message[] = [];
   private selectedUser: User;
@@ -30,7 +31,10 @@ export class MessagesComponent implements OnInit {
 
   ngOnInit() {
     this.getMessages();
-    this.userService.getLoginedUser().then(user => this.loginedUser = user);
+    this.userService.getLoginedUser().then(user => {
+      this.loginedUser = user;
+      this.fbFriends = user.fb_friends;
+    });
     this.userService.getUsers().then(users => this.users = users);
   }
 
@@ -59,8 +63,6 @@ export class MessagesComponent implements OnInit {
   }
 
   onSelect(user: User): void {
-    console.log(this.betweenMessages);
-    console.log(this.messages);
     this.selectedUser = user;
     this.betweenMessages = this.messages.filter(m => 
       (m.sender.id === this.loginedUser.id && m.receiver.id === user.id) ||

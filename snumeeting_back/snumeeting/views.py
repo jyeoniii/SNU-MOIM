@@ -13,6 +13,7 @@ from django.core.mail import EmailMessage
 from django.contrib import messages
 from django.contrib.messages import get_messages
 from social_django.models import UserSocialAuth
+from django.utils import timezone
 
 from snumeeting.recommend.JoinHistoryManager import JoinHistoryManager
 from snumeeting.recommend.computeRecommend import getRecMeetings, getUserSimilarity
@@ -23,7 +24,7 @@ import requests
 
 from .tokens import account_activation_token
 from .models import Ex_User, Meeting, Comment, Subject, College, Interest, Message, Tag
-from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage
+from .convert import convert_userinfo_for_front, convert_userinfo_minimal, convert_meeting_for_mainpage, convert_datetime
 
 import json
 import requests
@@ -279,6 +280,7 @@ def meetingDetail(request, meeting_id):
       subject_id = dict_meeting['subject']
       dict_meeting['subject'] = model_to_dict(Subject.objects.get(id=subject_id))
       dict_meeting['tags'] = list(meeting.tags.all().values())
+      dict_meeting['datetime'] = convert_datetime(meeting.created_at)
     except Meeting.DoesNotExist:
       return HttpResponseNotFound()
     return JsonResponse(dict_meeting)
@@ -341,6 +343,7 @@ def meetingComment(request, meeting_id):
       user = convert_userinfo_for_front(comment['author_id'])
       comment.pop('author_id')
       comment['author'] = user
+      comment['datetime'] = convert_datetime(comment.pop('created_at'))
     return JsonResponse(commentsList, safe=False)
   elif request.method == 'POST':
     des_req = json.loads(request.body.decode())
@@ -552,6 +555,7 @@ def messageList(request):
       message.pop('receiver_id')
       message['sender'] = sender
       message['receiver'] = receiver
+      message['datetime'] = convert_datetime(message.pop('sended_at'))
     return JsonResponse(messagesList, safe=False)
   if request.method == 'POST':
     des_req = json.loads(request.body.decode())
@@ -562,14 +566,14 @@ def messageList(request):
     content = des_req['content']
     new_message = Message(sender=sender, receiver=receiver, content=content)
     new_message.save()
-    now = datetime.datetime.now()
+    now = timezone.now()
 
     sender = convert_userinfo_for_front(new_message.sender_id)
     receiver = convert_userinfo_for_front(new_message.receiver_id)
     message_dict = model_to_dict(new_message)
     message_dict['sender'] = sender
     message_dict['receiver'] = receiver
-    message_dict['sended_at'] = now
+    message_dict['datetime'] = convert_datetime(now)
     return JsonResponse(message_dict, status=201)
   else:
     return HttpResponseNotAllowed(['GET'],['POST'])
@@ -585,6 +589,7 @@ def messageDetail(request, message_id):
       message_dict = model_to_dict(message)
       message_dict['sender'] = sender
       message_dict['receiver'] = receiver
+      message_dict['datetime'] = convert_datetime(message.sended_at)
     except Message.DoesNotExist:
       return HttpResponseNotFound()
     return JsonResponse(message_dict)

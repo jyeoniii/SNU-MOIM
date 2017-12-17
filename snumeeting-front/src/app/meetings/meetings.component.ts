@@ -74,28 +74,28 @@ export class MeetingsComponent implements OnInit {
           case null:
             this.meetingService.getMeetings()
               .then(meetings => {
-                this.allMeetings = meetings;
+                this.allMeetings = meetings.reverse();
                 this.totalItems = this.allMeetings.length;
                 this.pageChanged();
               });
             break;
           case this.searchOptions[0]:   // title
             this.meetingService.searchMeetingsOfTitle(query).then(res => {
-              this.allMeetings = res;
+              this.allMeetings = res.reverse();
               this.totalItems = this.allMeetings.length;
               this.pageChanged();
             });
             break;
           case this.searchOptions[1]:   // author
             this.meetingService.searchMeetingsOfAuthor(query).then(res => {
-              this.allMeetings = res;
+              this.allMeetings = res.reverse();
               this.totalItems = this.allMeetings.length;
               this.pageChanged();
             });
             break;
           case this.searchOptions[2]:   // category
             this.meetingService.searchMeetingsOfSubject(query).then(res => {
-              this.allMeetings = res;
+              this.allMeetings = res.reverse();
               this.totalItems = this.allMeetings.length;
               this.pageChanged();
             });
