@@ -6,6 +6,8 @@ from django.utils import timezone
 import urllib3
 import json
 
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 def convert_userinfo_for_front(user_id):
   try:
     user_id = int(user_id)
@@ -103,6 +105,7 @@ def convert_fb_profile(ex_user):
       user_fb['picture_url'] = url
       user_fb['fb_name'] = name
       user_fb['id'] = ex_user.id 
+      user_fb['name'] = ex_user.name
 
     return user_fb 
     

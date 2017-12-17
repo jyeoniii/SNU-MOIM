@@ -40,6 +40,7 @@ urlpatterns = [
   url(r'^messages$', get_django_messages, name='messages'),
   url(r'^add_message$', add_django_message, name='add_messages'),
   
-  url(r'meeting/fb_friends/(?P<user_id>[0-9]+)$', getMeetings_FBfriends, name='getMeetings_FBfriends')
+  url(r'^meeting/fb_friends/(?P<user_id>[0-9]+)$', getMeetings_FBfriends, name='getMeetings_FBfriends'),
+  url(r'^fb_profile/(?P<user_id>[0-9]+)$', getFBProfile, name='getFBProfile'),
 ]
 

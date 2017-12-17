@@ -759,7 +759,7 @@ def meetingsOnTag(request, tag_name):
   else:
     return HttpResponseNotAllowed(['GET'])
 
-# url: /meeting/fb_friends
+# url: /meeting/fb_friends/:user_id
 def getMeetings_FBfriends(request, user_id):
   if request.method == 'GET':
     res = {}
@@ -782,4 +782,17 @@ def getMeetings_FBfriends(request, user_id):
       return HttpResponseNotFound()
   else:
     return HttpResponseNotAllowed('[GET]')
+
+# url: /fb_profile/:user_id
+def getFBProfile(request, user_id):
+  if request.method == 'GET':
+    try:
+      user = Ex_User.objects.get(id=int(user_id))
+      user_fb = convert_fb_profile(user)
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+    return JsonResponse(user_fb, safe=False)
+  else:
+    return HttpResponseNotAllowed(['GET'])
+
 
