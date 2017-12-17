@@ -8,7 +8,8 @@ import { MeetingService } from '../services/meeting.service';
 import { UserService } from '../services/user.service';
 import { RecommendService } from '../services/recommend.service';
 import { CommentService} from '../services/comment.service';
-import {Datetime} from '../models/datetime';
+import { Datetime} from '../models/datetime';
+import { MessageService } from '../services/message.service';
 
 @Component({
   selector: 'app-meeting-detail',
@@ -25,7 +26,8 @@ export class MeetingDetailComponent implements OnInit {
     private userService: UserService,
     private recommendService: RecommendService,
     private meetingService: MeetingService,
-    private commentService: CommentService
+    private commentService: CommentService,
+    private messageService: MessageService
   ) { }
 
   private selectedMeeting: Meeting;
@@ -79,7 +81,7 @@ export class MeetingDetailComponent implements OnInit {
         });
       this.commentService.getCommentsOnMeeting(+params['id'])
         .then(comments => {
-          this.comments = comments;
+          this.comments = comments.reverse();
         });
     });
   }
@@ -94,16 +96,17 @@ export class MeetingDetailComponent implements OnInit {
   }
 
   delete(): void {
-    this.meetingService.deleteMeeting(this.selectedMeeting.id);
-    this.router.navigate(['/meeting']);
+    if (confirm('Are you sure to delete this meeting?')) {
+      this.meetingService.deleteMeeting(this.selectedMeeting.id)
+      this.router.navigate(['/meeting']);
+    }
   }
 
   createComment(content: string): void {
     if (this.newComment !== null) {
       this.commentService.createComment(this.selectedMeeting.id, this.currentUser, content, !this.isPrivate)
         .then(res => {
-          this.commentService.getCommentsOnMeeting(this.selectedMeeting.id)
-            .then(comments => this.comments = comments)
+          this.comments.unshift(res);
           this.newComment = null;
           this.isPrivate = false;
         });
@@ -128,9 +131,11 @@ export class MeetingDetailComponent implements OnInit {
   }
 
   deleteComment(comment: Comment): void {
-    console.log(comment);
-    this.commentService.deleteComment(comment.id);
-    this.comments.splice(this.comments.indexOf(comment), 1);
+    if (confirm('Are you sure to delete this comment?')){
+      console.log(comment);
+      this.commentService.deleteComment(comment.id);
+      this.comments.splice(this.comments.indexOf(comment), 1);
+    }
   }
 
   isOwner(): boolean {
@@ -160,11 +165,13 @@ export class MeetingDetailComponent implements OnInit {
       alert('This meeting is already full! :(');
       return;
     }
-    this.meetingService.joinMeeting(this.selectedMeeting.id, this.currentUser.id);
-    this.selectedMeeting.members.push(this.currentUser);
-    this.emptySeats = new Array(this.selectedMeeting.max_member - this.selectedMeeting.members.length);
-    this.alreadyJoined = true;
-    alert('Welcome!');
+    if (confirm('Will you be with us?')) {
+      this.meetingService.joinMeeting(this.selectedMeeting.id, this.currentUser.id);
+      this.selectedMeeting.members.push(this.currentUser);
+      this.emptySeats = new Array(this.selectedMeeting.max_member - this.selectedMeeting.members.length);
+      this.alreadyJoined = true;
+      alert('Welcome!');
+    }
   }
 
   leaveMeeting(): void {
@@ -207,8 +214,16 @@ export class MeetingDetailComponent implements OnInit {
   }
 
   sendInvitation(): void {
-    // TODO: send message
     if (confirm('Are you sure to send invitations to these users?')) {
+      const content: string = `Invitation message from ${this.currentUser.name}(${this.currentUser.username})!\n` +
+                       `Do you want to join this meeting?\n\n` +
+                       `No. ${this.selectedMeeting.id}\n` +
+                       `Title: ${this.selectedMeeting.title}\n` +
+                       `Subject: ${this.selectedMeeting.subject.name}\n\n` +
+                       `You are always welcome! Looking forward to be with you :)`;
+      for (const user of this.invitationList){
+        this.messageService.sendMessage(this.currentUser.id, user.id, content);
+      }
       alert('Invitation message has been sent to selected users!');
       this.invitationList = [];
     }

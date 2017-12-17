@@ -88,7 +88,7 @@
         <div *ngIf="m.receiver.id==loginedUser.id" style="margin-bottom:10px; min-height:100px">
           <div style="float:left; width:100px; min-height:100px; background:#bbb; text-align:center; border-radius:20px">{{getUser(m.sender.id).name}}</div>
           <div style="margin-left:100px; text-align:left; word-break:break-all">
-            <div style="border: 3px solid steelblue; border-radius:10px">{{m.content}}</div>
+            <div style="white-space: pre-line; border: 3px solid steelblue; border-radius:10px">{{m.content}}</div>
             <sub>{{m.datetime.year}}-{{m.datetime.month}}-{{m.datetime.day}}
             {{m.datetime.hour}}:{{m.datetime.minute}}
             <span *ngIf="m.datetime.afternoon;else AM">PM</span>
@@ -99,7 +99,7 @@
         <div *ngIf="m.sender.id===loginedUser.id" style="margin-bottom:10px; min-height:100px">
           <div style="float:right; width:100px; min-height:100px; background:#bbb; text-align:center; border-radius:20px">{{getUser(m.sender.id).name}}</div>
           <div style="margin-right:100px; text-align:right; word-break:break-all">
-            <div style="border: 3px solid khaki; border-radius:10px">{{m.content}}</div>
+            <div style="white-space: pre-line; border: 3px solid khaki; border-radius:10px">{{m.content}}</div>
             <sub>{{m.datetime.year}}-{{m.datetime.month}}-{{m.datetime.day}}
             {{m.datetime.hour}}:{{m.datetime.minute}}
             <span *ngIf="m.datetime.afternoon;else AM">PM</span>
