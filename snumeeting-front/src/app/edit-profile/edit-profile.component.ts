@@ -99,11 +99,10 @@ export class EditProfileComponent implements OnInit {
         }
       }
 
-      this.user.password = password;
       this.user.name = name;
       this.user.subjects = selectedSubjects;
 
-      this.userService.editUserInfo(this.user).then(() => {
+      this.userService.editUserInfo(this.user, password).then(() => {
         alert('Edit Profile Success!')
         this.router.navigate(['/user', this.user.id]);
       });

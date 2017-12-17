@@ -84,12 +84,11 @@ export class SignUpComponent implements OnInit {
 
       var newUser = new User();
       newUser.username = username;
-      newUser.password = password;
       newUser.name = name;
       newUser.college = this.selectedCollege;
       newUser.subjects = selectedSubjects;
 
-      this.userService.signUp(newUser).then(() => {
+      this.userService.signUp(newUser, password).then(() => {
         alert('Authentication mail was sent! Please check your mailbox.')
         this.router.navigate(['/sign_in']);
       });

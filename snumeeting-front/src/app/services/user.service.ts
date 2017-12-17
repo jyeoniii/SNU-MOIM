@@ -42,7 +42,7 @@ export class UserService {
       .catch(this.handleError);
   }
 
-  signUp(user: User): Promise<void> {
+  signUp(user: User, password: string): Promise<void> {
     const subjectIDList: number[] = [];
     for (const subject of user.subjects) {
       subjectIDList.push(subject.id);
@@ -51,7 +51,7 @@ export class UserService {
     return this.http.post('/api/signup', JSON.stringify({
         username: user.username,
         name: user.name,
-        password: user.password,
+        password: password,
         college_id: user.college.id,
         subject_ids: subjectIDList
       }),
@@ -83,7 +83,7 @@ export class UserService {
       .catch(this.handleError);
   }
 
-  editUserInfo(user: User): Promise<void> {
+  editUserInfo(user: User, password: string): Promise<void> {
     const subjectIDList: number[] = [];
     for (const subject of user.subjects) {
       subjectIDList.push(subject.id);
@@ -91,7 +91,7 @@ export class UserService {
 
     return this.http.put(`${this.userUrl}/${user.id}`,
       JSON.stringify({
-        password: user.password,
+        password: password,
         name: user.name,
         college_id: user.college.id,
         subject_ids: subjectIDList

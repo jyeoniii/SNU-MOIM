@@ -4,7 +4,6 @@ import { College } from './college';
 export class User {
   id: number;
   username: string;
-  password: string;
   name: string;
   college: College;
   subjects: Subject[];
