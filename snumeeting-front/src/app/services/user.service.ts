@@ -4,6 +4,7 @@ import { Http } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
 import { User } from '../models/user';
+import { UserFB } from '../models/userFB';
 
 import { headerWithCSRF } from './header';
 
@@ -110,6 +111,14 @@ export class UserService {
     return this.http.request('/api/loginedUser')
       .toPromise()
       .then(response => response.json() as User)
+      .catch(this.handleError);
+  }
+
+  getFBProfile(user_id: number): Promise<UserFB> {
+    const url = `/api/fb_profile/${user_id}`;
+    return this.http.get(url)
+      .toPromise()
+      .then(response => response.json() as UserFB)
       .catch(this.handleError);
   }
 

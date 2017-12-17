@@ -1,14 +1,17 @@
 import { NgModule, Component, OnInit, OnDestroy, Input } from '@angular/core';
-import { MeetingService } from '../services/meeting.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { RecommendService } from '../services/recommend.service';
+
+import { NgxPaginationModule } from 'ngx-pagination';
 import { Meeting } from '../models/meeting';
-import { UserService } from '../services/user.service';
 import { User } from '../models/user';
 import { Interest } from '../models/interest';
 import { Subject } from '../models/subject';
+import { MeetingFB } from '../models/meetingFB';
+
+import { UserService } from '../services/user.service';
+import { MeetingService } from '../services/meeting.service';
 import { MetaDataService } from '../services/meta-data-service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { RecommendService } from '../services/recommend.service';
-import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-meetings',
@@ -41,6 +44,8 @@ export class MeetingsComponent implements OnInit {
   private allMeetings: Meeting[];
   private allMeetingsWithoutFiltering: Meeting[] = null;
 
+  private meetingsFBfriends: MeetingFB[];
+
   // Recommendation
   private meetingsRecommended: Meeting[] = null;
   private meetingsShown: Meeting[] = null;
@@ -61,6 +66,11 @@ export class MeetingsComponent implements OnInit {
   private currentPage = 1;
   private totalItems = -1; // total number of items
   private maxSize = 10; // max page size = meetingsPerPage
+
+  // FB recommendation
+  private FBname = null;
+  private FB_N = 6;
+  private meetingsShownFB: MeetingFB[];
 
   ngOnInit() {
     this.sub = this.route
@@ -116,6 +126,14 @@ export class MeetingsComponent implements OnInit {
           });
       } else {
         this.router.navigate(['/signin_first']);
+      }
+       
+      if (this.loginedUser.fb_connected) {
+        this.meetingService.getMeetingsFromFBfriends(this.loginedUser.id)
+          .then(meetings => {
+            this.meetingsFBfriends = meetings;
+            this.meetingsShownFB = this.meetingsFBfriends.slice(0, 0 + this.FB_N);
+        });
       }
     });
   }
@@ -188,6 +206,11 @@ export class MeetingsComponent implements OnInit {
       if (this.idx !== 0) this.idx -= 1;
     }
     this.meetingsShown = this.meetingsRecommended.slice(this.idx, this.idx + this.N);
+  }
+
+  changeFBNameShown(name: string) {
+    console.log(this.FBname);
+    this.FBname = name;
   }
 
 }

@@ -47,7 +47,7 @@
         <span style="float:right">
           <span style="font-size: 15px">Participants</span>
           <i *ngFor="let m of selectedMeeting.members" class="fa fa-user" style="font-size:35px; color: #336699; cursor: pointer"
-             (mouseenter)="memberName = m.name" data-tooltip-text="abc" [attr.id]="memberName" [routerLink]="['/user', m.id]"></i>
+             (mouseenter)="changeMemberNameShown(m.name)" data-tooltip-text="" [attr.id]="memberName" [routerLink]="['/user', m.id]"></i>
           <i *ngFor="let m of emptySeats" class="fa fa-user" style="font-size:35px; color: darkgray "></i><br>
         </span>
       </p>
@@ -110,7 +110,8 @@
       <!-- the comments -->
       <li *ngFor="let comment of comments">
         <!--Author of the comment-->
-        <h5 style="cursor:pointer" [routerLink]="['/user', comment.author.id]"><i class="fa fa-comment"></i> {{ comment.author.name }}
+        <h5><i class="fa fa-comment"></i>
+          <span style="cursor:pointer" [routerLink]="['/user', comment.author.id]">{{ comment.author.name }}</span>
           <small>
             {{padLeft(comment.datetime.hour, '0',2)}}:{{padLeft(comment.datetime.minute, '0',2)}}
             <span *ngIf="datetime.afternoon;else AM">PM</span>

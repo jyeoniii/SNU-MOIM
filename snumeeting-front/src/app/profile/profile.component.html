@@ -20,7 +20,7 @@
 <body>
 <nav class="navbar navbar-expand-md bg-primary navbar-dark">
   <div class="container" *ngIf="loginedUser">
-    <a class="navbar-brand" [routerLink]="['/meeting']"><i class="fa d-inline fa-lg fa-users"></i><b>SNU MO-IM</b></a>
+    <a class="navbar-brand" [routerLink]="['/meeting']"><i class="fa d-inline fa-lg fa-users"></i> <b>SNU MO-IM</b></a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false"
             aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
     <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
@@ -50,48 +50,82 @@
               </li>
             </div>
           </div>
+          <br>
 
           <!-- Logged in user is on their own profile page -->
           <div *ngIf="status === 0">
-            <button class="btn mt-4 btn-block p-2 btn-outline-primary" (click)="editProfile()"><b>EDIT PROFILE</b></button>
             <!-- Show Facebook Connect Button -->
-              <button *ngIf="!loginedUser.fb_connected" class="btn mt-4 btn-block p-2 btn-outline-primary"
-                      (click)="connectToFacebook()"><b>CONNECT TO   </b>
+            <span *ngIf="!loginedUser.fb_connected; else show_profile">
+              <button class="btn mt-4 btn-block p-2 btn-outline-primary"
+                                   (click)="connectToFacebook()"><b>CONNECT TO   </b>
                 <i class="fa d-inline fa-lg fa-facebook-square"></i>
               </button>
+            </span>
+            <ng-template #show_profile>
+              <div class="form-group" *ngIf="FBprofile">
+                <em class="form-control-static">
+                  <img class="rounded-circle img-fluid d-block mx-auto" src="{{FBprofile.picture_url}}">
+                  <p class="text-center" style="font-style: normal">
+                    <label class="font-weight-bold">
+                      {{FBprofile.fb_name}}
+                    </label>
+                  </p>
+                </em>
+              </div>
+            </ng-template>
+            <button class="btn mt-4 btn-block p-2 btn-outline-primary" (click)="editProfile()"><b>EDIT PROFILE</b></button>
           </div>
           <!-- Facebook friend -->
-          <div *ngIf="status === 1" class="text-center col-sm-offset-4 col-sm-4 alert alert-info" role="alert">
-            You're a friend with this user!
+          <div class="form-group" *ngIf="(status === 1) && FBprofile">
+            <em class="form-control-static">
+              <img class="rounded-circle img-fluid d-block mx-auto" src="{{FBprofile.picture_url}}">
+              <p class="text-center" style="font-style: normal">
+                <label class="font-weight-bold">
+                  {{FBprofile.fb_name}}
+                </label>
+              </p>
+            </em>
+          </div>
+          <div *ngIf="status === 1" class="text-center col-sm-offset-4 col-sm-12 alert alert-info" role="alert">
+            You're a Facebook friend with this user!
           </div>
 
           <!-- Show mutual friends -->
           <div *ngIf="status === 2">
             <div *ngIf="mutualFriends.length === 0"
-                 class="text-center col-sm-offset-4 col-sm-4 alert alert-warning" role="alert">
+                 class="text-center col-sm-offset-4 col-sm-12 alert alert-warning" role="alert">
               There's no mutual friends between you and this user.
             </div>
-            <div *ngIf="mutualFriends.length > 0" class="col-sm-offset-4 col-sm-4">
+            <div *ngIf="mutualFriends.length > 0" class="col-sm-offset-4 col-sm-12">
               <li class="list-group-item list-group-item-success" style="text-align: center;">
                 <b>Mutual friends between you and this user</b>
               </li>
               <div *ngFor="let friend of mutualFriends">
                 <li class="list-group-item" style="text-align: center;">
-                  {{friend.name}} (username: {{friend.username}})
+                  <br>
+                  <a [routerLink]="['/user', friend.id]">
+                    <img class="rounded-circle img-fluid d-block mx-auto" src="{{friend.picture_url}}">
+                  </a>
+                  <p class="text-center" style="font-style: normal">
+                    <label class="font-weight-bold">
+                      {{friend.fb_name}}<br>
+                      <small>{{friend.name}}</small>
+                    </label>
+                  </p>
                 </li>
               </div>
             </div>
           </div>
 
           <!-- This user is not connected to Facebook -->
-          <div *ngIf="status === 3" class="text-center col-sm-offset-4 col-sm-4 alert alert-danger" role="alert">
+          <div *ngIf="status === 3" class="text-center col-sm-offset-4 col-sm-12 alert alert-danger" role="alert">
             You're not connected to Facebook.<br>
             <a href="/oauth/login/facebook/" class="alert-link">Connect to Facebook now</a> to see  the mutual friends<br>
             between you and this user!
           </div>
 
           <!-- The user on profile page is not connected to Facebook -->
-          <div *ngIf="status === 4" class="text-center col-sm-offset-4 col-sm-4 alert alert-danger" role="alert">
+          <div *ngIf="status === 4" class="text-center col-sm-offset-4 col-sm-12 alert alert-danger" role="alert">
             Can't get mutual friends because this user is not connected to Facebook.
           </div>
 
@@ -102,9 +136,22 @@
           <button type="submit" class="btn mt-4 btn-block p-2 btn-outline-primary" (click)="goBack()">Back</button>
 
         </form>
+        <br>
+        <form class="p-4 bg-dark-opaque">
+          <div class="form-group"> <label class="font-weight-bold">MEETINGS JOINED</label>
+            <p *ngFor="let meeting of joinedMeetings"><em class="form-control-static">
+              <i class="fa fa-check" aria-hidden="true"></i> <a href="/meeting/{{meeting.id}}">{{ meeting.title }}</a>
+              <span style="margin-left:10px"> - </span>
+              <small style="margin-left: 5px; padding-top: 3px; color: lemonchiffon; font-style: normal; font-weight: bold" >
+                {{meeting.subject.name}}
+              </small>
+            </em></p>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+
 </div>
 
 

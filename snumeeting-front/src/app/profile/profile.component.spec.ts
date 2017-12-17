@@ -9,6 +9,7 @@ import { ProfileComponent } from './profile.component';
 
 import { User } from '../models/user';
 import { UserService } from '../services/user.service';
+import { MeetingService } from '../services/meeting.service';
 import { makeUserData } from '../models/mock-data';
 
 describe('ProfileComponent', () => {
@@ -28,6 +29,7 @@ describe('ProfileComponent', () => {
       ],
       providers: [
         UserService,
+        MeetingService,
         {
           provide: XHRBackend,
           useClass: MockBackend
