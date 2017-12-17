@@ -215,4 +215,8 @@ export class MeetingDetailComponent implements OnInit {
     return (String(padChar).repeat(size) + String(n)).substr( (size * -1), size) ;
   }
 
+  changeMemberNameShown(name: string) {
+    this.memberName = name;
+  }
+
 }

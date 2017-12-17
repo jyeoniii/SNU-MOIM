@@ -47,7 +47,7 @@
         <span style="float:right">
           <span style="font-size: 15px">Participants</span>
           <i *ngFor="let m of selectedMeeting.members" class="fa fa-user" style="font-size:35px; color: #336699; cursor: pointer"
-             (mouseenter)="memberName = m.name" data-tooltip-text="abc" [attr.id]="memberName" [routerLink]="['/user', m.id]"></i>
+             (mouseenter)="changeMemberNameShown(m.name)" data-tooltip-text="" [attr.id]="memberName" [routerLink]="['/user', m.id]"></i>
           <i *ngFor="let m of emptySeats" class="fa fa-user" style="font-size:35px; color: darkgray "></i><br>
         </span>
       </p>
