@@ -163,7 +163,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
 </head>
 
-<body>
+<body style="font-family: Helvetica Neue">
 <nav class="navbar navbar-expand-md bg-primary navbar-dark">
   <div class="container" *ngIf="currentUser">
     <a class="navbar-brand" [routerLink]="['/meeting']"><i class="fa d-inline fa-lg fa-users"></i> <b>SNU MO-IM</b></a>
@@ -186,11 +186,11 @@
       <div class="col-md-6" id="book">
         <div class="card">
           <div class="card-body p-5">
-            <h3 class="pb-3">Create a MO-IM</h3>
+            <h3 class="pb-3" style="font-family: Helvetica Neue; font-weight: bold">Create a MO-IM</h3>
             <form data-toggle="validator" role="form">
-              <div class="form-group"> <label>Title</label>
+              <div class="form-group" style="font-weight: bold"> <label>Title</label>
                 <input class="form-control" placeholder="Enter the title of your MO-IM" [(ngModel)]="meeting.title" placeholder="Enter title" [ngModelOptions]="{standalone: true}" required> </div>
-              <div class="form-group"> <label>Interest</label><br>
+              <div class="form-group" style="font-weight: bold"> <label>Interest</label><br>
 
                 <span>
                   <select class="form-control" name="interest" [(ngModel)]="selectedInterest" data-width="fit">
@@ -210,12 +210,12 @@
 
               </div>
 
-              <div class="form-group"> <label for="Textarea">Description</label> <textarea class="form-control" id="Textarea" rows="5" placeholder="Enter the detail of your MO-IM" [(ngModel)]="meeting.description" [ngModelOptions]="{standalone: true}" required></textarea> </div>
-              <div class="form-group"> <label>Location</label>
+              <div class="form-group" style="font-weight: bold"> <label for="Textarea" >Description</label> <textarea class="form-control" id="Textarea" rows="5" placeholder="Enter the detail of your MO-IM" [(ngModel)]="meeting.description" [ngModelOptions]="{standalone: true}" required></textarea> </div>
+              <div class="form-group" style="font-weight: bold"> <label>Location</label>
                 <input class="form-control" placeholder="Enter the place to meet" [(ngModel)]="meeting.location" [ngModelOptions]="{standalone: true}" required> </div>
-              <div class="form-group"> <label>People</label>
+              <div class="form-group" style="font-weight: bold"> <label>People</label>
                 <input class="form-control" placeholder="1" type="number" min="1" max="50" [(ngModel)]="meeting.max_member" [ngModelOptions]="{standalone: true}" required> </div>
-              <div class="form-group"> <label>Tag</label>
+              <div class="form-group" style="font-weight: bold"> <label>Tag</label>
                 <tag-input class="form-control" [(ngModel)]="tagInputs" [ngModelOptions]="{standalone: true}" [maxItems]='8'
                            [onlyFromAutocomplete]="false" theme='bootstrap'>
                   <tag-input-dropdown [autocompleteItems]="allTags">

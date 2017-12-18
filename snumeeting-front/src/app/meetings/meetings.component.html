@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
 </head>
 
-<body>
+<body style="font-family: Helvetica Neue">
 <nav class="navbar navbar-expand-md bg-primary navbar-dark">
   <div class="container" *ngIf="loginedUser">
     <a class="navbar-brand" [routerLink]="['/meeting']"><i class="fa d-inline fa-lg fa-users"></i><b>SNU MO-IM</b></a>
@@ -25,12 +25,13 @@
     <div class="row">
       <div class="col-md-12 text-white">
         <h1 class="display-3 mb-4">SNU MO-IM</h1>
-        <p class="lead mb-5">Where everyone can meet and enjoy activities! &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+        <p class="lead mb-5">Where everyone can meet and enjoy activities!</p>
         <button (click)="goToCreatePage()" class="btn btn-lg mx-1 btn-secondary">Create</button>
       </div>
     </div>
   </div>
 </div>
+
 <div class="py-5 bg-light">
   <div class="container" *ngIf="meetingsShown">
     <div class="row animate-in-down">
@@ -40,9 +41,12 @@
           <div class="col-md-4 p-3" *ngFor="let meeting of meetingsShown">
             <img class="img-fluid d-block w-100 mb-3" src="https://thenextweb.com/wp-content/blogs.dir/1/files/2015/04/meeting.jpg">
             <p class="lead text-muted mb-1">{{ meeting.author.name }}</p>
-            <h5 class="text-dark"><b>{{ meeting.title }}</b></h5>
-            <p class="mb-3">{{ meeting.subject.name }}</p>
-            <a [routerLink]="['/meeting', meeting.id]" class="btn btn-outline-secondary"><b class="">Detail</b></a>
+            <h5 class="text-dark" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><b>{{ meeting.title }}</b></h5>
+            <label class="label" style="background-color: #00d5d9; color:white; float:right; font-size: 15px;" >
+              {{meeting.subject.name}}
+            </label><br>
+            <a [routerLink]="['/meeting', meeting.id]"
+               class="btn btn-outline-secondary btn-block" style="margin-top: 10px"><b class="">Detail</b></a>
           </div>
         </div>
       </div>
@@ -50,7 +54,7 @@
     <i class="fa fa-chevron-circle-left" aria-hidden="true" (click)="showOtherRecommendation(false)"
        [style.opacity]="idx==0?0.5:1" style="float:left; font-size:35px; color: #695F5C"></i>
     <i class="fa fa-chevron-circle-right" aria-hidden="true" (click)="showOtherRecommendation(true)"
-       [style.opacity]="idx==0?0.5:1" style="float:right; font-size:35px; color: #695F5C"></i>
+       [style.opacity]="idx+N>=meetingsRecommended.length?0.5:1" style="float:right; font-size:35px; color: #695F5C"></i>
   </div>
 </div>
 <div class="py-5 text-center" style="background-image: url(&quot;&quot;);">
@@ -58,8 +62,11 @@
     <div class="row">
       <div class="col-md-12">
         <div class="col-md-12 p-3">
-          <table class="table table-hover table-striped table-bordered">
-            <thead class="thead-inverse">
+          <span style="float:right">
+            <input type="checkbox" class="checkbox-inline" [checked]="availableOnly" (click)="available()"> Available meetings only<br>
+          </span>
+          <table class="table table-hover">
+            <thead>
             <tr>
               <th scope="col">NO</th>
               <th scope="col">TITLE</th>
@@ -91,11 +98,11 @@
                 </ng-template><!--End Join / Leave -->
               </td>
               <td>
-                <span>
-                {{ meeting.datetime.year }}-{{meeting.datetime.month}}-{{meeting.datetime.day}} -
-                {{ meeting.datetime.hour}}:{{meeting.datetime.minute}}
-                <span *ngIf="meeting.datetime.afternoon;else AM">PM</span><ng-template #AM>AM</ng-template>
-              </span>
+                <span style="font-size: 12px; color: #7f7f7f">
+                  {{ meeting.datetime.year }}-{{meeting.datetime.month}}-{{meeting.datetime.day}} -
+                  {{padLeft(meeting.datetime.hour, '0',2)}}:{{padLeft(meeting.datetime.minute, '0', 2)}}
+                  <span *ngIf="meeting.datetime.afternoon;else AM">PM</span><ng-template #AM>AM</ng-template>
+                </span>
               </td>
             </tr>
 
@@ -112,9 +119,9 @@
     <div class="container">
       <div class="row">
         <!--FB Friends' MOIM-->
-        <h3 class="col-md-12 text-center text-black" style="font-weight: bold;color: #695F5C; margin-bottom: 20px">
+        <h4 class="col-md-12 text-center text-black" style="font-weight: bold;color: #695F5C; margin-bottom: 20px; font-family: Helvetica Neue">
           Your Facebook Friends Joined..
-        </h3><br><br>
+        </h4><br><br>
         <div class="col-md-2 text-center" *ngFor="let m_f of meetingsShownFB">
           <span *ngFor="let friend of m_f.friends" (mouseenter)="changeFBNameShown(friend.fb_name)" data-tooltip-text="abc" [attr.id]="FBname">
             <img [routerLink]="['/user', friend.id]"
@@ -122,10 +129,10 @@
                  style="cursor:pointer"
                  src="{{friend.picture_url}}" alt="">
           </span>
-          <h5 style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor:pointer;"
+          <h6 style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor:pointer;"
               [routerLink]="['/meeting', m_f.meeting.id]">{{m_f.meeting.title}}<br>
             <small style="color: #7f7f7f">{{m_f.meeting.author.name}}</small>
-          </h5>
+          </h6>
           <label class="label" style="margin-left: 5px; padding-top: 3px; background-color: mediumseagreen; color: white" >
             <i class="fa fa-list-ul" aria-hidden="true"style="font-size:10px; margin-right: 3px"></i>{{m_f.meeting.subject.name}}
           </label>
@@ -168,7 +175,7 @@
             </span>
               <input class="form-control" [(ngModel)]="query" [ngModelOptions]="{standalone: true}" style="display:inline;width:200px;"
                      placeholder="query" id="query">
-              <button class="btn" style="display: inline; width:80px" (click)="search()">search</button>
+              <button class="btn" style="display: inline; width:80px; cursor: pointer" (click)="search()">search</button>
             </div>
 
         </form>

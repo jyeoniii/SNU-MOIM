@@ -91,7 +91,16 @@
           </div>
 
           <!-- Show mutual friends -->
-          <div *ngIf="status === 2">
+          <div *ngIf="(status === 2) && FBprofile">
+            <em class="form-control-static">
+              <img class="rounded-circle img-fluid d-block mx-auto" src="{{FBprofile.picture_url}}">
+              <p class="text-center" style="font-style: normal">
+                <label class="font-weight-bold">
+                  {{FBprofile.fb_name}}
+                </label>
+              </p>
+            </em>
+
             <div *ngIf="mutualFriends.length === 0"
                  class="text-center col-sm-offset-4 col-sm-12 alert alert-warning" role="alert">
               There's no mutual friends between you and this user.
@@ -118,10 +127,22 @@
           </div>
 
           <!-- This user is not connected to Facebook -->
-          <div *ngIf="status === 3" class="text-center col-sm-offset-4 col-sm-12 alert alert-danger" role="alert">
-            You're not connected to Facebook.<br>
-            <a href="/oauth/login/facebook/" class="alert-link">Connect to Facebook now</a> to see  the mutual friends<br>
-            between you and this user!
+          <div *ngIf="status === 3">
+            <div *ngIf="FBprofile">
+              <em class="form-control-static">
+                <img class="rounded-circle img-fluid d-block mx-auto" src="{{FBprofile.picture_url}}">
+                <p class="text-center" style="font-style: normal">
+                  <label class="font-weight-bold">
+                    {{FBprofile.fb_name}}
+                  </label>
+                </p>
+              </em>
+            </div>
+            <div class="text-center col-sm-offset-4 col-sm-12 alert alert-danger" role="alert">
+              You're not connected to Facebook.<br>
+              <a href="/oauth/login/facebook/" class="alert-link">Connect to Facebook now</a> to see  the mutual friends<br>
+              between you and this user!
+            </div>
           </div>
 
           <!-- The user on profile page is not connected to Facebook -->

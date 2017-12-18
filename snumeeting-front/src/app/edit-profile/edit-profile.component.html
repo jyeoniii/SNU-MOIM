@@ -79,7 +79,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
 </head>
 
-<body>
+<body style="font-family: Helvetica Neue">
 <nav class="navbar navbar-expand-md bg-primary navbar-dark">
   <div class="container" *ngIf="loginedUser">
     <a class="navbar-brand" [routerLink]="['/meeting']"><i class="fa d-inline fa-lg fa-users"></i><b>SNU MO-IM</b></a>
@@ -124,11 +124,11 @@
               <div class="form-group"> <label>Interest</label>
                 <div class="checkbox checkbox-inline">
                   <div *ngFor="let interest of interests">
-                    <input type="checkbox" class="checkbox-inline" [checked]="interestChecked[interest.id]" (click)="interestCheck(interest.id)">{{interest.name}}
+                    <input type="checkbox" class="checkbox-inline" [checked]="interestChecked[interest.id]" (click)="interestCheck(interest.id)"> {{interest.name}}
                     <div *ngFor="let subject of interest.subjects">
                       <div class="col-sm-offset-1" *ngIf="interestChecked[interest.id]">
-                        <input type="checkbox" [checked]="subjectChecked[subject.name]" class="checkbox-inline"
-                               (click)="subjectCheck(subject.name)">{{subject.name}}
+                        <input type="checkbox" [checked]="subjectChecked[subject.name]" style="margin-left: 20px" class="checkbox-inline"
+                               (click)="subjectCheck(subject.name)"> {{subject.name}}
                       </div>
                     </div>
                   </div>

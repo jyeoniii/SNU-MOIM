@@ -55,7 +55,7 @@ export class MeetingsComponent implements OnInit {
 
   // Searching
   readonly OPTION_DEFAULT = 'options';
-  private searchOptions = ['title', 'author', 'tag', 'category']
+  private searchOptions = ['title', 'author', 'category', 'tag']
   private selectedOption = this.OPTION_DEFAULT;
   private query = '';
   private interestList: Interest[];
@@ -173,7 +173,7 @@ export class MeetingsComponent implements OnInit {
         searchQuery = `${searchQuery}_${this.query}`;
       }
     }
-    if (this.selectedOption === 'tag'){ // tag
+    if (this.selectedOption === 'tag') { // tag
       this.router.navigate(['/meeting/tag'], { queryParams: { tag: searchQuery }});
       return;
     }
@@ -212,6 +212,10 @@ export class MeetingsComponent implements OnInit {
   changeFBNameShown(name: string) {
     console.log(this.FBname);
     this.FBname = name;
+  }
+
+  padLeft(n: number, padChar: string, size: number): string {
+    return (String(padChar).repeat(size) + String(n)).substr( (size * -1), size) ;
   }
 
 }

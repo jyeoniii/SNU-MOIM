@@ -93,7 +93,7 @@ export class ProfileComponent implements OnInit {
 
   setStatus(): void {
     if (this.loginedUser && this.user) {
-      if (this.loginedUser.id === this.user.id) {
+      if (this.loginedUser.id === this.user.id) {   // Self
         this.status = Status.Self;
         if (this.loginedUser.fb_connected) {
           this.userService.getFBProfile(this.loginedUser.id)
@@ -104,17 +104,23 @@ export class ProfileComponent implements OnInit {
       } else {
         if (!this.loginedUser.fb_connected) {
           this.status = Status.LoginUserNoFB;
+          if (this.user.fb_connected) {
+            this.userService.getFBProfile(this.user.id)
+              .then(profile => {
+                this.FBprofile = profile;
+              });
+          }
         } else if (!this.user.fb_connected) {
           this.status = Status.ProfileUserNoFB;
         } else {
+          this.userService.getFBProfile(this.user.id)
+            .then(profile => {
+              this.FBprofile = profile;
+            });
           this.status = Status.ShowMutual;
           for (const friend of this.loginedUser.fb_friends) {
             if (friend.id === this.user.id) {
               this.status = Status.Friend;
-              this.userService.getFBProfile(this.user.id)
-                .then(profile => {
-                  this.FBprofile = profile;
-                });
               break;
             }
           }

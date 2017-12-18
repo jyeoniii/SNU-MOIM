@@ -11,7 +11,7 @@
 
 <nav class="navbar navbar-expand-md bg-primary navbar-dark">
   <div class="container">
-    <a class="navbar-brand" [routerLink]="['/sign_in']"><i class="fa d-inline fa-lg fa-users"></i><b>SNU MO-IM</b></a>
+    <a class="navbar-brand" [routerLink]="['/sign_in']"><i class="fa d-inline fa-lg fa-users"></i><b> SNU MO-IM</b></a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false"
             aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
   </div>
@@ -45,10 +45,10 @@
           <div class="form-group"> <label class="font-weight-bold">INTEREST</label>
             <div class="checkbox checkbox-inline font-weight-bold">
               <div *ngFor="let interest of interests">
-                <input type="checkbox" class="checkbox-inline" (click)="interestCheck(interest.name)">{{interest.name}}
+                <input type="checkbox" class="checkbox-inline" (click)="interestCheck(interest.name)"> {{interest.name}}
                 <div *ngFor="let subject of interest.subjects">
                   <div class="col-sm-offset-1" *ngIf="interestChecked[interest.name]">
-                    <input type="checkbox" class="checkbox-inline" (click)="subjectCheck(subject.name)">{{subject.name}}
+                    <input type="checkbox" class="checkbox-inline" style="margin-left: 20px" (click)="subjectCheck(subject.name)"> {{subject.name}}
                   </div>
                 </div>
               </div>
