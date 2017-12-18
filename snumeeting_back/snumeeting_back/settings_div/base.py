@@ -83,6 +83,7 @@ LOGIN_ERROR_URL='http://localhost:4200/signin'
 # DEBUG = True
 
 ALLOWED_HOSTS = [
+    'localhost',
     '52.78.119.61',
     'snu-moim.ga',
     'ec2-52-78-119-61.ap-northeast-2.compute.amazonaws.com'
