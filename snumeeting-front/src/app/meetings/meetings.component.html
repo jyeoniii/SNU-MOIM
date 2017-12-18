@@ -20,12 +20,13 @@
     </div>
   </div>
 </nav>
-<div class="py-5 text-center opaque-overlay" style="background-image: url(&quot;https://media.beam.usnews.com/39/9f/053222934d5b9be72874ea3f5a7b/150423-submitted.jpg&quot;);">
+<div class="py-5 text-center opaque-overlay" style="background-image: url(&quot;https://scontent-icn1-1.xx.fbcdn.net/v/t31.0-8/14480637_1376405762370467_7698356992281948213_o.jpg?oh=10e1b70ea30b6e55e29c41bf94907d6d&oe=5AB71A24&quot;);">
   <div class="container py-5">
     <div class="row">
       <div class="col-md-12 text-white">
         <h1 class="display-3 mb-4">SNU MO-IM</h1>
         <p class="lead mb-5">Where everyone can meet and enjoy activities! &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+        <button (click)="goToCreatePage()" class="btn btn-lg mx-1 btn-secondary">Create</button>
       </div>
     </div>
   </div>
@@ -72,9 +73,9 @@
             <tr *ngFor="let meeting of meetings | paginate: { itemsPerPage: maxSize, currentPage: currentPage, totalItems: totalItems }">
               <th scope="row">{{meeting.id}}</th>
               <td>
-                <a [routerLink]="['/meeting', meeting.id]" routerLinkActive="active">{{meeting.title}}</a>
+                <a [routerLink]="['/meeting', meeting.id]" routerLinkActive="active" class="text-dark">{{meeting.title}}</a>
               </td>
-              <td><a [routerLink]="['/user', meeting.author.id]">{{meeting.author.name}}</a></td>
+              <td><a [routerLink]="['/user', meeting.author.id]" class="text-dark">{{meeting.author.name}}</a></td>
               <td>{{meeting.subject.name}}</td>
               <td>
                 <span *ngIf="!meeting.is_closed; else closed" style="margin-left:15px">
@@ -103,7 +104,36 @@
         </div>
       </div>
     </div>
+    <pagination-controls (pageChange)="currentPage = $event; pageChanged($event)" style="display:block; margin:auto"></pagination-controls>
+
   </div>
+
+  <div class="py-5" *ngIf="meetingsFBfriends && (meetingsFBfriends.length > 0)">
+    <div class="container">
+      <div class="row">
+        <!--FB Friends' MOIM-->
+        <h3 class="col-md-12 text-center text-black" style="font-weight: bold;color: #695F5C; margin-bottom: 20px">
+          Your Facebook Friends Joined..
+        </h3><br><br>
+        <div class="col-md-2 text-center" *ngFor="let m_f of meetingsShownFB">
+          <span *ngFor="let friend of m_f.friends" (mouseenter)="changeFBNameShown(friend.fb_name)" data-tooltip-text="abc" [attr.id]="FBname">
+            <img [routerLink]="['/user', friend.id]"
+                 class="rounded-circle img-fluid d-block mx-auto" width="30px" height="30px"
+                 style="cursor:pointer"
+                 src="{{friend.picture_url}}" alt="">
+          </span>
+          <h5 style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor:pointer;"
+              [routerLink]="['/meeting', m_f.meeting.id]">{{m_f.meeting.title}}<br>
+            <small style="color: #7f7f7f">{{m_f.meeting.author.name}}</small>
+          </h5>
+          <label class="label" style="margin-left: 5px; padding-top: 3px; background-color: mediumseagreen; color: white" >
+            <i class="fa fa-list-ul" aria-hidden="true"style="font-size:10px; margin-right: 3px"></i>{{m_f.meeting.subject.name}}
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 <div class="py-5 text-white text-center bg-secondary">
   <div class="container">
@@ -112,10 +142,36 @@
         <h1>Cannot find the MO-IM you want?</h1>
         <p class="lead mb-4">Try creating a new one or search for the MO-IM</p>
         <form class="form-inline justify-content-center">
-          <div class="input-group my-1">
-            <input type="text" class="form-control mr-3 my-1" placeholder="Search here" id="inlineFormInputGroup"> </div>
-          <button type="submit" class="btn btn-light">Search</button>
-          <button type="submit" class="btn btn-light">Create</button>
+
+            <div style="display:block; margin:0 auto; width:800px">
+              <select class="form-control" name="interest" [(ngModel)]="selectedOption">
+                <optgroup label="options">
+                  <option disabled selected hidden>options</option>
+                  <option *ngFor="let option of searchOptions" [ngValue]="option">{{option}}</option>
+                </optgroup>
+              </select>
+
+              <span *ngIf="(selectedOption==='category') && interestList">
+              <select class="form-control" name="interest" [(ngModel)]="selectedInterest" [ngModelOptions]="{standalone: true}">
+                <optgroup label="interest">
+                  <option disabled selected hidden>interest</option>
+                  <option *ngFor="let interest of interestList" [ngValue]="interest">{{interest.name}}</option>
+                </optgroup>
+              </select>
+
+              <select class="form-control" *ngIf="selectedInterest" name="subject" [(ngModel)]="selectedSubject" [ngModelOptions]="{standalone: true}">
+                <optgroup label="subject">
+                  <option disabled selected hidden>subject</option>
+                  <option *ngFor="let subject of selectedInterest.subjects" [ngValue]="subject">{{subject.name}}</option>
+                </optgroup>
+              </select>
+            </span>
+              <input class="form-control" [(ngModel)]="query" [ngModelOptions]="{standalone: true}" style="display:inline;width:200px;"
+                     placeholder="query" id="query">
+              <button class="btn" style="display: inline; width:80px" (click)="search()">search</button>
+            </div>
+
+          <button class="btn btn-light" (click)="search()">test out</button>
         </form>
       </div>
     </div>
