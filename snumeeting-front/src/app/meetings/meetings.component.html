@@ -100,7 +100,7 @@
               <td>
                 <span style="font-size: 12px; color: #7f7f7f">
                   {{ meeting.datetime.year }}-{{meeting.datetime.month}}-{{meeting.datetime.day}} -
-                  {{ meeting.datetime.hour}}:{{meeting.datetime.minute}}
+                  {{padLeft(meeting.datetime.hour, '0',2)}}:{{padLeft(meeting.datetime.minute, '0', 2)}}
                   <span *ngIf="meeting.datetime.afternoon;else AM">PM</span><ng-template #AM>AM</ng-template>
                 </span>
               </td>

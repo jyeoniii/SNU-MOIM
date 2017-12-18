@@ -214,5 +214,9 @@ export class MeetingsComponent implements OnInit {
     this.FBname = name;
   }
 
+  padLeft(n: number, padChar: string, size: number): string {
+    return (String(padChar).repeat(size) + String(n)).substr( (size * -1), size) ;
+  }
+
 }
 
