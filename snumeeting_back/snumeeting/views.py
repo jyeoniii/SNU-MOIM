@@ -17,6 +17,7 @@ from django.utils import timezone
 
 from snumeeting.recommend.JoinHistoryManager import JoinHistoryManager
 from snumeeting.recommend.computeRecommend import getRecMeetings, getUserSimilarity
+from snumeeting.recommend.syncJoinHistory import SyncUserHistoryAll, SyncCollegeHistoryAll 
 
 import json
 import datetime
@@ -242,7 +243,6 @@ def meetingList(request):
     des_req = json.loads(request.body.decode())
 
     author_id = des_req['author_id']
-    author = Ex_User.objects.get(id=int(author_id))
     title = des_req['title']
     description = des_req['description']
     location = des_req['location']
@@ -250,22 +250,40 @@ def meetingList(request):
     #    member_ids = des_req['member_ids']
     #    members = User.objects.filter(id__in=member_ids)
     subject_id = des_req['subject_id']
-    subject = Subject.objects.get(id=subject_id)
 
-    new_meeting = Meeting(author=author, title=title, description=description, location=location, max_member=max_member, subject=subject)
-    new_meeting.save()
+    try:
+      subject = Subject.objects.get(id=subject_id)
+      author = Ex_User.objects.get(id=int(author_id))
 
-    # Add tags
-    tag_names = des_req['tag_names']
-    for tag_name in tag_names:
-      try:
-        found_tag = Tag.objects.get(name=tag_name)
-        new_meeting.tags.add(found_tag)
-      except Tag.DoesNotExist:
-        new_tag = Tag.objects.create(name=tag_name)
-        new_meeting.tags.add(new_tag)
+      new_meeting = Meeting(author=author, title=title, description=description, location=location, max_member=max_member, subject=subject)
+      new_meeting.save()
 
-    new_meeting.members.add(author)
+      # Add tags
+      tag_names = des_req['tag_names']
+      for tag_name in tag_names:
+        try:
+          found_tag = Tag.objects.get(name=tag_name)
+          new_meeting.tags.add(found_tag)
+        except Tag.DoesNotExist:
+          new_tag = Tag.objects.create(name=tag_name)
+          new_meeting.tags.add(new_tag)
+
+      new_meeting.members.add(author)
+      manager = JoinHistoryManager()
+      author.joinHistory = manager.increaseCnt(author.joinHistory, subject_id)
+      author.college.joinHistory = manager.increaseCnt(author.college.joinHistory, subject_id)
+      author.save()
+      author.college.save()
+    except Subject.DoesNotExist:
+      return HttpResponseNotFound()
+    except Ex_User.DoesNotExist:
+      return HttpResponseNotFound()
+    except:
+      new_meeting.delete()
+      SyncUserHistoryAll()
+      SyncCollegeHistoryall()
+      return HttpResponse(status=500)
+
     new_meeting.save()
     return HttpResponse(status=201)
   else:
@@ -655,11 +673,11 @@ def leaveMeeting(request, meeting_id):
     user_id = des_req['user_id']
     try:
       meeting = Meeting.objects.get(id=meeting_id)
-      if meeting.is_closed:
-        return HttpResponseBadRequest()
       user = Ex_User.objects.get(id=user_id)
-      manager = JoinHistoryManager()
+      if meeting.is_closed or (user not in meeting.members.all()):
+        return HttpResponseBadRequest()
       meeting.members.remove(user)
+      manager = JoinHistoryManager()
       user.joinHistory = manager.decreaseCnt(user.joinHistory, meeting.subject_id)
       user.college.joinHistory = manager.decreaseCnt(user.college.joinHistory, meeting.subject_id)
       user.save()

@@ -65,13 +65,13 @@ class Message(models.Model):
     Ex_User,
     on_delete=models.CASCADE,
     related_name='messageSender',
-    null=True
+    null=False
   )
   receiver = models.ForeignKey(
     Ex_User,
     on_delete=models.CASCADE,
     related_name='messageReceiver',
-    null=True
+    null=False
   )
   content = models.TextField()
   sended_at = models.DateTimeField(auto_now_add=True)
@@ -84,7 +84,7 @@ class Meeting(models.Model):
     Ex_User,
     on_delete=models.CASCADE,
     related_name='meetings_made',
-    null=True
+    null=False
   )
   title = models.CharField(max_length=64)
   description = models.TextField()
@@ -98,7 +98,7 @@ class Meeting(models.Model):
     Subject,
     on_delete=models.CASCADE,
     related_name = 'meetings',
-    null=True
+    null=False
   )
   is_closed= models.BooleanField(default=False)
   tags = models.ManyToManyField(
@@ -115,13 +115,13 @@ class Comment(models.Model):
     Ex_User,
     on_delete=models.CASCADE,
     related_name='comments',
-    null=True
+    null=False
   )
   meeting = models.ForeignKey(
     Meeting,
     on_delete=models.CASCADE,
     related_name='comments',
-    null=True
+    null=False
   )
   content = models.CharField(max_length=64)
   publicity = models.BooleanField()
