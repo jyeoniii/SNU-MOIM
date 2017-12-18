@@ -12,6 +12,7 @@ import { MeetingsComponent } from './meetings/meetings.component';
 import { MessagesComponent } from './messages/messages.component';
 import { MeetingEditComponent } from './meeting-edit/meeting-edit.component';
 import { TagSearchComponent } from './tag-search/tag-search.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/sign_in', pathMatch: 'full' },
@@ -25,8 +26,9 @@ const routes: Routes = [
   { path: 'meeting/:id/edit', component: MeetingEditComponent },
   { path: 'meeting/:id', component: MeetingDetailComponent },
   { path: 'meeting', component: MeetingsComponent },
-  { path: 'user/:id/message', component: MessagesComponent },
-  { path: '**', redirectTo: '/sign_in' },
+  { path: 'message', component: MessagesComponent },
+  { path: '404', component: PageNotFoundComponent },
+  { path: '**', redirectTo: '/404' },
 ];
 
 @NgModule({

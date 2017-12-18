@@ -29,7 +29,7 @@
             aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
     <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
       <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/user', loginedUser.id]"><i class="fa d-inline fa-lg fa-address-book-o"></i> Welcome, {{loginedUser.name}}</a>
-      <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/user', loginedUser.id, 'message']"><i class="fa d-inline fa-lg fa-commenting-o"></i> Message</a>
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/message']"><i class="fa d-inline fa-lg fa-commenting-o"></i> Message</a>
       <a class="btn navbar-btn ml-2 text-white btn-secondary" (click)="signOut()"><i class="fa d-inline fa-lg fa-user-circle-o"></i> Sign out</a>
     </div>
   </div>

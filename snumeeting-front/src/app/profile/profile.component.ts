@@ -42,6 +42,9 @@ export class ProfileComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.userService.getUserInfo(+params['id']).then(user => {
           this.user = user;
+          if(user == null) {
+            this.router.navigate(['/404']);
+          }
           this.setStatus();
           this.meetingService.getJoinedMeeting(this.user.id)
             .then(meetings => {

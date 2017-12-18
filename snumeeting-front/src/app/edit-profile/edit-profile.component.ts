@@ -36,6 +36,9 @@ export class EditProfileComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.userService.getUserInfo(+params['id']).then(user => {
         this.user = user;
+        if(user == null) {
+          this.router.navigate(['/404']);
+        }
         for (const subject of user.subjects) {
           this.subjectChecked[subject.name] = true;
           this.interestChecked[subject.interest_id] = true;

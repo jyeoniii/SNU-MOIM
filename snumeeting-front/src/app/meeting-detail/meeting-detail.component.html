@@ -8,7 +8,7 @@
 <div class="container" *ngIf="selectedMeeting && comments && currentUser">
   <div style="float:right; margin-top:20px;">
     <span>Welcome, <label>{{currentUser.name}}</label></span><br>
-    <a [routerLink]="['/user', currentUser.id, 'message']" class="btn btn-info btn-sm">
+    <a [routerLink]="['/message']" class="btn btn-info btn-sm">
       <span class="glyphicon glyphicon-envelope"></span> Message
     </a>
     <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
@@ -150,7 +150,6 @@
     </div>
     <br>
 
-
     <div class="container" *ngIf="selectedMeeting">
       <div style="float:right">
     <span *ngIf="!selectedMeeting.is_closed && isOwner()">
@@ -166,12 +165,8 @@
         </button>
       </div>
     </div>
-
-
   </div>
 </div>
-
-
 
 
 

@@ -15,6 +15,7 @@ import { MeetingCreateComponent } from './meeting-create/meeting-create.componen
 import { MeetingsComponent } from './meetings/meetings.component';
 import { MessagesComponent } from './messages/messages.component';
 import { MeetingEditComponent } from './meeting-edit/meeting-edit.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 import { UserService } from './services/user.service';
 import { MeetingService } from './services/meeting.service';
@@ -48,6 +49,7 @@ export function CSRFStrategy() {
     MeetingEditComponent,
     TagSearchComponent,
     LoginRequiredComponent,
+    PageNotFoundComponent,
   ],
   imports: [
     BrowserModule,

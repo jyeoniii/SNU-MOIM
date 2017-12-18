@@ -42,6 +42,9 @@ export class MeetingEditComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.meetingService.getMeeting(+params['id']).then(meeting => {
         this.selectedMeeting = meeting;
+        if(meeting == null) {
+          this.router.navigate(['/404']);
+        }
         this.selectedSubject = meeting.subject;
         for (const tag of meeting.tags){
           this.tagInputs.push(tag.name);

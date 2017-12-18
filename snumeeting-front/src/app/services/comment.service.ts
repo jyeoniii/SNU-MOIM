@@ -28,7 +28,10 @@ export class CommentService {
     return this.http.get(url)
       .toPromise()
       .then(response => response.json() as Comment[])
-      .catch(this.handleError);
+      .catch(response => {
+        if (response.status === 404) return [];
+        else this.handleError(response)
+      });
   }
 
   createComment(meetingId: number, author: User, content: string, publicity: boolean): Promise<Comment> {

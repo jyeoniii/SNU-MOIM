@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+</head>
+
+<body>
+<nav class="navbar navbar-expand-md bg-primary navbar-dark">
+  <div class="container" *ngIf="loginedUser">
+    <a class="navbar-brand" [routerLink]="['/meeting']"><i class="fa d-inline fa-lg fa-users"></i> <b>SNU MO-IM</b></a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
+    <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/user', loginedUser.id]"><i class="fa d-inline fa-lg fa-address-book-o"></i> Welcome, {{loginedUser.name}}</a>
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/message']"><i class="fa d-inline fa-lg fa-commenting-o"></i> Message</a>
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" (click)="signOut()"><i class="fa d-inline fa-lg fa-user-circle-o"></i> Sign out</a>
+    </div>
+  </div>
+</nav>
+<div class="py-5 text-center opaque-overlay" style="background-image: url(&quot;https://media.beam.usnews.com/39/9f/053222934d5b9be72874ea3f5a7b/150423-submitted.jpg&quot;);">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-md-12 text-white">
+        <h1 class="display-3 mb-4">SNU MO-IM</h1>
+        <p class="lead mb-5">Where everyone can meet and enjoy activities! &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="main">
+        Oops!<br>
+        Maybe there is something wrong with your url!<br>
+        Please check one more time.
+      </div> <!--end main-->
+    </div>
+  </div>
+</div>
+
+<br><br>
+
+<!--Footer-->
+<div class="bg-primary py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 my-3">
+        <h1 class="display-4 text-white text-md-left text-center">Let's connect the world</h1>
+      </div>
+      <div class="col-md-4  text-center align-self-center">
+        <a href="/oauth/login/facebook/" target="_blank"><i class="fa fa-fw fa-facebook fa-3x text-white mx-3"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="text-white bg-secondary">
+  <div class="container">
+    <div class="row">
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 light">SNU MO-IM</h2>
+        <p class="text-white">A group who aims to ease of the lives of SNU students</p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">Mapsite</h2>
+        <ul class="list-unstyled">
+          <a href="#" class="text-white">Home</a>
+          <br>
+          <a href="#" class="text-white">About us</a>
+          <br>
+          <a href="#" class="text-white">Our services</a>
+          <br>
+          <a href="#" class="text-white">Stories</a>
+        </ul>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4">Contact</h2>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"><i class="fa d-inline mr-3 fa-envelope-o text-light"></i>SNU mail</a>
+        </p>
+        <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+          <a href="https://goo.gl/5U1Q7X" class="text-white" target="_blank"><i class="fa d-inline mr-3 fa-map-marker text-light"></i>Seoul National University</a>
+        </p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">SNU MO-IM</h2>
+        <form>
+          <fieldset class="form-group text-white"> <label for="exampleInputEmail1">M: Matching<br>O: Of<br>I: Identical<br>M: Motives<br></label> </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mt-3">
+        <p class="text-center text-white">© Copyright 2017 SNUMOIM - All rights reserved. </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+<script src="../../dist/js/bootstrap.min.js"></script>
+<!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+<script src="../../assets/js/vendor/holder.min.js"></script>
+<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
