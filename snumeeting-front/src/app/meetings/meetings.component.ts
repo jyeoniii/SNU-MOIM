@@ -16,7 +16,7 @@ import { MetaDataService } from '../services/meta-data-service';
 @Component({
   selector: 'app-meetings',
   templateUrl: './meetings.component.html',
-  styleUrls: ['./meetings.component.css', './dashboard.css']
+  styleUrls: ['./meetings.component.css',]
 })
 @NgModule({
   imports: [
@@ -128,7 +128,7 @@ export class MeetingsComponent implements OnInit {
       } else {
         this.router.navigate(['/signin_first']);
       }
-       
+
       if (this.loginedUser.fb_connected) {
         this.meetingService.getMeetingsFromFBfriends(this.loginedUser.id)
           .then(meetings => {
