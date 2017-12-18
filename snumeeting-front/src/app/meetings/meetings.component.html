@@ -1,30 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
-<!--<head>-->
-  <!--<meta charset="utf-8">-->
-  <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
-  <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-  <!--&lt;!&ndash; The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags &ndash;&gt;-->
-  <!--<meta name="description" content="">-->
-  <!--<meta name="author" content="">-->
-  <!--<link rel="icon" href="../../favicon.ico">-->
+<html>
 
-  <!--<title>Dashboard Template for Bootstrap</title>-->
-
-  <!--<meta name="viewport" content="width=device-width, initial-scale=1">-->
-  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
-<!--</head>-->
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
-  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
 </head>
 
 <body>
 <nav class="navbar navbar-expand-md bg-primary navbar-dark">
   <div class="container" *ngIf="loginedUser">
-    <a class="navbar-brand" [routerLink]="['/meeting']"><i class="fa d-inline fa-lg fa-users"></i> <b>SNU MO-IM</b></a>
+    <a class="navbar-brand" [routerLink]="['/meeting']"><i class="fa d-inline fa-lg fa-users"></i><b>SNU MO-IM</b></a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false"
             aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
     <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
@@ -44,179 +30,93 @@
     </div>
   </div>
 </div>
-
-<div class="py-5">
-  <div class="container">
-    <div class="row">
-
-      <div class="main">
-
-        <!--Recommendation-->
-        <div *ngIf="meetingsShown" class="col-md-12 text-black">
-          <h2 class="text-center text-black" style="font-weight: bold; color: #695F5C"> You might like..</h2><br>
-
-          <div class="row">
-            <div *ngFor="let meeting of meetingsShown" class="col-md-4 text-center">
-              <div class="thumbnail">
-                <!--<img alt="Bootstrap Thumbnail First" src="http://static.oprah.com/2016/12/201612-orig-throw-away-books-949x534.jpg" />-->
-                <div class="caption">
-                  <h5 style="font-weight: bold; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-                    {{ meeting.title }}
-                  </h5>
-                  <small style="color: #555555"> {{ meeting.author.name }} </small><br>
-                  <label class="label" style="background-color: #00d5d9; color:white" >
-                    {{ meeting.subject.name }}
-                  </label>
-                  <p>
-                    <a class="btn mt-4 btn-block p-2 btn-outline-primary" [routerLink]="['/meeting', meeting.id]">View detail</a>
-                  </p>
-                </div>
-              </div>
-            </div>
+<div class="py-5 bg-light">
+  <div class="container" *ngIf="meetingsShown">
+    <div class="row animate-in-down">
+      <div class="col-md-12">
+        <p class="m-0 text-center">You may also like...</p>
+        <div class="row">
+          <div class="col-md-4 p-3" *ngFor="let meeting of meetingsShown">
+            <img class="img-fluid d-block w-100 mb-3" src="https://thenextweb.com/wp-content/blogs.dir/1/files/2015/04/meeting.jpg">
+            <p class="lead text-muted mb-1">{{ meeting.author.name }}</p>
+            <h5 class="text-dark"><b>{{ meeting.title }}</b></h5>
+            <p class="mb-3">{{ meeting.subject.name }}</p>
+            <a [routerLink]="['/meeting', meeting.id]" class="btn btn-outline-secondary"><b class="">Detail</b></a>
           </div>
-          <i class="fa fa-chevron-circle-left" aria-hidden="true" (click)="showOtherRecommendation(false)"
-             [style.opacity]="idx==0?0.5:1" style="float:left; font-size:35px; color: #695F5C"></i>
-          <i class="fa fa-chevron-circle-right" aria-hidden="true" (click)="showOtherRecommendation(true)"
-             [style.opacity]="idx==0?0.5:1" style="float:right; font-size:35px; color: #695F5C"></i>
-
         </div>
-        <br><br>  <!--Recommendation end-->
-
-        <!--MOIM Table-->
-        <div class="col-md-12" style="margin-top: 30px">
-          <span style="float:right">
-            <input type="checkbox" class="checkbox-inline" [checked]="availableOnly" (click)="available()"> Available meetings only<br>
-          </span>
-
-          <div class="table-responsive">
-            <table class="table table-striped">
-              <thead class="thead-default">
-              <tr>
-                <th>NO.</th>
-                <th>TITLE</th>
-                <th>AUTHOR</th>
-                <th>SUBJECT</th>
-                <th>STATUS</th>
-                <th>DATE</th>
-              </tr>
-              <tr *ngFor="let meeting of meetings | paginate: { itemsPerPage: maxSize, currentPage: currentPage, totalItems: totalItems }">
-                <td>{{meeting.id}}</td>
-                <td>
-                  <a [routerLink]="['/meeting', meeting.id]" routerLinkActive="active">{{meeting.title}}</a>
-                </td>
-
-                <td><a [routerLink]="['/user', meeting.author.id]">{{meeting.author.name}}</a></td>
-                <td>{{meeting.subject.name}}</td>
-                <td>
-              <span *ngIf="!meeting.is_closed; else closed" style="margin-left:15px">
-                <span [style.color]="(meeting.members.length < meeting.max_member) ? '#155724' : 'maroon'">
-                  {{meeting.members.length}}
+      </div>
+    </div>
+    <i class="fa fa-chevron-circle-left" aria-hidden="true" (click)="showOtherRecommendation(false)"
+       [style.opacity]="idx==0?0.5:1" style="float:left; font-size:35px; color: #695F5C"></i>
+    <i class="fa fa-chevron-circle-right" aria-hidden="true" (click)="showOtherRecommendation(true)"
+       [style.opacity]="idx==0?0.5:1" style="float:right; font-size:35px; color: #695F5C"></i>
+  </div>
+</div>
+<div class="py-5 text-center" style="background-image: url(&quot;&quot;);">
+  <div class="container py-5 photo-overlay">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-12 p-3">
+          <table class="table table-hover table-striped table-bordered">
+            <thead class="thead-inverse">
+            <tr>
+              <th scope="col">NO</th>
+              <th scope="col">TITLE</th>
+              <th scope="col">AUTHOR</th>
+              <th scope="col">SUBJECT</th>
+              <th scope="col">STATUS</th>
+              <th scope="col">DATE</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let meeting of meetings | paginate: { itemsPerPage: maxSize, currentPage: currentPage, totalItems: totalItems }">
+              <th scope="row">{{meeting.id}}</th>
+              <td>
+                <a [routerLink]="['/meeting', meeting.id]" routerLinkActive="active">{{meeting.title}}</a>
+              </td>
+              <td><a [routerLink]="['/user', meeting.author.id]">{{meeting.author.name}}</a></td>
+              <td>{{meeting.subject.name}}</td>
+              <td>
+                <span *ngIf="!meeting.is_closed; else closed" style="margin-left:15px">
+                  <span [style.color]="(meeting.members.length < meeting.max_member) ? '#155724' : 'maroon'">
+                    {{meeting.members.length}}
+                  </span>
+                  / {{meeting.max_member}}
                 </span>
-                / {{meeting.max_member}}
-              </span>
-                  <ng-template #closed>
-                    <label class="label" style="background-color: #C21F39; color:white" >
-                      CLOSED
-                    </label>
-                  </ng-template><!--End Join / Leave -->
-                </td>
-                <td>
-              <span style="font-size:4px; color: #7f7f7f;">
+                <ng-template #closed>
+                  <label class="label" style="background-color: #C21F39; color:white" >
+                    CLOSED
+                  </label>
+                </ng-template><!--End Join / Leave -->
+              </td>
+              <td>
+                <span>
                 {{ meeting.datetime.year }}-{{meeting.datetime.month}}-{{meeting.datetime.day}} -
                 {{ meeting.datetime.hour}}:{{meeting.datetime.minute}}
                 <span *ngIf="meeting.datetime.afternoon;else AM">PM</span><ng-template #AM>AM</ng-template>
               </span>
-                </td>
-              </tr>
-              </thead>
-            </table>
-          </div>
-        </div> <!--MOIM Table end-->
+              </td>
+            </tr>
 
-        <!--Pagination+Search-->
-        <div class="col-md-12" >
-          <div class="center-block" style="margin: 0 auto; width:800px; height:100px; float:right">
-            <button class=" col-sm-2 btn btn-primary" style="float:right; width:100px; margin-right: 100px;"
-                    (click)="goToCreatePage()">create</button><br><br>
-
-            <!--Pagination-->
-            <pagination-controls (pageChange)="currentPage = $event; pageChanged($event)" style="display:block; margin:auto"></pagination-controls>
-
-            <!--Search filter-->
-            <div style="display:block; margin:0 auto; width:800px">
-              <select name="interest" [(ngModel)]="selectedOption">
-                <optgroup label="options">
-                  <option disabled selected hidden>options</option>
-                  <option *ngFor="let option of searchOptions" [ngValue]="option">{{option}}</option>
-                </optgroup>
-              </select>
-
-              <span *ngIf="(selectedOption==='category') && interestList">
-              <select name="interest" [(ngModel)]="selectedInterest">
-                <optgroup label="interest">
-                  <option disabled selected hidden>interest</option>
-                  <option *ngFor="let interest of interestList" [ngValue]="interest">{{interest.name}}</option>
-                </optgroup>
-              </select>
-
-              <select *ngIf="selectedInterest" name="subject" [(ngModel)]="selectedSubject">
-                <optgroup label="subject">
-                  <option disabled selected hidden>subject</option>
-                  <option *ngFor="let subject of selectedInterest.subjects" [ngValue]="subject">{{subject.name}}</option>
-                </optgroup>
-              </select>
-            </span>
-              <input class="form-control" [(ngModel)]="query" style="display:inline;width:200px;"
-                     placeholder="query" id="query">
-              <button class="btn" style="display: inline; width:80px" (click)="search()">search</button>
-            </div>
-          </div>
-        </div> <!--Pagination+Search end-->
-
-      </div> <!--end main-->
-
-    </div>
-
-  </div>
-</div>
-
-<div class="py-5" *ngIf="meetingsFBfriends && (meetingsFBfriends.length > 0)">
-  <div class="container">
-    <div class="row">
-      <!--FB Friends' MOIM-->
-      <h3 class="col-md-12 text-center text-black" style="font-weight: bold;color: #695F5C; margin-bottom: 20px">
-        Your Facebook Friends Joined..
-      </h3><br><br>
-      <div class="col-md-2 text-center" *ngFor="let m_f of meetingsShownFB">
-          <span *ngFor="let friend of m_f.friends" (mouseenter)="changeFBNameShown(friend.fb_name)" data-tooltip-text="abc" [attr.id]="FBname">
-            <img [routerLink]="['/user', friend.id]"
-                 class="rounded-circle img-fluid d-block mx-auto" width="30px" height="30px"
-                 style="cursor:pointer"
-                 src="{{friend.picture_url}}" alt="">
-          </span>
-          <h5 style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor:pointer;"
-            [routerLink]="['/meeting', m_f.meeting.id]">{{m_f.meeting.title}}<br>
-          <small style="color: #7f7f7f; font-size: 3px">{{m_f.meeting.author.name}}</small>
-          </h5>
-        <label class="label" style="margin-left: 5px; padding-top: 3px; background-color: mediumseagreen; color: white" >
-          <i class="fa fa-list-ul" aria-hidden="true"style="font-size:10px; margin-right: 3px"></i>{{m_f.meeting.subject.name}}
-        </label>
-      </div><!--FB Friends' MOIM end-->
-    </div>
-  </div>
-</div>
-
-<br><br>
-
-<!--Footer-->
-<div class="bg-primary py-5">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-8 my-3">
-        <h1 class="display-4 text-white text-md-left text-center">Let's connect the world</h1>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <div class="col-md-4  text-center align-self-center">
-        <a href="/oauth/login/facebook/" target="_blank"><i class="fa fa-fw fa-facebook fa-3x text-white mx-3"></i></a>
+    </div>
+  </div>
+</div>
+<div class="py-5 text-white text-center bg-secondary">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Cannot find the MO-IM you want?</h1>
+        <p class="lead mb-4">Try creating a new one or search for the MO-IM</p>
+        <form class="form-inline justify-content-center">
+          <div class="input-group my-1">
+            <input type="text" class="form-control mr-3 my-1" placeholder="Search here" id="inlineFormInputGroup"> </div>
+          <button type="submit" class="btn btn-light">Search</button>
+          <button type="submit" class="btn btn-light">Create</button>
+        </form>
       </div>
     </div>
   </div>
@@ -265,30 +165,10 @@
     </div>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 
-
-
-
-
-
-
-
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
-<script src="../../dist/js/bootstrap.min.js"></script>
-<!-- Just to make our placeholder images work. Don't actually copy the next line! -->
-<script src="../../assets/js/vendor/holder.min.js"></script>
-<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script src="../../assets/js/ie10-viewport-bug-workaround.js"></script>
 </body>
+
 </html>
-
-
-
-
-
-
-
