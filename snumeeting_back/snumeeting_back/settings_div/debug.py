@@ -7,4 +7,3 @@ WSGI_APPLICATION = 'snumeeting_back.wsgi.debug.application'
 
 # Debug mode -> DEBUG = True
 DEBUG = True
-ALLOWED_HOSTS = config_secret_debug['django']['allowed_hosts']
