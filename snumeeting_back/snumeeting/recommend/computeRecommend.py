@@ -1,6 +1,6 @@
 from django.forms.models import model_to_dict
 from snumeeting.models import Ex_User, College, Subject
-from .similaritymeasures import Similarity 
+from .similaritymeasures import euclidean_distance
 from .JoinHistoryManager import JoinHistoryManager
 import heapq
 import random
@@ -49,7 +49,6 @@ def getUserSimilarity(target, K):
   # K : number of similar users to be recommended
   # return: List of tuples - [ top K (Ex_User's id, similarity score) ]
 
-  measure = Similarity()
   manager = JoinHistoryManager()
   users = Ex_User.objects.all()
   similarities = {}
@@ -63,7 +62,7 @@ def getUserSimilarity(target, K):
       continue
     if target.joinHistory != "{}":
       jh_user = manager.convertToList(user.joinHistory)
-      jh_d = measure.euclidean_distance(jh_target, jh_user)  # Interest Distance 
+      jh_d = euclidean_distance(jh_target, jh_user)  # Interest Distance 
     else:  # Cold start -> computing join history similarity is meaningless
       jh_d = 0
     col_d = d_colleges[user.college_id]          # College Distance 
@@ -77,7 +76,6 @@ def getUserSimilarity(target, K):
 
   
 def getCollegeDistance(target):
-  measure = Similarity()
   manager = JoinHistoryManager()
   colleges = College.objects.all()
 
@@ -91,7 +89,7 @@ def getCollegeDistance(target):
       distances[college.id] = 0 
       continue
     jh_college = manager.convertToList(college.joinHistory)
-    d = measure.euclidean_distance(jh_target, jh_college)
+    d = euclidean_distance(jh_target, jh_college)
     distances[college.id] = d
     sum += d
 

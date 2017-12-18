@@ -16,77 +16,83 @@ class SnuMeetingTestCase(TestCase):
   def setUp(self):
 
     # College
-    engineering = College.objects.create(id=0, name='Engineering')
-    business = College.objects.create(id=1, name='Business')
+    engineering = College.objects.create(id=1, name='Engineering')
+    business = College.objects.create(id=2, name='Business')
 
     # Interest
-    int_study = Interest.objects.create(id=0, name='study')
-    int_performance = Interest.objects.create(id=1, name='performance')
+    int_study = Interest.objects.create(id=1, name='study')
+    int_performance = Interest.objects.create(id=2, name='performance')
 
     # Subject
-    std_eng = Subject.objects.create(id=0, name='English', interest=int_study)
-    std_chi = Subject.objects.create(id=1, name='Chinese', interest=int_study)
-    pfm_band = Subject.objects.create(id=2, name='Band', interest=int_performance)
+    std_eng = Subject.objects.create(id=1, name='English', interest=int_study)
+    std_chi = Subject.objects.create(id=2, name='Chinese', interest=int_study)
+    pfm_band = Subject.objects.create(id=3, name='Band', interest=int_performance)
+    pfm_orc = Subject.objects.create(id=4, name='Orchestra', interest=int_performance)
 
     # User
-    fake1 = User.objects.create(id=0, username='fake1', password='1234', email='fake1@snu.ac.kr')
-    fake2 = User.objects.create(id=1, username='fake2', password='1234', email='fake2@snu.ac.kr')
-    fake3 = User.objects.create(id=2, username='fake3', password='1234', email='fake3@snu.ac.kr')
-    fake3_fb = UserSocialAuth.objects.create(user_id=2, uid=100407420743302, provider='facebook')
-    fake1_ex = Ex_User.objects.create(id=0, user=fake1, name='John', college=engineering, subjects=[std_eng])
-    fake2_ex = Ex_User.objects.create(id=1, user=fake2, name='Joshua',college=business, subjects=[std_chi, pfm_band])
-    fake3_ex = Ex_User.objects.create(id=2, user=fake3, name='Alice', college=business, subjects=[pfm_band],
+    fake1 = User.objects.create(id=1, username='fake1', password='1234', email='fake1@snu.ac.kr')
+    fake2 = User.objects.create(id=2, username='fake2', password='1234', email='fake2@snu.ac.kr')
+    fake3 = User.objects.create(id=3, username='fake3', password='1234', email='fake3@snu.ac.kr')
+    fake3_fb = UserSocialAuth.objects.create(user_id=3, uid=100407420743302, provider='facebook')
+    fake1_ex = Ex_User.objects.create(id=1, user=fake1, name='John', college=engineering, subjects=[std_eng])
+    fake2_ex = Ex_User.objects.create(id=2, user=fake2, name='Joshua',college=business, subjects=[std_chi, pfm_band])
+    fake3_ex = Ex_User.objects.create(id=3, user=fake3, name='Alice', college=business, subjects=[pfm_band],
                                       fb_friends=[fake1_ex], access_token='EXPIRED')
     # Tag
-    tag_study = Tag.objects.create(id=0, name='study')
-    tag_english = Tag.objects.create(id=1, name='english')
-    tag_urgent = Tag.objects.create(id=2, name='urgent')
+    tag_study = Tag.objects.create(id=1, name='study')
+    tag_english = Tag.objects.create(id=2, name='english')
+    tag_urgent = Tag.objects.create(id=3, name='urgent')
 
     # Meeting
-    meeting1 = Meeting.objects.create(id=0, author=fake1_ex, title='Study English',
+    meeting1 = Meeting.objects.create(id=1, author=fake1_ex, title='Study English',
                                       subject=std_eng, description='I will study English', location='SNUstation',
                                       max_member=4, members=[fake1_ex], tags=[tag_study, tag_english])
-    meeting2 = Meeting.objects.create(id=1, author=fake2_ex, title='Study Chinese',
+    meeting2 = Meeting.objects.create(id=2, author=fake2_ex, title='Study Chinese',
                                       subject=std_chi, description='I will study Chinese', location='SNU',
                                       max_member=5, members=[fake2_ex, fake1_ex], tags=[tag_study])
-    meeting3 = Meeting.objects.create(id=2, author=fake3_ex, title='Need my band',
-                                      subject=std_chi, description='I need all the sessions', location='Nokdu',
+    meeting3 = Meeting.objects.create(id=3, author=fake3_ex, title='Need my band',
+                                      subject=pfm_band, description='I need all the sessions', location='Nokdu',
                                       max_member=6, members=[fake3_ex, fake1_ex, fake2_ex], tags=[])
-    meeting4 = Meeting.objects.create(id=3, author=fake3_ex, title='English Master',
+    meeting4 = Meeting.objects.create(id=4, author=fake3_ex, title='English Master',
                                       subject=std_eng, description='Mastering English is fun', location='SNU',
                                       max_member=3, members=[fake3_ex, fake1_ex, fake2_ex], tags=[tag_english])
 
     # Comment
-    comment1 = Comment.objects.create(id=0, author=fake1_ex, meeting=meeting3,
+    comment1 = Comment.objects.create(id=1, author=fake1_ex, meeting=meeting3,
                                       content='Hi', publicity=True)
-    comment2 = Comment.objects.create(id=1, author=fake1_ex, meeting=meeting2,
+    comment2 = Comment.objects.create(id=2, author=fake1_ex, meeting=meeting2,
                                       content='Hello', publicity=True)
-    comment3 = Comment.objects.create(id=2, author=fake2_ex, meeting=meeting1,
+    comment3 = Comment.objects.create(id=3, author=fake2_ex, meeting=meeting1,
                                       content='Hiiiiii', publicity=True)
-    comment4 = Comment.objects.create(id=3, author=fake2_ex, meeting=meeting2,
+    comment4 = Comment.objects.create(id=4, author=fake2_ex, meeting=meeting2,
                                       content='Nooooooo', publicity=True)
-    comment5 = Comment.objects.create(id=4, author=fake3_ex, meeting=meeting3,
+    comment5 = Comment.objects.create(id=5, author=fake3_ex, meeting=meeting3,
                                       content='What?', publicity=True)
 
     # Message
-    message1 = Message.objects.create(id=0, sender=fake1_ex, receiver=fake3_ex,
+    message1 = Message.objects.create(id=1, sender=fake1_ex, receiver=fake3_ex,
       content='I want to join you')
-    message2 = Message.objects.create(id=1, sender=fake2_ex, receiver=fake3_ex,
+    message2 = Message.objects.create(id=2, sender=fake2_ex, receiver=fake3_ex,
       content='I like your mo-im')
-    message3 = Message.objects.create(id=2, sender=fake2_ex, receiver=fake1_ex,
+    message3 = Message.objects.create(id=3, sender=fake2_ex, receiver=fake1_ex,
       content='Who are you?')
 
     self.client = Client()
 
+    self.manager = JoinHistoryManager()
+    SyncUserHistoryAll()
+    SyncCollegeHistoryAll()
+ 
+
   def test_csrf(self):
     # By default, csrf checks are disabled in test client
     # To test csrf protection we enforce csrf checks here
-    college = College.objects.get(id=0)
+    college = College.objects.get(id=1)
     subjects = Subject.objects.all().values()
     client = Client(enforce_csrf_checks=True)
     response = client.post(
       '/api/signup',
-      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':0, 'subject_ids':[0]}),
+      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':1, 'subject_ids':[1]}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 403) # Request without csrf token returns 403 response
@@ -97,7 +103,7 @@ class SnuMeetingTestCase(TestCase):
 
     response = client.post(
       '/api/signup',
-      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':0, 'subject_ids':[0]}),
+      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':1, 'subject_ids':[1]}),
       content_type='application/json',
       HTTP_X_CSRFTOKEN=csrftoken
     )
@@ -122,25 +128,25 @@ class SnuMeetingTestCase(TestCase):
 
   def test_model_str(self):
     # Test __str__ function of models
-    college = College.objects.get(id=1)
+    college = College.objects.get(id=2)
     self.assertEqual(str(college), college.name)
 
-    interest = Interest.objects.get(id=1)
+    interest = Interest.objects.get(id=2)
     self.assertEqual(str(interest), interest.name)
 
-    subject = Subject.objects.get(id=1)
+    subject = Subject.objects.get(id=2)
     self.assertEqual(str(subject), subject.name)
 
-    ex_user = Ex_User.objects.get(id=1)
+    ex_user = Ex_User.objects.get(id=2)
     self.assertEqual(str(ex_user), ex_user.name)
 
-    meeting = Meeting.objects.get(id=1)
+    meeting = Meeting.objects.get(id=2)
     self.assertEqual(str(meeting), meeting.title)
 
-    comment = Comment.objects.get(id=1)
+    comment = Comment.objects.get(id=2)
     self.assertEqual(str(comment), comment.content)
 
-    message = Message.objects.get(id=1)
+    message = Message.objects.get(id=2)
     self.assertEqual(str(message), message.content)
 
     tag = Tag.objects.get(id=1)
@@ -178,7 +184,7 @@ class SnuMeetingTestCase(TestCase):
     # POST
     response = self.client.post(
       '/api/signup',
-      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':0, 'subject_ids':[0]}),
+      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':1, 'subject_ids':[1]}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 201)
@@ -199,9 +205,9 @@ class SnuMeetingTestCase(TestCase):
     # POST
     self.client.post( # Making fake user
       '/api/signup',
-      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':0, 'subject_ids':[0],
+      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':1, 'subject_ids':[1],
                   'access_token':'EAALMoP2WHT4BADFPbkwUY3Um3ZBBmmPJbA4ZBXdd8fCnmo4pyMprZAxZAMzVHFKdY8Fpb08trFMIVo2vNsgiCJUkW6iPHN7qre38lZCJxdVBTZAWrQNjli5VHTuY1CQ1M2T2ZBTq6HeRsOqgoOpDjy4sXKidhgf6Y5ydpDWGwQwXWaFAFR4uTf4',
-                  'fb_friend_ids':[0]}),
+                  'fb_friend_ids':[1]}),
       content_type='application/json',
     )
 
@@ -213,8 +219,8 @@ class SnuMeetingTestCase(TestCase):
 
     self.client.post( # Making fake user with wrong FB access token
       '/api/signup',
-      json.dumps({'name':'test1', 'password':'test1', 'username':'test1', 'college_id':0, 'subject_ids':[0],
-                  'access_token':'wrong_token', 'fb_friend_ids':[2]
+      json.dumps({'name':'test1', 'password':'test1', 'username':'test1', 'college_id':1, 'subject_ids':[1],
+                  'access_token':'wrong_token', 'fb_friend_ids':[3]
                   }),
       content_type='application/json',
     )
@@ -278,7 +284,7 @@ class SnuMeetingTestCase(TestCase):
     # GET
     response = self.client.post( # Making fake user
       '/api/signup',
-      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':0, 'subject_ids':[0]}),
+      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':1, 'subject_ids':[1]}),
       content_type='application/json',
     )
     response = self.client.post( # Correct email & password
@@ -325,41 +331,41 @@ class SnuMeetingTestCase(TestCase):
 
   def test_user_detail(self):
     # GET
-    college = College.objects.get(id=0)
-    subjects = list(Subject.objects.filter(id=0).all().values())
-    response = self.client.get('/api/user/0')
+    college = College.objects.get(id=1)
+    subjects = list(Subject.objects.filter(id=1).all().values())
+    response = self.client.get('/api/user/1')
     data = json.loads(response.content.decode())
     #    self.assertEqual(data['username'], 'fake1')
     #    self.assertEqual(data['user']['password'], '1234')
     #    self.assertEqual(data['user']['email'], 'fake1@snu.ac.kr')
-    self.assertEqual(data['college']['id'], 0)
-    self.assertEqual(data['subjects'][0]['id'], 0)
+    self.assertEqual(data['college']['id'], 1)
+    self.assertEqual(data['subjects'][0]['id'], 1)
     self.assertEqual(response.status_code, 200)
 
     response = self.client.get('/api/user/20') # Getting None-existing User
     self.assertEqual(response.status_code, 404)
 
     # POST
-    response = self.client.post('/api/user/0')
+    response = self.client.post('/api/user/1')
     self.assertEqual(response.status_code, 405)
 
     # PUT
     response = self.client.put( # Editting user/0
-      '/api/user/0',
-      json.dumps({'name':'edit_test', 'password':'edit_test', 'username':'test', 'college_id':1, 'subject_ids':[1, 2]}),
+            '/api/user/1',
+      json.dumps({'name':'edit_test', 'password':'edit_test', 'username':'test', 'college_id':2, 'subject_ids':[2, 3]}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 204)
 
-    college = College.objects.get(id=1) # Test whether User and following Ex_User are updated
-    subjects = list(Subject.objects.filter(id__in=[1, 2]).all().values())
-    response = self.client.get('/api/user/0')
+    college = College.objects.get(id=2) # Test whether User and following Ex_User are updated
+    subjects = list(Subject.objects.filter(id__in=[2, 3]).all().values())
+    response = self.client.get('/api/user/1')
     data = json.loads(response.content.decode())
     #    self.assertEqual(data['username'], fake1)
     #    self.assertEqual(data['password'], 'edit_test')
     #    self.assertEqual(data['email'], 'test@snu.ac.kr')
-    self.assertEqual(data['college']['id'], 1)
-    self.assertEqual(data['subjects'][0]['id'], 1)
+    self.assertEqual(data['college']['id'], 2)
+    self.assertEqual(data['subjects'][0]['id'], 2)
     self.assertEqual(response.status_code, 200)
 
     response = self.client.put( # Editting None-existing User
@@ -377,34 +383,30 @@ class SnuMeetingTestCase(TestCase):
     # GET
     response = self.client.get('/api/meeting')
     data = json.loads(response.content.decode())
-    self.assertEqual(data[0]['author']['id'], 0)
+    self.assertEqual(data[0]['author']['id'], 1)
     self.assertEqual(data[0]['title'], 'Study English')
-    self.assertEqual(data[0]['subject']['id'], 0)
+    self.assertEqual(data[0]['subject']['id'], 1)
     self.assertEqual(data[0]['description'], 'I will study English')
     self.assertEqual(data[0]['location'], 'SNUstation')
     self.assertEqual(data[0]['max_member'], 4)
-    self.assertEqual(data[0]['members'][0]['id'], 0)
+    self.assertEqual(data[0]['members'][0]['id'], 1)
     self.assertEqual(len(data), 4)
     self.assertEqual(response.status_code, 200)
 
     # POST
     response = self.client.post(
       '/api/meeting',
-      json.dumps({'author_id':2, 'title': 'Performance Band', 'subject_id':'2', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 1], 'tag_names':['performance', 'band']}),
+      json.dumps({'author_id':3, 'title': 'Performance Band', 'subject_id':'3', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 3], 'tag_names':['performance', 'band']}),
       content_type='application/json',
     )
-    self.assertEqual(response.status_code, 201)
-
-    response = self.client.get('/api/meeting')
     data = json.loads(response.content.decode())
-    self.assertEqual(data[4]['author']['id'], 2)
-    self.assertEqual(data[4]['title'], 'Performance Band')
-    self.assertEqual(data[4]['subject']['id'], 2)
-    self.assertEqual(data[4]['description'], 'Who wants to get along with me?')
-    self.assertEqual(data[4]['location'], 'SNU')
-    self.assertEqual(data[4]['max_member'], 5)
-    self.assertEqual(data[4]['members'][0]['id'], 2)
-    self.assertEqual(len(data), 5)
+    self.assertEqual(data['author']['id'], 3)
+    self.assertEqual(data['title'], 'Performance Band')
+    self.assertEqual(data['subject']['id'], 3)
+    self.assertEqual(data['description'], 'Who wants to get along with me?')
+    self.assertEqual(data['location'], 'SNU')
+    self.assertEqual(data['max_member'], 5)
+    self.assertEqual(data['members'][0]['id'], 3)
 
     # PUT
     response = self.client.put('/api/meeting')
@@ -416,15 +418,15 @@ class SnuMeetingTestCase(TestCase):
 
   def test_meeting_detail(self):
     # GET
-    response = self.client.get('/api/meeting/0')
+    response = self.client.get('/api/meeting/1')
     data = json.loads(response.content.decode())
-    self.assertEqual(data['author']['id'], 0)
+    self.assertEqual(data['author']['id'], 1)
     self.assertEqual(data['title'], 'Study English')
-    self.assertEqual(data['subject']['id'], 0)
+    self.assertEqual(data['subject']['id'], 1)
     self.assertEqual(data['description'], 'I will study English')
     self.assertEqual(data['location'], 'SNUstation')
     self.assertEqual(data['max_member'], 4)
-    self.assertEqual(data['members'][0]['id'], 0)
+    self.assertEqual(data['members'][0]['id'], 1)
     self.assertEqual(response.status_code, 200)
 
     response = self.client.get('/api/meeting/20') # Get None-existing Meeting
@@ -436,31 +438,31 @@ class SnuMeetingTestCase(TestCase):
 
     # PUT
     response = self.client.put(
-      '/api/meeting/0',
-      json.dumps({'author_id':2, 'title': 'Performance Band', 'subject_id':'2', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 1], 'tag_names':['performance', 'band']}),
+      '/api/meeting/1',
+      json.dumps({'author_id':3, 'title': 'Performance Band', 'subject_id':'3', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 3], 'tag_names':['performance', 'band']}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 204)
 
     response = self.client.put(
       '/api/meeting/20',
-      json.dumps({'author_id':2, 'title': 'Performance Band', 'subject_id':'2', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 1], 'tag_names':['performance', 'band']}),
+      json.dumps({'author_id':3, 'title': 'Performance Band', 'subject_id':'3', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 3], 'tag_names':['performance', 'band']}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 404)
 
     # DELETE
-    response = self.client.delete('/api/meeting/0')
+    response = self.client.delete('/api/meeting/1')
     self.assertEqual(response.status_code, 204)
-    response = self.client.delete('/api/meeting/0')
+    response = self.client.delete('/api/meeting/1')
     self.assertEqual(response.status_code, 404)
 
   def test_meeting_comment(self):
     # GET
-    response = self.client.get('/api/meeting/0/comment')
+    response = self.client.get('/api/meeting/1/comment')
     data = json.loads(response.content.decode())
-    self.assertEqual(data[0]['author']['id'], 1)
-    self.assertEqual(data[0]['meeting_id'], 0)
+    self.assertEqual(data[0]['author']['id'], 2)
+    self.assertEqual(data[0]['meeting_id'], 1)
     self.assertEqual(data[0]['content'], 'Hiiiiii')
     self.assertEqual(data[0]['publicity'], True)
     self.assertEqual(len(data), 1)
@@ -471,34 +473,34 @@ class SnuMeetingTestCase(TestCase):
 
     # POST
     response = self.client.post(
-      '/api/meeting/0/comment',
-      json.dumps({'author_id':2, 'meeting_id':'0', 'content':'New Comment', 'publicity':False}),
+      '/api/meeting/1/comment',
+      json.dumps({'author_id':3, 'meeting_id':'1', 'content':'New Comment', 'publicity':False}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 201)
 
-    response = self.client.get('/api/meeting/0/comment')
+    response = self.client.get('/api/meeting/1/comment')
     data = json.loads(response.content.decode())
-    self.assertEqual(data[1]['author']['id'], 2)
-    self.assertEqual(data[1]['meeting_id'], 0)
+    self.assertEqual(data[1]['author']['id'], 3)
+    self.assertEqual(data[1]['meeting_id'], 1)
     self.assertEqual(data[1]['content'], 'New Comment')
     self.assertEqual(data[1]['publicity'], False)
     self.assertEqual(len(data), 2)
 
     # PUT
-    response = self.client.put('/api/meeting/0/comment')
+    response = self.client.put('/api/meeting/1/comment')
     self.assertEqual(response.status_code, 405)
 
     # DELETE
-    response = self.client.delete('/api/meeting/0/comment')
+    response = self.client.delete('/api/meeting/1/comment')
     self.assertEqual(response.status_code, 405)
 
   def test_comment_list(self):
     # GET
     response = self.client.get('/api/comment')
     data = json.loads(response.content.decode())
-    self.assertEqual(data[0]['author_id'], 0)
-    self.assertEqual(data[0]['meeting_id'], 2)
+    self.assertEqual(data[0]['author_id'], 1)
+    self.assertEqual(data[0]['meeting_id'], 3)
     self.assertEqual(data[0]['content'], 'Hi')
     self.assertEqual(data[0]['publicity'], True)
     self.assertEqual(len(data), 5)
@@ -507,15 +509,15 @@ class SnuMeetingTestCase(TestCase):
     # POST
     response = self.client.post(
       '/api/comment',
-      json.dumps({'author_id':2, 'meeting_id':0, 'content':'New Comment', 'publicity':False}),
+      json.dumps({'author_id':3, 'meeting_id':1, 'content':'New Comment', 'publicity':False}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 201)
 
     response = self.client.get('/api/comment')
     data = json.loads(response.content.decode())
-    self.assertEqual(data[5]['author_id'], 2)
-    self.assertEqual(data[5]['meeting_id'], 0)
+    self.assertEqual(data[5]['author_id'], 3)
+    self.assertEqual(data[5]['meeting_id'], 1)
     self.assertEqual(data[5]['content'], 'New Comment')
     self.assertEqual(data[5]['publicity'], False)
     self.assertEqual(len(data), 6)
@@ -530,10 +532,10 @@ class SnuMeetingTestCase(TestCase):
 
   def test_comment_detail(self):
     # GET
-    response = self.client.get('/api/comment/0')
+    response = self.client.get('/api/comment/1')
     data = json.loads(response.content.decode())
-    self.assertEqual(data['author']['id'], 0)
-    self.assertEqual(data['meeting'], 2)
+    self.assertEqual(data['author']['id'], 1)
+    self.assertEqual(data['meeting'], 3)
     self.assertEqual(data['content'], 'Hi')
     self.assertEqual(data['publicity'], True)
     self.assertEqual(response.status_code, 200)
@@ -547,30 +549,30 @@ class SnuMeetingTestCase(TestCase):
 
     # PUT
     response = self.client.put(
-      '/api/comment/0',
-      json.dumps({'author_id':2, 'meeting_id':0, 'content':'New Comment', 'publicity':False}),
+      '/api/comment/1',
+      json.dumps({'author_id':3, 'meeting_id':1, 'content':'New Comment', 'publicity':False}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 204)
 
-    response = self.client.get('/api/comment/0') # Check the object is editted
+    response = self.client.get('/api/comment/1') # Check the object is editted
     data = json.loads(response.content.decode())
-    self.assertEqual(data['author']['id'], 0)
-    self.assertEqual(data['meeting'], 2)
+    self.assertEqual(data['author']['id'], 1)
+    self.assertEqual(data['meeting'], 3)
     self.assertEqual(data['content'], 'New Comment')
     self.assertEqual(data['publicity'], False)
 
     response = self.client.put( # Edit None-existing Comment
       '/api/comment/20',
-      json.dumps({'author_id':2, 'meeting_id':0, 'content':'New Comment', 'publicity':False}),
+      json.dumps({'author_id':2, 'meeting_id':1, 'content':'New Comment', 'publicity':False}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 404)
 
     # DELETE
-    response = self.client.delete('/api/comment/0')
+    response = self.client.delete('/api/comment/1')
     self.assertEqual(response.status_code, 204)
-    response = self.client.delete('/api/comment/0') # Delete None-existing Comment
+    response = self.client.delete('/api/comment/1') # Delete None-existing Comment
     self.assertEqual(response.status_code, 404)
 
   def test_interest_list(self):
@@ -590,23 +592,23 @@ class SnuMeetingTestCase(TestCase):
     response = self.client.get('/api/subject')
     data = json.loads(response.content.decode())
     self.assertEqual(data[0]['name'], 'English')
-    self.assertEqual(data[0]['interest_id'], 0)
-    self.assertEqual(len(data), 3)
+    self.assertEqual(data[0]['interest_id'], 1)
+    self.assertEqual(len(data), 4)
     self.assertEqual(response.status_code, 200)
 
     # POST
     response = self.client.post(
       '/api/subject',
-      json.dumps({'name':'Dance', 'interest_id':1}),
+      json.dumps({'name':'Dance', 'interest_id':2}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 201)
 
     response = self.client.get('/api/subject') # Check the object is created
     data = json.loads(response.content.decode())
-    self.assertEqual(data[3]['name'], 'Dance')
-    self.assertEqual(data[3]['interest_id'], 1)
-    self.assertEqual(len(data), 4)
+    self.assertEqual(data[-1]['name'], 'Dance')
+    self.assertEqual(data[-1]['interest_id'], 2)
+    self.assertEqual(len(data), 5)
 
     # PUT
     response = self.client.put('/api/subject')
@@ -618,17 +620,17 @@ class SnuMeetingTestCase(TestCase):
 
   def test_subject_detail(self):
     # GET
-    response = self.client.get('/api/subject/0')
+    response = self.client.get('/api/subject/1')
     data = json.loads(response.content.decode())
     self.assertEqual(data['name'], 'English')
-    self.assertEqual(data['interest'], 0)
+    self.assertEqual(data['interest'], 1)
     self.assertEqual(response.status_code, 200)
 
     response = self.client.get('/api/subject/20') # Get None-existing Subject
     self.assertEqual(response.status_code, 404)
 
     # POST
-    response = self.client.post('/api/subject/0')
+    response = self.client.post('/api/subject/1')
     self.assertEqual(response.status_code, 405)
 
   def test_college_list(self):
@@ -662,7 +664,7 @@ class SnuMeetingTestCase(TestCase):
 
   def test_college_detail(self):
     # GET
-    response = self.client.get('/api/college/0')
+    response = self.client.get('/api/college/1')
     data = json.loads(response.content.decode())
     self.assertEqual(data['name'], 'Engineering')
     self.assertEqual(response.status_code, 200)
@@ -671,18 +673,18 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 404)
 
     # POST
-    response = self.client.post('/api/college/0')
+    response = self.client.post('/api/college/1')
     self.assertEqual(response.status_code, 405)
 
     # PUT
     response = self.client.put(
-      '/api/college/0',
+      '/api/college/1',
       json.dumps({'name':'Literature'}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 204)
 
-    response = self.client.get('/api/college/0') # Check the object is editted
+    response = self.client.get('/api/college/1') # Check the object is editted
     data = json.loads(response.content.decode())
     self.assertEqual(data['name'], 'Literature')
 
@@ -694,9 +696,9 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 404)
 
     # DELETE
-    response = self.client.delete('/api/college/0')
+    response = self.client.delete('/api/college/1')
     self.assertEqual(response.status_code, 204)
-    response = self.client.delete('/api/college/0') # Delete None-existing College
+    response = self.client.delete('/api/college/1') # Delete None-existing College
     self.assertEqual(response.status_code, 404)
 
   def test_search_meeting_title(self):
@@ -763,7 +765,7 @@ class SnuMeetingTestCase(TestCase):
 
   def test_search_meeting_subject(self):
     # GET
-    subject_id = 0
+    subject_id = 1
     response = self.client.get('/api/meeting/search/subject/'+str(subject_id))
     result = json.loads(response.content.decode())
 
@@ -772,7 +774,7 @@ class SnuMeetingTestCase(TestCase):
       self.assertEqual(meeting['subject']['id'], subject_id)
 
     # GET - no result
-    subject_id = 2
+    subject_id = 4 
     response = self.client.get('/api/meeting/search/subject/'+str(subject_id))
     result = json.loads(response.content.decode())
 
@@ -784,7 +786,7 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 404)
 
     # GET - searching both for subject id and query
-    subject_id = 0
+    subject_id = 1
     query = 'master'
     response = self.client.get('/api/meeting/search/subject/'+str(subject_id)+'_'+query)
     result = json.loads(response.content.decode())
@@ -808,9 +810,8 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 405)
 
   def test_convert_userinfo_for_front(self):
-    user = convert_userinfo_for_front(0)
-    self.assertEqual(len(user), 8)
-    self.assertEqual(user['id'],0)
+    user = convert_userinfo_for_front(1)
+    self.assertEqual(user['id'],1)
     self.assertEqual(user['username'],'fake1')
     self.assertEqual(user['name'],'John')
     self.assertEqual(user['college']['name'],'Engineering')
@@ -821,9 +822,9 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(user['name'], 'NONEXISTING')
 
   def test_convert_userinfo_minimal(self):
-    user = convert_userinfo_minimal(1)
+    user = convert_userinfo_minimal(2)
     self.assertEqual(len(user), 2)
-    self.assertEqual(user['id'],1)
+    self.assertEqual(user['id'],2)
     self.assertEqual(user['name'],'Joshua')
 
     # Non-existing user
@@ -839,7 +840,7 @@ class SnuMeetingTestCase(TestCase):
     # when user logged in
     self.client.post( # Making fake user
       '/api/signup',
-      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':0, 'subject_ids':[0]}),
+      json.dumps({'name':'test', 'password':'test', 'username':'test', 'college_id':1, 'subject_ids':[1]}),
       content_type='application/json',
     )
     self.client.put( # Activate the fake user without activation code
@@ -868,8 +869,8 @@ class SnuMeetingTestCase(TestCase):
     # GET
     response = self.client.get('/api/message')
     data = json.loads(response.content.decode())
-    self.assertEqual(data[0]['sender']['id'], 0) 
-    self.assertEqual(data[0]['receiver']['id'], 2)
+    self.assertEqual(data[0]['sender']['id'], 1) 
+    self.assertEqual(data[0]['receiver']['id'], 3)
     self.assertEqual(data[0]['content'], 'I want to join you')
     self.assertEqual(len(data), 3)
     self.assertEqual(response.status_code, 200)
@@ -877,15 +878,15 @@ class SnuMeetingTestCase(TestCase):
     # POST
     response = self.client.post(
       '/api/message',
-      json.dumps({'sender_id':2, 'receiver_id':1, 'content':'Oh, I like it'}),
+      json.dumps({'sender_id':3, 'receiver_id':2, 'content':'Oh, I like it'}),
       content_type='application/json',
     )
     self.assertEqual(response.status_code, 201)
 
     response = self.client.get('/api/message')
     data = json.loads(response.content.decode())
-    self.assertEqual(data[3]['sender']['id'], 2) 
-    self.assertEqual(data[3]['receiver']['id'], 1)
+    self.assertEqual(data[3]['sender']['id'], 3) 
+    self.assertEqual(data[3]['receiver']['id'], 2)
     self.assertEqual(data[3]['content'], 'Oh, I like it')
     self.assertEqual(len(data), 4)
 
@@ -900,10 +901,10 @@ class SnuMeetingTestCase(TestCase):
 
   def test_message_detail(self):
     # GET
-    response = self.client.get('/api/message/0')
+    response = self.client.get('/api/message/1')
     data = json.loads(response.content.decode())
-    self.assertEqual(data['sender']['id'], 0)
-    self.assertEqual(data['receiver']['id'], 2)
+    self.assertEqual(data['sender']['id'], 1)
+    self.assertEqual(data['receiver']['id'], 3)
     self.assertEqual(data['content'], 'I want to join you')
     self.assertEqual(response.status_code, 200)
 
@@ -911,31 +912,38 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 404)
 
     # POST
-    response = self.client.post('/api/message/0')
+    response = self.client.post('/api/message/1')
     self.assertEqual(response.status_code, 405)
 
     # PUT
-    response = self.client.put('/api/message/0')
+    response = self.client.put('/api/message/1')
     self.assertEqual(response.status_code, 405)
 
     # DELETE
-    response = self.client.delete('/api/message/0')
+    response = self.client.delete('/api/message/1')
     self.assertEqual(response.status_code, 204)
-    response = self.client.delete('/api/message/0') # Delete None-existing Message
+    response = self.client.delete('/api/message/1') # Delete None-existing Message
     self.assertEqual(response.status_code, 404)
 
   def test_joinMeeting(self):
-    SyncUserHistoryAll()
-    SyncCollegeHistoryAll()
+    meeting = Meeting.objects.get(id=2)
+    user = Ex_User.objects.get(id=3)
 
-    manager = JoinHistoryManager()
-    response = self.client.put('/api/joinMeeting/1', json.dumps({'user_id':2}), content_type='application/json')
+    userjh_before = self.manager.getCount(user.joinHistory, meeting.subject.id)
+    collegejh_before = self.manager.getCount(user.college.joinHistory, meeting.subject.id)
+    len_before = len(meeting.members.all())
 
-    meeting = Meeting.objects.get(id=1)
-    user = Ex_User.objects.get(id=2)
-    self.assertEqual(len(meeting.members.all()), 3)
-    self.assertEqual(manager.getCount(user.joinHistory, 1), 2)
-    self.assertEqual(manager.getCount(user.college.joinHistory, 1), 4)
+    response = self.client.put('/api/joinMeeting/2', json.dumps({'user_id':3}), content_type='application/json')
+
+    user = Ex_User.objects.get(id=3)
+
+    userjh_after = self.manager.getCount(user.joinHistory, meeting.subject.id)
+    collegejh_after = self.manager.getCount(user.college.joinHistory, meeting.subject.id)
+    len_after = len(meeting.members.all())
+
+    self.assertEqual(userjh_before+1, userjh_after)
+    self.assertEqual(collegejh_before+1, collegejh_after)
+    self.assertEqual(len_before+1, len_after)
 
     # Non existing meeting
     response = self.client.put('/api/joinMeeting/10', json.dumps({'user_id':2}), content_type='application/json')
@@ -956,26 +964,28 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 405)
 
   def test_leaveMeeting(self):
-    SyncUserHistoryAll()
-    SyncCollegeHistoryAll()
+    meeting = Meeting.objects.get(id=2)
+    user = Ex_User.objects.get(id=1)
 
-    manager = JoinHistoryManager()
-    response = self.client.put('/api/leaveMeeting/1', json.dumps({'user_id':0}), content_type='application/json')
+    userjh_before = self.manager.getCount(user.joinHistory, meeting.subject.id)
+    collegejh_before = self.manager.getCount(user.college.joinHistory, meeting.subject.id)
+    len_before = len(meeting.members.all())
 
-    meeting = Meeting.objects.get(id=1)
-    user = Ex_User.objects.get(id=0)
-    self.assertEqual(len(meeting.members.all()), 1)
-    self.assertEqual(manager.getCount(user.joinHistory, 1), 1)
-    self.assertEqual(manager.getCount(user.college.joinHistory, 1), 1)
+    response = self.client.put('/api/leaveMeeting/2', json.dumps({'user_id':1}), content_type='application/json')
 
-    # User hasn't joined the meeting - should be no effect
-    response = self.client.put('/api/leaveMeeting/1', json.dumps({'user_id':2}), content_type='application/json')
+    user = Ex_User.objects.get(id=1)
+    userjh_after = self.manager.getCount(user.joinHistory, meeting.subject.id)
+    collegejh_after = self.manager.getCount(user.college.joinHistory, meeting.subject.id)
+    len_after = len(meeting.members.all())
 
-    meeting = Meeting.objects.get(id=0)
-    user = Ex_User.objects.get(id=2)
-    self.assertEqual(len(meeting.members.all()), 1)
-    self.assertEqual(manager.getCount(user.joinHistory, 0), 1)
-    self.assertEqual(manager.getCount(user.college.joinHistory, 0), 2)
+    self.assertEqual(userjh_before-1, userjh_after)
+    self.assertEqual(collegejh_before-1, collegejh_after)
+    self.assertEqual(len_before-1, len_after)
+
+    # User hasn't joined the meeting - Bad request
+    response = self.client.put('/api/leaveMeeting/2', json.dumps({'user_id':3}), content_type='application/json')
+
+    self.assertEqual(response.status_code, 400)
 
     # Non existing meeting
     response = self.client.put('/api/leaveMeeting/10', json.dumps({'user_id':2}), content_type='application/json')
@@ -996,8 +1006,8 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 405)
 
   def test_closeMeeting(self):
-    response = self.client.get('/api/closeMeeting/3')
-    response = self.client.get('/api/meeting/3')
+    response = self.client.get('/api/closeMeeting/4')
+    response = self.client.get('/api/meeting/4')
     result = json.loads(response.content.decode())
     self.assertTrue(result['is_closed'])
 
@@ -1069,6 +1079,41 @@ class SnuMeetingTestCase(TestCase):
     response = self.client.delete('/api/tags')
     self.assertEqual(response.status_code, 405)
 
+  def test_joinhistory_convert_to_list(self):
+    user = Ex_User.objects.get(id=1)
+    result = self.manager.convertToList(user.joinHistory)
+    self.assertEqual(result, [2,1,1,0])
+
+  def test_get_joined_meeting(self):
+    user_id = 1
+    response = self.client.get('/api/user/'+str(user_id)+'/meeting')
+    result = json.loads(response.content.decode())
+
+    self.assertEqual(len(result), 4)
+
+    for m in result:
+      result = False
+      for member in m['members']:
+        if user_id == member['id']:
+          result = True
+      self.assertEqual(result, True)
+
+    # Method not allowed
+    response = self.client.post('/api/user/'+str(user_id)+'/meeting')
+    self.assertEqual(response.status_code, 405)
+
+    # Method not allowed
+    response = self.client.put('/api/user/'+str(user_id)+'/meeting')
+    self.assertEqual(response.status_code, 405)
+
+    # Method not allowed
+    response = self.client.delete('/api/user/'+str(user_id)+'/meeting')
+    self.assertEqual(response.status_code, 405)
+
+    # Non existing user
+    user_id = 10
+    response = self.client.get('/api/user/'+str(user_id)+'/meeting')
+    self.assertEqual(response.status_code, 404)
 
 
 

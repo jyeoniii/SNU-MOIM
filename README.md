@@ -33,8 +33,8 @@ This project aims to create service that can help SNU students to find other stu
 |--------|------|--------|
 | 1 | 10/10-10/23 | [Sprint 1 report](https://github.com/swsnu/swpp17-team9/wiki/Sprint-1-Progress-Report) |
 | 2 | 10/24-11/6 | [Sprint 2 report](https://github.com/swsnu/swpp17-team9/wiki/Sprint-2-Progress-Report) |
-| 3 | 11/7-11/20 | [Sprint 3 report](https://github.com/swsnu/swpp17-team9/wiki/Sprint-2-Progress-Report) |
+| 3 | 11/7-11/20 | [Sprint 3 report](https://github.com/swsnu/swpp17-team9/wiki/Sprint-3-Progress-Report) |
 | 4 | 11/21-12/4 | [Sprint 4 report](https://github.com/swsnu/swpp17-team9/wiki/Sprint-4-Progress-Report) |
-| 5 | 12/5-12/18 | Sprint 5 report |
+| 5 | 12/5-12/18 | [Sprint 5 report](https://github.com/swsnu/swpp17-team9/wiki/Sprint-5-Progress-Report) |
 
 Project milestone per each sprint can be seen [here](https://github.com/swsnu/swpp17-team9/wiki/Project-milestone).

@@ -101,7 +101,9 @@ export class MeetingDetailComponent implements OnInit {
   delete(): void {
     if (confirm('Are you sure to delete this meeting?')) {
       this.meetingService.deleteMeeting(this.selectedMeeting.id)
-      this.router.navigate(['/meeting']);
+        .then(() => {
+          this.router.navigate(['/meeting']);
+        });
     }
   }
 
@@ -136,8 +138,10 @@ export class MeetingDetailComponent implements OnInit {
   deleteComment(comment: Comment): void {
     if (confirm('Are you sure to delete this comment?')){
       console.log(comment);
-      this.commentService.deleteComment(comment.id);
-      this.comments.splice(this.comments.indexOf(comment), 1);
+      this.commentService.deleteComment(comment.id)
+        .then(() => {
+          this.comments.splice(this.comments.indexOf(comment), 1);
+        });
     }
   }
 
