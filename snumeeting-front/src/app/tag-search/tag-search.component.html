@@ -1,73 +1,152 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
 <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-<div class="container-fluid" *ngIf="allMeetings && meetings && currentUser">
-
-  <div style="float:right; margin-top:20px;">
-    <span>Welcome, <label>{{currentUser.name}}</label></span><br>
-    <a [routerLink]="['/message']" class="btn btn-info btn-sm">
-      <span class="glyphicon glyphicon-envelope"></span> Message
-    </a>
-    <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
-  </div><br>
-
-  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-
-      <label style="font-size: 35px;color:#2D4068;text-decoration: underline">
-        <i class="fa fa-hashtag" aria-hidden="true" style="font-size: 30px;margin-right: 4px"></i>{{tagName}}</label><br>
-      <p style="color: #555555">{{allMeetings.length}}
-        <span *ngIf="availableOnly"> available </span>
-        MO-IM<span *ngIf="allMeetings.length>1;else single">s are </span>
-        <ng-template #single> is </ng-template>
-        related to this tag!</p>
-      <br>
-      <span style="width:500px;float:right" *ngIf="allMeetings.length > 0">
-       <input type="checkbox" class="checkbox-inline" [checked]="availableOnly" (click)="available()"> Available meetings only
-      </span>
-      <br><br>
 
 
-      <div  *ngFor="let meeting of meetings | paginate: { itemsPerPage: maxSize, currentPage: currentPage, totalItems: totalItems }"
-            style="display: block; width:700px;height:140px">
-        <a [routerLink]="['/meeting', meeting.id]">
-          <label style="font-size: 20px;color: #336699; cursor: pointer">{{meeting.title}}</label>
-        </a>
-        <label class="label label-default" style="margin-left: 5px; padding-top: 3px; background-color: mediumseagreen" >
-          <i class="glyphicon glyphicon-th-list" style="font-size:10px; margin-right: 3px"></i>{{meeting.subject.name}}
-        </label>
-        <br>
-        Posted by
-        <a [routerLink]="['/user', meeting.author.id]">
-          <i class="fa fa-user" style="font-size: 20px"></i>
-          <label> {{meeting.author.name}}</label>
-        </a>
-        <p style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-          - {{ meeting.description}}
-        </p>
-        <span style="float:right">
-          <span class="glyphicon glyphicon-menu-right" style="color: #4A6AAA"></span>
-          <a [routerLink]="['/meeting', meeting.id]">Click to view detail</a>
-        </span>
-
-      </div>
-
+<body style="font-family: Helvetica Neue">
+<nav class="navbar navbar-expand-md bg-primary navbar-dark">
+  <div class="container" *ngIf="currentUser">
+    <a class="navbar-brand" [routerLink]="['/meeting']"><i class="fa d-inline fa-lg fa-users"></i> <b>SNU MO-IM</b></a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
+    <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/user', currentUser.id]"><i class="fa d-inline fa-lg fa-address-book-o"></i> Welcome, {{currentUser.name}}</a>
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/user', currentUser.id, 'message']"><i class="fa d-inline fa-lg fa-commenting-o"></i> Message</a>
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" (click)="signOut()"><i class="fa d-inline fa-lg fa-user-circle-o"></i> Sign out</a>
+    </div>
   </div>
+</nav>
 
-    <div class="center-block" style="margin: 0 auto; width:800px; height:100px; float:right">
-      <pagination-controls (pageChange)="currentPage = $event; pageChanged($event)" style="display:block; margin:auto"></pagination-controls>
-      <div style="float:right">
-        <button [routerLink]="['/meeting']" class="btn btn-primary btn-primary">
-          <i class="fa fa-home" aria-hidden="true"></i> Main
-        </button>
-        <button (click)="goBack()" class="btn btn-primary btn-primary">
-          <span class="glyphicon glyphicon-circle-arrow-left"></span> Back
-        </button>
+<div class="py-5 text-center opaque-overlay" style="background-image: url(&quot;https://1001libraries.files.wordpress.com/2015/04/seoul-reading-room.jpg&quot;);">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-md-12 text-white">
+        <h1 class="display-3 mb-4">SNU MO-IM</h1>
+        <p class="lead mb-5">Where everyone can meet and enjoy activities!</p>
       </div>
     </div>
-
-
+  </div>
 </div>
+
+<div class="py-5" *ngIf="allMeetings && meetings && currentUser">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-md-12 text-black">
+        <label style="font-size: 35px;color:#2D4068;text-decoration: underline; font-weight: bold">
+          <i class="fa fa-hashtag" aria-hidden="true" style="font-size: 30px;margin-right: 4px"></i>{{tagName}}</label><br>
+        <p style="color: #555555">{{allMeetings.length}}
+          <span *ngIf="availableOnly"> available </span>
+          MO-IM<span *ngIf="allMeetings.length>1;else single">s are </span>
+          <ng-template #single> is </ng-template>
+          related to this tag!</p>
+        <br>
+        <span style="float:right" *ngIf="allMeetings.length > 0">
+          <input type="checkbox" class="checkbox-inline" [checked]="availableOnly" (click)="available()"> Available meetings only
+        </span>
+        <br><br>
+
+
+        <div  *ngFor="let meeting of meetings | paginate: { itemsPerPage: maxSize, currentPage: currentPage, totalItems: totalItems }"
+              style="display: block;">
+          <a [routerLink]="['/meeting', meeting.id]">
+            <label style="font-size: 20px;color: #336699; cursor: pointer">{{meeting.title}}</label>
+          </a>
+          <label class="label label-default" style="margin-left: 5px; padding-top: 3px; background-color: mediumseagreen;color: white" >
+            <i class="fa fa-list-ul"style="font-size:10px; margin-right: 3px; color:white"></i>{{meeting.subject.name}}
+          </label>
+          <br>
+          Posted by
+          <a [routerLink]="['/user', meeting.author.id]">
+            <i class="fa fa-user" style="font-size: 20px"></i>
+            <label> {{meeting.author.name}}</label>
+          </a>
+          <p style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            - {{ meeting.description}}
+          </p>
+          <span style="float:right">
+
+          <a [routerLink]="['/meeting', meeting.id]">
+            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            Click to view detail
+          </a>
+        </span><br><br>
+        </div>
+      </div>
+      <div class="col-md-12 text-black" style="margin-top: 50px">
+        <div class="center-block" style="margin: 0 auto; width:800px; height:100px; float:right">
+          <pagination-controls (pageChange)="currentPage = $event; pageChanged($event)" style="display:block; margin:auto"></pagination-controls>
+          <div style="float:right">
+            <button [routerLink]="['/meeting']" class="btn btn-outline-primary">
+              <i class="fa fa-home" aria-hidden="true"></i> Main
+            </button>
+            <button (click)="goBack()" class="btn btn-outline-primary">
+              <i class="fa fa-arrow-left" aria-hidden="true"></i> Back
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--Footer-->
+<div class="bg-primary py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 my-3">
+        <h1 class="display-4 text-white text-md-left text-center">Let's connect the world</h1>
+      </div>
+      <div class="col-md-4  text-center align-self-center">
+        <a href="/oauth/login/facebook/" target="_blank"><i class="fa fa-fw fa-facebook fa-3x text-white mx-3"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="text-white bg-secondary">
+  <div class="container">
+    <div class="row">
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 light">SNU MO-IM</h2>
+        <p class="text-white">A group who aims to ease of the lives of SNU students</p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">Mapsite</h2>
+        <ul class="list-unstyled">
+          <a href="#" class="text-white">Home</a>
+          <br>
+          <a href="#" class="text-white">About us</a>
+          <br>
+          <a href="#" class="text-white">Our services</a>
+          <br>
+          <a href="#" class="text-white">Stories</a>
+        </ul>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4">Contact</h2>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"><i class="fa d-inline mr-3 fa-envelope-o text-light"></i>SNU mail</a>
+        </p>
+        <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+          <a href="https://goo.gl/5U1Q7X" class="text-white" target="_blank"><i class="fa d-inline mr-3 fa-map-marker text-light"></i>Seoul National University</a>
+        </p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">SNU MO-IM</h2>
+        <form>
+          <fieldset class="form-group text-white"> <label for="exampleInputEmail1">M: Matching<br>O: Of<br>I: Identical<br>M: Motives<br></label> </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mt-3">
+        <p class="text-center text-white">© Copyright 2017 SNUMOIM - All rights reserved. </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
 
 

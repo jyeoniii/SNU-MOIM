@@ -4,23 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 </head>
 
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
 
-
-<div class="container" *ngIf="selectedMeeting && comments && currentUser">
-  <div style="float:right; margin-top:20px;">
-    <span>Welcome, <label>{{currentUser.name}}</label></span><br>
-    <a [routerLink]="['/message']" class="btn btn-info btn-sm">
-      <span class="glyphicon glyphicon-envelope"></span> Message
-    </a>
-    <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
-  </div><br>
-</div>
-
-<body>
-
+<body style="font-family: Helvetica Neue">
 <nav class="navbar navbar-expand-md bg-primary navbar-dark">
   <div class="container" *ngIf="currentUser">
     <a class="navbar-brand" [routerLink]="['/meeting']"><i class="fa d-inline fa-lg fa-users"></i> <b>SNU MO-IM</b></a>
@@ -39,7 +27,7 @@
     <div class="row">
       <div class="col-md-12 text-white">
         <h1 class="display-3 mb-4">SNU MO-IM</h1>
-        <p class="lead mb-5">Where everyone can meet and enjoy activities! &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+        <p class="lead mb-5"> Where everyone can meet and enjoy activities!</p>
       </div>
     </div>
   </div>
@@ -50,7 +38,7 @@
   <div class="container py-5">
     <div class="row">
       <div class="col-md-12 text-black">
-        <h2 class="text-center text-black" style="font-weight: bold;">{{selectedMeeting.title}}
+        <h2 class="text-center text-black" style="font-weight: bold; font-family: Helvetica Neue">{{selectedMeeting.title}}
           <small>
             <span class="badge bagde-info" style="margin-left: 5px; background-color: mediumseagreen; color: white" >
               <i class="fa fa-list-ul"style="font-size:10px; margin-right: 3px"></i>{{selectedMeeting.subject.name}}
@@ -65,9 +53,9 @@
           <span class="col-md-6" style="float:right">
             <span style="float:right">
               <span style="font-size: 15px">Participants</span>
-              <i *ngFor="let m of selectedMeeting.members" class="fa fa-user" style="font-size:35px; color: #336699; cursor: pointer"
+              <i *ngFor="let m of selectedMeeting.members" class="fa fa-user" style="font-size:35px; color: #695F5C; cursor: pointer"
                  (mouseenter)="changeMemberNameShown(m.name)" data-tooltip-text="" [attr.id]="memberName" [routerLink]="['/user', m.id]"></i>
-              <i *ngFor="let m of emptySeats" class="fa fa-user" style="font-size:35px; color: darkgray "></i><br>
+              <i *ngFor="let m of emptySeats" class="fa fa-user" style="font-size:35px; color: #d2d2d2 "></i><br>
             </span>
           </span>
         </div>
@@ -76,10 +64,14 @@
 
         <div class="col-md-12">
           <!--Invitation-->
-          <div class="col-md-4"  style="float:left">
-            <div class="dropdown" *ngIf="!selectedMeeting.is_closed" style="float:left">
-              <button class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" (click)="getRecUsers()">
+          <div class="col-md-4" *ngIf="recommendedUsers && (!selectedMeeting.is_closed) && alreadyJoined"  style="float:left">
+            <div class="dropdown" style="float:left">
+              <button class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown">
                 <span class="glyphicon glyphicon-envelope"></span> Invite
+                <!--Dropdown-->
+                <ul class="dropdown-menu">
+                  <li ><a class="dropdown-item" style="font-family: Helvetica Neue" *ngFor="let user of recommendedUsers" (click)="addInvitationList(user)">{{user.name}}</a></li>
+                </ul>
               </button>
               <!--Invitation list-->
               <span class="badge badge-info" *ngFor="let user of invitationList"
@@ -89,11 +81,6 @@
               <a *ngIf="invitationList.length > 0" (click)="sendInvitation()">
                 <i class="fa fa-check" aria-hidden="true" style="color: mediumseagreen; font-size:25px;cursor: pointer;"></i>
               </a>
-
-              <!--Dropdown-->
-              <ul class="dropdown-menu">
-                <li ><a *ngFor="let user of recommendedUsers" (click)="addInvitationList(user)">{{user.name}}</a></li>
-              </ul>
             </div>
           </div> <!--Invitation end-->
 
@@ -151,8 +138,8 @@
         <!--Comments-->
         <div class="container" *ngIf="selectedMeeting && comments && currentUser">
           <!-- the comment box -->
-          <div class="well">
-            <h4><i class="fa fa-paper-plane-o"></i> Leave a Comment:</h4>
+          <div class="well" style="font-family: Helvetica Neue">
+            <h5><i class="fa fa-paper-plane-o"></i> Leave a Comment:</h5>
             <form role="form">
               <div class="form-group">
                 <input [(ngModel)]="newComment" class="form-control" rows="3" [ngModelOptions]="{standalone: true}">
@@ -199,7 +186,7 @@
               </ng-template>
             </span>
             <ng-template #private_comment>
-                <label style="color:royalblue">Private comment</label>
+                <label style="color: #3D578C">Private comment</label>
             </ng-template>
           </li>
         </div> <!-- Comments end -->
@@ -209,14 +196,14 @@
           <div style="float:right">
             <span *ngIf="!selectedMeeting.is_closed && isOwner()">
               <button (click)="edit()" class="btn btn-outline-primary" id="edit-button" >
-                <span class="glyphicon glyphicon-pencil"></span> Edit
+                <i class="fa fa-pencil" aria-hidden="true"></i> Edit
               </button>
               <button (click)="delete()" class="btn btn-outline-primary" id="delete-button">
-                <span class="glyphicon glyphicon-trash"></span> Delete
+                <i class="fa fa-eraser" aria-hidden="true"></i> Delete
               </button>
             </span>
             <button (click)="goBack()" class="btn btn-outline-primary" id="back-button">
-              <span class="glyphicon glyphicon-circle-arrow-left"></span> Back
+              <i class="fa fa-arrow-left" aria-hidden="true"></i> Back
             </button>
           </div>
         </div> <!--Buttons end-->

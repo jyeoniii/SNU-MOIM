@@ -76,7 +76,7 @@ export class MeetingDetailComponent implements OnInit {
               if (!this.currentUser) {
                 this.router.navigate(['/signin_first']);
               }
-
+              this.getRecUsers();
               if (this.selectedMeeting.members.find(member => member.id === this.currentUser.id)) {
                 this.alreadyJoined = true;
               }
@@ -173,11 +173,13 @@ export class MeetingDetailComponent implements OnInit {
       return;
     }
     if (confirm('Will you be with us?')) {
-      this.meetingService.joinMeeting(this.selectedMeeting.id, this.currentUser.id);
-      this.selectedMeeting.members.push(this.currentUser);
-      this.emptySeats = new Array(this.selectedMeeting.max_member - this.selectedMeeting.members.length);
-      this.alreadyJoined = true;
-      alert('Welcome!');
+      this.meetingService.joinMeeting(this.selectedMeeting.id, this.currentUser.id)
+        .then(() => {
+          this.selectedMeeting.members.push(this.currentUser);
+          this.emptySeats = new Array(this.selectedMeeting.max_member - this.selectedMeeting.members.length);
+          this.alreadyJoined = true;
+          alert('Welcome!');
+        });
     }
   }
 
@@ -202,10 +204,10 @@ export class MeetingDetailComponent implements OnInit {
   }
 
   getRecUsers(): void {
-    if (this.recommendedUsers !== null) return;  // Compute only once
-    this.recommendService.getRecUsersForMeeting(this.currentUser.id, this.selectedMeeting.id, 10)
+    this.recommendService.getRecUsersForMeeting(this.currentUser.id, this.selectedMeeting.id, 8)
       .then(users => {
         this.recommendedUsers = users;
+        console.log(this.recommendedUsers);
       });
   }
 

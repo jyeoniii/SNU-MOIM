@@ -107,14 +107,14 @@ export class ProfileComponent implements OnInit {
         } else if (!this.user.fb_connected) {
           this.status = Status.ProfileUserNoFB;
         } else {
+          this.userService.getFBProfile(this.user.id)
+            .then(profile => {
+              this.FBprofile = profile;
+            });
           this.status = Status.ShowMutual;
           for (const friend of this.loginedUser.fb_friends) {
             if (friend.id === this.user.id) {
               this.status = Status.Friend;
-              this.userService.getFBProfile(this.user.id)
-                .then(profile => {
-                  this.FBprofile = profile;
-                });
               break;
             }
           }
