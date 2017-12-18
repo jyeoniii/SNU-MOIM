@@ -106,7 +106,10 @@ export class MeetingService {
     return this.http.get(url)
       .toPromise()
       .then(response => response.json() as Meeting)
-      .catch(this.handleError);
+      .catch(response => {
+        if (response.status === 404) return null;
+        else this.handleError(response);
+      });
   }
 
   editMeeting(editedMeeting: Meeting, tag_names: string[]): Promise<Meeting> {

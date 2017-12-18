@@ -8,7 +8,21 @@
   <!--<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">-->
 </head>
 
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+
+<div class="container" *ngIf="selectedMeeting && comments && currentUser">
+  <div style="float:right; margin-top:20px;">
+    <span>Welcome, <label>{{currentUser.name}}</label></span><br>
+    <a [routerLink]="['/message']" class="btn btn-info btn-sm">
+      <span class="glyphicon glyphicon-envelope"></span> Message
+    </a>
+    <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
+  </div><br>
+</div>
+
 <body>
+
 <nav class="navbar navbar-expand-md bg-primary navbar-dark">
   <div class="container">
     <a class="navbar-brand" href="#"><i class="fa d-inline fa-lg fa-users"></i> <b>SNU MO-IM</b></a>
@@ -273,15 +287,6 @@
     </div>
   </div>
 </div>
-
-
-
-
 </body>
 </html>
-
-
-
-
-
 

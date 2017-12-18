@@ -81,7 +81,10 @@ export class UserService {
     return this.http.get(`${this.userUrl}/${id}`)
       .toPromise()
       .then(response => response.json() as User)
-      .catch(this.handleError);
+      .catch(response => {
+        if(response.status === 404) return null;
+        else this.handleError(response);
+      });
   }
 
   editUserInfo(user: User, password: string): Promise<void> {

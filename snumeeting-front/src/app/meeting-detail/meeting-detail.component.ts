@@ -60,6 +60,9 @@ export class MeetingDetailComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.meetingService.getMeeting(+params['id'])
         .then(meeting => {
+          if(meeting == null) {
+            this.router.navigate(['/404']);
+          }
           this.selectedMeeting = meeting;
           this.author = meeting.author;
           this.tags = meeting.tags;
