@@ -79,6 +79,11 @@ class SnuMeetingTestCase(TestCase):
 
     self.client = Client()
 
+    self.manager = JoinHistoryManager()
+    SyncUserHistoryAll()
+    SyncCollegeHistoryAll()
+ 
+
   def test_csrf(self):
     # By default, csrf checks are disabled in test client
     # To test csrf protection we enforce csrf checks here
@@ -394,18 +399,14 @@ class SnuMeetingTestCase(TestCase):
       json.dumps({'author_id':3, 'title': 'Performance Band', 'subject_id':'3', 'description':'Who wants to get along with me?', 'location':'SNU', 'max_member':5, 'member_ids':[2, 3], 'tag_names':['performance', 'band']}),
       content_type='application/json',
     )
-    self.assertEqual(response.status_code, 201)
-
-    response = self.client.get('/api/meeting')
     data = json.loads(response.content.decode())
-    self.assertEqual(data[4]['author']['id'], 3)
-    self.assertEqual(data[4]['title'], 'Performance Band')
-    self.assertEqual(data[4]['subject']['id'], 3)
-    self.assertEqual(data[4]['description'], 'Who wants to get along with me?')
-    self.assertEqual(data[4]['location'], 'SNU')
-    self.assertEqual(data[4]['max_member'], 5)
-    self.assertEqual(data[4]['members'][0]['id'], 3)
-    self.assertEqual(len(data), 5)
+    self.assertEqual(data['author']['id'], 3)
+    self.assertEqual(data['title'], 'Performance Band')
+    self.assertEqual(data['subject']['id'], 3)
+    self.assertEqual(data['description'], 'Who wants to get along with me?')
+    self.assertEqual(data['location'], 'SNU')
+    self.assertEqual(data['max_member'], 5)
+    self.assertEqual(data['members'][0]['id'], 3)
 
     # PUT
     response = self.client.put('/api/meeting')
@@ -925,23 +926,19 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 404)
 
   def test_joinMeeting(self):
-    SyncUserHistoryAll()
-    SyncCollegeHistoryAll()
-    manager = JoinHistoryManager()
-
     meeting = Meeting.objects.get(id=2)
     user = Ex_User.objects.get(id=3)
 
-    userjh_before = manager.getCount(user.joinHistory, meeting.subject.id)
-    collegejh_before = manager.getCount(user.college.joinHistory, meeting.subject.id)
+    userjh_before = self.manager.getCount(user.joinHistory, meeting.subject.id)
+    collegejh_before = self.manager.getCount(user.college.joinHistory, meeting.subject.id)
     len_before = len(meeting.members.all())
 
     response = self.client.put('/api/joinMeeting/2', json.dumps({'user_id':3}), content_type='application/json')
 
     user = Ex_User.objects.get(id=3)
 
-    userjh_after = manager.getCount(user.joinHistory, meeting.subject.id)
-    collegejh_after = manager.getCount(user.college.joinHistory, meeting.subject.id)
+    userjh_after = self.manager.getCount(user.joinHistory, meeting.subject.id)
+    collegejh_after = self.manager.getCount(user.college.joinHistory, meeting.subject.id)
     len_after = len(meeting.members.all())
 
     self.assertEqual(userjh_before+1, userjh_after)
@@ -967,22 +964,18 @@ class SnuMeetingTestCase(TestCase):
     self.assertEqual(response.status_code, 405)
 
   def test_leaveMeeting(self):
-    SyncUserHistoryAll()
-    SyncCollegeHistoryAll()
-    manager = JoinHistoryManager()
-
     meeting = Meeting.objects.get(id=2)
     user = Ex_User.objects.get(id=1)
 
-    userjh_before = manager.getCount(user.joinHistory, meeting.subject.id)
-    collegejh_before = manager.getCount(user.college.joinHistory, meeting.subject.id)
+    userjh_before = self.manager.getCount(user.joinHistory, meeting.subject.id)
+    collegejh_before = self.manager.getCount(user.college.joinHistory, meeting.subject.id)
     len_before = len(meeting.members.all())
 
     response = self.client.put('/api/leaveMeeting/2', json.dumps({'user_id':1}), content_type='application/json')
 
     user = Ex_User.objects.get(id=1)
-    userjh_after = manager.getCount(user.joinHistory, meeting.subject.id)
-    collegejh_after = manager.getCount(user.college.joinHistory, meeting.subject.id)
+    userjh_after = self.manager.getCount(user.joinHistory, meeting.subject.id)
+    collegejh_after = self.manager.getCount(user.college.joinHistory, meeting.subject.id)
     len_after = len(meeting.members.all())
 
     self.assertEqual(userjh_before-1, userjh_after)
@@ -1086,6 +1079,41 @@ class SnuMeetingTestCase(TestCase):
     response = self.client.delete('/api/tags')
     self.assertEqual(response.status_code, 405)
 
+  def test_joinhistory_convert_to_list(self):
+    user = Ex_User.objects.get(id=1)
+    result = self.manager.convertToList(user.joinHistory)
+    self.assertEqual(result, [2,1,1,0])
+
+  def test_get_joined_meeting(self):
+    user_id = 1
+    response = self.client.get('/api/user/'+str(user_id)+'/meeting')
+    result = json.loads(response.content.decode())
+
+    self.assertEqual(len(result), 4)
+
+    for m in result:
+      result = False
+      for member in m['members']:
+        if user_id == member['id']:
+          result = True
+      self.assertEqual(result, True)
+
+    # Method not allowed
+    response = self.client.post('/api/user/'+str(user_id)+'/meeting')
+    self.assertEqual(response.status_code, 405)
+
+    # Method not allowed
+    response = self.client.put('/api/user/'+str(user_id)+'/meeting')
+    self.assertEqual(response.status_code, 405)
+
+    # Method not allowed
+    response = self.client.delete('/api/user/'+str(user_id)+'/meeting')
+    self.assertEqual(response.status_code, 405)
+
+    # Non existing user
+    user_id = 10
+    response = self.client.get('/api/user/'+str(user_id)+'/meeting')
+    self.assertEqual(response.status_code, 404)
 
 
 

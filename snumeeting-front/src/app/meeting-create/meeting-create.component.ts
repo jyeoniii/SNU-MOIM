@@ -113,9 +113,9 @@ export class MeetingCreateComponent implements OnInit {
         this.meeting.max_member,
         tagNames
       )
-        .then(() => {
+        .then(new_meeting => {
           alert('Successfully Created a meeting!');
-          this.router.navigate(['/meeting']);
+          this.router.navigate(['/meeting', new_meeting.id]);
         });
     } else {
       alert(this.notice);

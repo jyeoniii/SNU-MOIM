@@ -285,7 +285,7 @@ def meetingList(request):
       return HttpResponse(status=500)
 
     new_meeting.save()
-    return HttpResponse(status=201)
+    return JsonResponse(convert_meeting_for_mainpage(new_meeting), safe=False)
   else:
     return HttpResponseNotAllowed(['GET'],['POST'])
 

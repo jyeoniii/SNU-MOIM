@@ -6,6 +6,7 @@ import { Meeting } from './meeting';
 import { Comment } from './comment';
 import { Interest } from './interest';
 import { Message } from './message';
+import { Tag } from './tag';
 
 const college = [
   {id: 1, name: 'Engineering'},
@@ -31,13 +32,13 @@ const user = [
 
 const meeting = [
   {id: 1, author: user[0], title: 'Mock-title1', subject: subject[0],
-    description: 'Description1', location: 'SNUstation', max_member: 4, members: [ user[0] ] },
+    description: 'Description1', location: 'SNUstation', max_member: 4, members: [ user[0] ], is_closed: false },
   {id: 2, author: user[1], title: 'Mock-title2', subject: subject[1],
-    description: 'Description2', location: 'SNU', max_member: 5, members: [ user[0] ] },
+    description: 'Description2', location: 'SNU', max_member: 5, members: [ user[0] ], is_closed: false  },
   {id: 3, author: user[2], title: 'Mock-title3', subject: subject[2],
-    description: 'Description3', location: 'Nokdu', max_member: 6, members: [ user[0], user[1] ] },
+    description: 'Description3', location: 'Nokdu', max_member: 6, members: [ user[0], user[1] ], is_closed: false  },
   {id: 4, author: user[2], title: 'Mock-title4', subject: subject[0],
-    description: 'Description4', location: 'SNU', max_member: 3, members: [ user[0], user[1] ] },
+    description: 'Description4', location: 'SNU', max_member: 3, members: [ user[0], user[1] ], is_closed: false  },
 ];
 
 const comment = [
@@ -57,6 +58,11 @@ const message = [
   {id: 6, sender: user[2], receiver: user[1], content: 'Right'},
 ];
 
+const tag = [
+  {id: 1, name: 'study', meetings_on_tag:[meeting[0], meeting[1]]},
+  {id: 2, name: 'english', meetings_on_tag:[meeting[2], meeting[3]]},
+]
+
 export const makeCollegeData = () => college as College[];
 export const makeUserData = () => user as User[];
 export const makeInterestData = () => interest as Interest[];
@@ -64,3 +70,4 @@ export const makeMeetingData = () => meeting as Meeting[];
 export const makeCommentData = () => comment as Comment[];
 export const makeSubjectData = () => subject as Subject[];
 export const makeMessageData = () => message as Message[];
+export const makeTagData = () => tag as Tag[];
