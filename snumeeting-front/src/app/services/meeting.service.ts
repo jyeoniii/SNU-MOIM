@@ -108,7 +108,7 @@ export class MeetingService {
       .then(response => response.json() as Meeting)
       .catch(response => {
         if (response.status === 404) return null;
-        else this.handleError(response)
+        else this.handleError(response);
       });
   }
 
