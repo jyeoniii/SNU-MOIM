@@ -155,7 +155,7 @@
             <!--Author of the comment-->
             <h5><i class="fa fa-comment"></i>
               <span style="cursor:pointer" [routerLink]="['/user', comment.author.id]">{{ comment.author.name }}</span>
-              <small style="font-size: 3px">
+              <small style="font-size: 10px">
                 {{padLeft(comment.datetime.hour, '0',2)}}:{{padLeft(comment.datetime.minute, '0',2)}}
                 <span *ngIf="datetime.afternoon;else AM">PM</span>
                 <ng-template #AM>AM</ng-template>
