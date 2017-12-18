@@ -3,6 +3,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpModule } from '@angular/http';
 import { FormsModule } from '@angular/forms';
 
+import { PageNotFoundComponent } from './page-not-found.component';
+
 import {MetaDataService} from '../services/meta-data-service';
 import {UserService} from '../services/user.service';
 
