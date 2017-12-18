@@ -82,7 +82,11 @@ LOGIN_ERROR_URL='http://localhost:4200/signin'
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = True
 
-ALLOWED_HOSTS = ['ec2-52-78-119-61.ap-northeast-2.compute.amazonaws.com']
+ALLOWED_HOSTS = [
+    '52.78.119.61',
+    'snu-moim.ga',
+    'ec2-52-78-119-61.ap-northeast-2.compute.amazonaws.com'
+]
 
 ANGULAR_APP_DIR = os.path.join(BASE_DIR, 'front/dist')
 
