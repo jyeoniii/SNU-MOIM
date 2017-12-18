@@ -37,6 +37,11 @@ export class SignInComponent implements OnInit {
   }
 
   signIn(username: string, password: string) {
+    if (username === '' || password === '') {
+      alert('Please enter your ID or password.');
+      return;
+    }
+
     this.userService.signIn(username, password).then(user => {
       if (user !== null) {
         this.userService.setLoginedUser(user);

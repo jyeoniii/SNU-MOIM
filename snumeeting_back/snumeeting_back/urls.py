@@ -14,10 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
-from django.conf import settings
+from django.contrib.staticfiles.views import serve
 from django.contrib import admin
+from django.views.generic import RedirectView
 
 urlpatterns = [
+  url(r'^$', serve, kwargs = {'path': 'index.html'}),
+  url(r'^(?!/?static/)(?!/?media/)(?P<path>.*\..*)$',
+      RedirectView.as_view(url='/static/%(path)s', permanent=False)),
   url(r'^admin/', admin.site.urls),
   url(r'^api/', include('snumeeting.urls')),  
   url(r'^oauth/', include('social_django.urls', namespace='social')),

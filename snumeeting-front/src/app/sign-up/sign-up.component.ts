@@ -89,6 +89,21 @@ export class SignUpComponent implements OnInit {
       return;
     }
 
+    if (username === '' || password === '') {
+      alert('Please enter your ID or password.');
+      return;
+    }
+
+    if (name === '') {
+      alert('Please enter your name.');
+      return;
+    }
+
+    if (!this.selectedCollege) {
+      alert('Please select your college.');
+      return;
+    }
+
     if (password === passwordCheck) {
       var newUser = new User();
       newUser.username = username;
