@@ -49,10 +49,10 @@ export class MessageService {
       .catch(this.handleError);
   }
 
-  sendMessage(sender: User, receiver: User, content: string): Promise<Message> {
+  sendMessage(sender_id: number, receiver_id: number, content: string): Promise<Message> {
     const url = `${this.messagesUrl}`;
     return this.http.post(url, JSON.stringify(
-      {sender_id: sender.id, receiver_id: receiver.id, content: content}),
+      {sender_id: sender_id, receiver_id: receiver_id, content: content}),
       { headers: this.headers })
       .toPromise()
       .then(response => response.json() as Message)

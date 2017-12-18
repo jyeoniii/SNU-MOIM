@@ -123,6 +123,7 @@ export class MeetingsComponent implements OnInit {
           .then(res => {
             this.meetingsRecommended = res;
             this.meetingsShown = this.meetingsRecommended.slice(this.idx, this.idx + this.N);
+            console.log(this.meetingsShown);
           });
       } else {
         this.router.navigate(['/signin_first']);

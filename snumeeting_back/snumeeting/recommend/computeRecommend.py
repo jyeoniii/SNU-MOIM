@@ -1,10 +1,11 @@
 from django.forms.models import model_to_dict
-from snumeeting.models import Ex_User, College
+from snumeeting.models import Ex_User, College, Subject
 from .similaritymeasures import Similarity 
 from .JoinHistoryManager import JoinHistoryManager
 import heapq
 import random
 from operator import itemgetter
+from snumeeting.convert import convert_meeting_for_mainpage
 
 def getRecMeetings(target, N):
   # Get meetings that similar users is joined
@@ -38,13 +39,7 @@ def getRecMeetings(target, N):
 
   topN = heapq.nlargest(N, scores.items(), key=itemgetter(1)) 
 
-  # Helper function: remove Queryset type 'members' which is not serializable
-  def removeQuerySets(meeting):
-    del meeting['members']
-    del meeting['tags']
-    return meeting
-
-  return list(map(lambda x: removeQuerySets(x), [model_to_dict(t[0]) for t in topN])) 
+  return list(map(lambda x: convert_meeting_for_mainpage(x), [t[0] for t in topN])) 
 
 
 

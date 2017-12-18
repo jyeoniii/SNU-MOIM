@@ -84,7 +84,7 @@ export class MessagesComponent implements OnInit {
   sendMessage(sender: User, receiver: User, content: string): void {
     if(this.newMessage != null) {
       let message;
-      this.messageService.sendMessage(sender, receiver, content)
+      this.messageService.sendMessage(sender.id, receiver.id, content)
         .then(res => {
           message = res;
           this.messages.push(res);
