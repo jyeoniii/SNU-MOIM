@@ -81,13 +81,18 @@ export class EditProfileComponent implements OnInit {
 
   editProfile(password: string, passwordCheck: string, name: string) {
     if (this.loginedUser.id !== this.user.id) {
-      alert('There has been a problem; You can\'t do this action.');
+      alert('Are you trying to edit the profile of another user?');
       this.router.navigate(['/user/' + this.loginedUser.id + '/edit']);
       return;
     }
 
     if (password === '') {
       alert('Please enter a new password!');
+      return;
+    }
+
+    if (name === '') {
+      alert('Please enter your new name!');
       return;
     }
 
