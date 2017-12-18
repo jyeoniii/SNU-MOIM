@@ -84,6 +84,10 @@ export class MeetingCreateComponent implements OnInit {
       this.notice = 'Well, that seems like a huge conference...';
       console.log('max member exceeded');
       return;
+    } else if (this.meeting.max_member<0) {
+      this.notice = 'Negative members? Hehe';
+      console.log('negative member');
+      return;
     } else if (this.meeting.max_member===0) {
       this.notice = 'No member? You must be kidding!';
       console.log('no members');

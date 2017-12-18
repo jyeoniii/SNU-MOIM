@@ -1,126 +1,205 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!DOCTYPE html>
+<html>
 
-<html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
 </head>
+
 <body>
+<nav class="navbar navbar-expand-md bg-primary navbar-dark">
+  <div class="container" *ngIf="loginedUser">
+    <a class="navbar-brand" [routerLink]="['/meeting']"><i class="fa d-inline fa-lg fa-users"></i><b>SNU MO-IM</b></a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
+    <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/user', loginedUser.id]"><i class="fa d-inline fa-lg fa-address-book-o"></i> Welcome, {{loginedUser.name}}</a>
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" [routerLink]="['/message']"><i class="fa d-inline fa-lg fa-commenting-o"></i> Message</a>
+      <a class="btn navbar-btn ml-2 text-white btn-secondary" (click)="signOut()"><i class="fa d-inline fa-lg fa-user-circle-o"></i> Sign out</a>
+    </div>
+  </div>
+</nav>
 
-<div *ngIf="loginedUser" style="float:right">
-  <span>Welcome, </span>{{loginedUser.name}}<br>
-  <a [routerLink]="['/message']" class="btn btn-info btn-sm">
-    <span class="glyphicon glyphicon-envelope"></span> Message
-  </a>
-  <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
-</div>
-
-<!-- navigation for chatting -->
-
-<div style="float:left">
-  <button (click)="selectAll()" class="btn btn-primary btn-primary" style="width:180px">All</button>
-  <div *ngIf="onChat">
-    <div *ngFor="let onChatUser of onChat">
-      <button class="btn btn-primary btn-primary" style="width:150px; margin-right:0px; border-right-width:0px;" (click)="onSelect(onChatUser)">{{onChatUser.name}}</button>
-      <button class="btn btn-primary btn-primary" style="width:30px; margin-left:0px; border-left-width:0px;" (click)="deSelect(onChatUser)">&times;</button><br>
+<div class="py-5 text-center opaque-overlay" style="background-image: url(&quot;https://pingendo.github.io/templates/sections/assets/cover_event.jpg&quot;);">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-md-12 text-white">
+        <h1 class="display-3 mb-4">Send message to others!</h1>
+        <p class="lead mb-5">Connect to SNUs with Facebook friends or all users!</p>
+        <button (click)="selectAll()" class="btn btn-lg mx-1 btn-secondary">Show all</button>
+      </div>
     </div>
   </div>
 </div>
-
-<!-- components of navigation -->
-<div style="margin: 0 200px 0 200px">
-
-  <div *ngIf="selectedUser == null">
-    <h2>Send messages to others!</h2>
-
+<div class="py-5">
+  <div class="container" *ngIf="selectedUser == null">
     <div *ngIf="fbFriends">
-      <h2>Facebook friends</h2>
-      <div class="table-responsive">
-        <table class="table table-striped">
-          <thead class="thead-default">
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-          </tr>
-          <tr *ngFor="let u of fbFriends">
-            <td><a (dblclick)="onDoubleClick(u)">{{u.username}}</a></td>
-            <td>{{u.name}}</td>
-          </tr>
-          </thead>
-        </table>
+      <h1><i class="fa d-inline fa-lg fa-facebook-square"></i>&nbsp;Friends</h1>
+      <div class="row">
+        <div class="col-md-12">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>NAME</th>
+              <th>MESSAGE</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let u of fbFriends">
+              <td>{{u.username}}</td>
+              <td>{{ u.name }}</td>
+              <td><i (click)="onDoubleClick(u)" class="button fa d-inline fa-lg fa-commenting"></i></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
     </div>
 
     <div *ngIf="users">
-      <h2>All users</h2>
-      <div class="table-responsive">
-        <table class="table table-striped">
-          <thead class="thead-default">
-          <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Interest</th>
-          </tr>
-          <tr *ngFor="let u of users">
-            <td><a (dblclick)="onDoubleClick(u)">{{u.username}}</a></td>
-            <td>{{u.name}}</td>
-            <td>
-              <div *ngIf="u.subjects">
-                <div *ngFor="let subject of u.subjects">{{subject.name}}</div>
-              </div>
-            </td>
-          </tr>
-          </thead>
-        </table>
+      <h1><i class="fa d-inline fa-lg fa-users"></i>&nbsp;All users&nbsp;</h1>
+      <div class="row" id="scrolltable">
+        <div class="col-md-12">
+          <table class="table">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>NAME</th>
+              <th>INTEREST</th>
+              <th>MESSAGE</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let u of users">
+              <td>{{u.username}}</td>
+              <td>{{u.name}}</td>
+              <td>
+                <div *ngIf="u.subjects">
+                  <div *ngFor="let subject of u.subjects">{{subject.name}}</div>
+                </div>
+              </td>
+              <td><i (click)="onDoubleClick(u)" class="fa d-inline fa-lg fa-commenting"></i></td>
+            </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- navigation for chatting -->
+  <div style="float:left">
+    <div *ngIf="onChat">
+      <div *ngFor="let onChatUser of onChat">
+        <button class="btn btn-primary btn-primary" style="width:150px; margin-right:0px; border-right-width:0px;" (click)="onSelect(onChatUser)">{{onChatUser.name}}</button>
+        <button class="btn btn-primary btn-primary" style="width:30px; margin-left:0px; border-left-width:0px;" (click)="deSelect(onChatUser)">&times;</button><br>
       </div>
     </div>
   </div>
 
   <div *ngIf="selectedUser">
 
-    <h2>{{selectedUser.name}}</h2>
-    <div *ngIf="betweenMessages" style="max-height:600px; overFlow:auto">
-      <div *ngFor="let m of betweenMessages">
-        <div *ngIf="m.receiver.id==loginedUser.id" style="margin-bottom:10px; min-height:100px">
-          <div style="float:left; width:100px; min-height:100px; background:#bbb; text-align:center; border-radius:20px">{{getUser(m.sender.id).name}}</div>
-          <div style="margin-left:100px; text-align:left; word-break:break-all">
-            <div style="white-space: pre-line; border: 3px solid steelblue; border-radius:10px">{{m.content}}</div>
-            <sub>{{m.datetime.year}}-{{m.datetime.month}}-{{m.datetime.day}}
-            {{m.datetime.hour}}:{{m.datetime.minute}}
-            <span *ngIf="m.datetime.afternoon;else AM">PM</span>
-            <ng-template #AM>AM</ng-template>
-            </sub>
+    <div class="container">
+
+      <br><br>
+      <div *ngIf="betweenMessages" style="max-height:600px; overFlow:auto">
+        <div *ngFor="let m of betweenMessages">
+          <div *ngIf="m.receiver.id==loginedUser.id">
+            <div style="float:right; background:#bbb; text-align:center;"><p>{{getUser(m.sender.id).name}}<br></p></div>
+            <div style="margin-left:100px; text-align:left; word-break:break-all"><br>
+              <div style="white-space: pre-line; border: 3px solid steelblue; border-radius:auto">{{m.content}}</div>
+              <sub>{{m.datetime.year}}-{{m.datetime.month}}-{{m.datetime.day}}
+                {{m.datetime.hour}}:{{m.datetime.minute}}
+                <span *ngIf="m.datetime.afternoon;else AM">PM</span>
+                <ng-template #AM>AM</ng-template>
+              </sub>
+            </div>
           </div>
-        </div>
-        <div *ngIf="m.sender.id===loginedUser.id" style="margin-bottom:10px; min-height:100px">
-          <div style="float:right; width:100px; min-height:100px; background:#bbb; text-align:center; border-radius:20px">{{getUser(m.sender.id).name}}</div>
-          <div style="margin-right:100px; text-align:right; word-break:break-all">
-            <div style="white-space: pre-line; border: 3px solid khaki; border-radius:10px">{{m.content}}</div>
-            <sub>{{m.datetime.year}}-{{m.datetime.month}}-{{m.datetime.day}}
-            {{m.datetime.hour}}:{{m.datetime.minute}}
-            <span *ngIf="m.datetime.afternoon;else AM">PM</span>
-            <ng-template #AM>AM</ng-template>
-            </sub>
+          <div *ngIf="m.sender.id===loginedUser.id" style="margin-bottom:10px; min-height:100px">
+            <div style="float:right; width:100px; min-height:auto; background:#69bb96; text-align:center; border-radius:20px">{{getUser(m.sender.id).name}}</div>
+            <div style="margin-right:100px; text-align:right; word-break:break-all">
+              <div style="white-space: pre-line; border: 3px solid #73b3f0; border-radius:10px">{{m.content}}</div>
+              <sub>{{m.datetime.year}}-{{m.datetime.month}}-{{m.datetime.day}}
+                {{m.datetime.hour}}:{{m.datetime.minute}}
+                <span *ngIf="m.datetime.afternoon;else AM">PM</span>
+                <ng-template #AM>AM</ng-template>
+              </sub>
+            </div>
           </div>
         </div>
       </div>
+
+      <button (click)="sendMessage(loginedUser, selectedUser, newMessage)"
+              style="float:right" class="btn btn-primary btn-primary">Send</button>
+      <div style="min-height:100px; margin-right:300px">
+      <textarea class="form-control" [(ngModel)]="newMessage" cols="45" rows="5" placeholder="Send your message" wrap="hard">
+      </textarea>
+      </div>
+
+
     </div>
+
     <br>
 
-    <button (click)="sendMessage(loginedUser, selectedUser, newMessage)"
-      style="float:right" class="btn btn-primary btn-primary">Send</button>
-    <div style="min-height:100px; margin-right:300px">
-      <textarea [(ngModel)]="newMessage" cols="45" rows="5" placeholder="Send your message" wrap="hard">
-      </textarea>
-    </div>
 
   </div>
 
+
 </div>
 
+<div class="text-white bg-secondary">
+  <div class="container">
+    <div class="row">
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 light">SNU MO-IM</h2>
+        <p class="text-white">A group who aims to ease of the lives of SNU students</p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">Mapsite</h2>
+        <ul class="list-unstyled">
+          <a href="#" class="text-white">Home</a>
+          <br>
+          <a href="#" class="text-white">About us</a>
+          <br>
+          <a href="#" class="text-white">Our services</a>
+          <br>
+          <a href="#" class="text-white">Stories</a>
+        </ul>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4">Contact</h2>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"><i class="fa d-inline mr-3 fa-envelope-o text-light"></i>SNU mail</a>
+        </p>
+        <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+          <a href="https://goo.gl/5U1Q7X" class="text-white" target="_blank"><i class="fa d-inline mr-3 fa-map-marker text-light"></i>Seoul National University</a>
+        </p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">SNU MO-IM</h2>
+        <form>
+          <fieldset class="form-group text-white"> <label for="exampleInputEmail1">M: Matching<br>O: Of<br>I: Identical<br>M: Motives<br></label> </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mt-3">
+        <p class="text-center text-white">© Copyright 2017 SNUMOIM - All rights reserved. </p>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
 </body>
+
 </html>
