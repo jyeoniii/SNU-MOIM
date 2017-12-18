@@ -147,6 +147,9 @@ DATABASES = {
         'PASSWORD': 'tmsnahdla', # account password 
         'HOST': '52.78.119.61', # database address (IP)
         'PORT': '3306', # database port(normally 3306)
+        'OPTIONS': {
+            "init_command": "SET foreign_key_checks = 0;",
+        },
     }
 }
 
