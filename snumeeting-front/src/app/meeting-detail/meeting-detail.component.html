@@ -1,175 +1,285 @@
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+  <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+  <!--<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">-->
+</head>
 
-<link href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
-
-
-<div class="container" *ngIf="selectedMeeting && comments && currentUser">
-  <div style="float:right; margin-top:20px;">
-    <span>Welcome, <label>{{currentUser.name}}</label></span><br>
-    <a [routerLink]="['/user', currentUser.id, 'message']" class="btn btn-info btn-sm">
-      <span class="glyphicon glyphicon-envelope"></span> Message
-    </a>
-    <button (click)="signOut()" class="btn btn-primary btn-primary">SignOut</button>
-  </div><br>
-
-
-  <!--Meeting Content-->
-  <div class="row">
-    <div class="col-lg-8">
-
-      <label style="font-size: 30px">{{selectedMeeting.title}} </label>
-      <!--Join / Leave Button-->
-        <span style="float: right" *ngIf="!selectedMeeting.is_closed; else closed">
-          <span *ngIf="isOwner(); else notOwner">
-            <button (click)="closeMeeting()" class="btn btn-primary">Close <span class="glyphicon glyphicon-remove"></span></button>
-          </span>
-          <br>
-          <ng-template #notOwner>
-            <span *ngIf="alreadyJoined; else canJoin">
-              <button (click)="leaveMeeting()" class="btn btn-primary">Leave <span class="glyphicon glyphicon-share"></span></button>
-            </span>
-            <ng-template #canJoin>
-              <button (click)="joinMeeting()" class="btn btn-primary">
-                Join <span class="glyphicon glyphicon-check"></span>
-              </button>
-            </ng-template>
-          </ng-template>
-        </span>
-        <ng-template #closed>
-          <label class="label label-default" style="margin-left: 10px; background-color: #C21F39" >
-            CLOSED
-          </label>
-        </ng-template><!--End Join / Leave -->
-
-      <p class="lead"><i class="fa fa-user"></i> by <a [routerLink]="['/user', author.id]">{{author.name}}</a>
-        <span style="float:right">
-          <span style="font-size: 15px">Participants</span>
-          <i *ngFor="let m of selectedMeeting.members" class="fa fa-user" style="font-size:35px; color: #336699; cursor: pointer"
-             (mouseenter)="changeMemberNameShown(m.name)" data-tooltip-text="" [attr.id]="memberName" [routerLink]="['/user', m.id]"></i>
-          <i *ngFor="let m of emptySeats" class="fa fa-user" style="font-size:35px; color: darkgray "></i><br>
-        </span>
-      </p>
-
-      <!--Invitation-->
-      <div class="dropdown" *ngIf="!selectedMeeting.is_closed">
-        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" (click)="getRecUsers()">
-          <span class="glyphicon glyphicon-envelope"></span> Invite
-        </button>
-        <!--Invitation list-->
-        <label *ngFor="let user of invitationList" class="label label-default" style="margin-left: 5px; padding-top: 4px; background-color: #7f7f7f" >
-          <i class="fa fa-user" style="font-size:15px; margin-right: 3px"></i>{{user.name}}
-        </label>
-        <a *ngIf="invitationList.length > 0" (click)="sendInvitation()">
-          <span class="glyphicon glyphicon-ok" style="color: mediumseagreen; font-size:20px;margin-left: 5px; cursor: pointer;"></span>
-        </a>
-
-        <!--Dropdown-->
-        <ul class="dropdown-menu">
-          <li ><a *ngFor="let user of recommendedUsers" (click)="addInvitationList(user)">{{user.name}}</a></li>
-        </ul>
-      </div>
-
-      <hr>
-      <p>
-        <i class="fa fa-calendar"></i>
-        Posted on {{month[datetime.month-1]}} {{datetime.day}}, {{datetime.year}} at {{padLeft(datetime.hour, '0',2)}}:{{padLeft(datetime.minute, '0',2)}}
-        <span *ngIf="datetime.afternoon;else AM">PM</span>
-        <ng-template #AM>AM</ng-template>
-      </p>
-      <p><i class="glyphicon glyphicon-map-marker"></i> {{selectedMeeting.location}}</p>
-      <p >
-        <i class="fa fa-tags"></i> Tags:
-        <a *ngFor="let tag of tags" [routerLink]="['/meeting/tag']" [queryParams]="{ tag: tag.name }">
-          <span class="badge badge-info">#{{tag.name}}</span>
-        </a>
-      </p>
-
-      <p class="lead" style="white-space: pre-line; font-size:18px;display:block;word-wrap: break-word;">{{selectedMeeting.description}}</p>
-
+<body>
+<nav class="navbar navbar-expand-md bg-primary navbar-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#"><i class="fa d-inline fa-lg fa-users"></i> <b>SNU MO-IM</b></a>
+    <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar2SupportedContent" aria-controls="navbar2SupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation"> <span class="navbar-toggler-icon"></span> </button>
+    <div class="collapse navbar-collapse text-center justify-content-end" id="navbar2SupportedContent">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fa d-inline fa-lg fa-info"></i> About us</a>
+        </li>
+      </ul>
+      <a class="btn navbar-btn ml-2 text-white btn-secondary"><i class="fa d-inline fa-lg fa-user-circle-o"></i> Sign in</a>
     </div>
+  </div>
+</nav>
 
-    <br><br>
-
-    <!--Comments-->
-    <div class="container" *ngIf="selectedMeeting && comments && currentUser">
-      <!-- the comment box -->
-      <div class="well">
-        <h4><i class="fa fa-paper-plane-o"></i> Leave a Comment:</h4>
-        <form role="form">
-          <div class="form-group">
-            <input [(ngModel)]="newComment" class="form-control" rows="3" [ngModelOptions]="{standalone: true}">
-            <input type="checkbox" class="checkbox-inline" [checked]="isPrivate" (click)="changePrivateMode(true)"> <label>Private</label>
-          </div>
-          <button type="submit" class="btn btn-primary" (click)="createComment(newComment)"><i class="fa fa-reply"></i> Submit</button>
-        </form>
+<div class="py-5 text-center opaque-overlay" style="background-image: url(&quot;https://media.beam.usnews.com/39/9f/053222934d5b9be72874ea3f5a7b/150423-submitted.jpg&quot;);">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-md-12 text-white">
+        <h1 class="display-3 mb-4">SNU MO-IM</h1>
+        <p class="lead mb-5">Where everyone can meet and enjoy activities! &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
       </div>
-      <hr>
+    </div>
+  </div>
+</div>
+<br>
 
-      <!-- the comments -->
-      <li *ngFor="let comment of comments">
-        <!--Author of the comment-->
-        <h5><i class="fa fa-comment"></i>
-          <span style="cursor:pointer" [routerLink]="['/user', comment.author.id]">{{ comment.author.name }}</span>
+<div class="py-5" *ngIf="selectedMeeting && comments && currentUser">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-md-12 text-black">
+        <h2 class="text-center text-black" style="font-weight: bold;">{{selectedMeeting.title}}
           <small>
-            {{padLeft(comment.datetime.hour, '0',2)}}:{{padLeft(comment.datetime.minute, '0',2)}}
+            <span class="badge bagde-info" style="margin-left: 5px; background-color: mediumseagreen; color: white" >
+              <i class="fa fa-list-ul"style="font-size:10px; margin-right: 3px"></i>{{selectedMeeting.subject.name}}
+            </span>
+          </small>
+        </h2><br>
+
+        <div class="col-md-12">
+          <span class="col-md-6" style="float:left">
+            <p class="lead" ><i class="fa fa-user"></i> by <a [routerLink]="['/user', author.id]">{{author.name}}</a></p>
+          </span>
+          <span class="col-md-6" style="float:right">
+            <span style="float:right">
+              <span style="font-size: 15px">Participants</span>
+              <i *ngFor="let m of selectedMeeting.members" class="fa fa-user" style="font-size:35px; color: #336699; cursor: pointer"
+                 (mouseenter)="changeMemberNameShown(m.name)" data-tooltip-text="" [attr.id]="memberName" [routerLink]="['/user', m.id]"></i>
+              <i *ngFor="let m of emptySeats" class="fa fa-user" style="font-size:35px; color: darkgray "></i><br>
+            </span>
+          </span>
+        </div>
+        <br><br><hr>
+
+
+        <div class="col-md-12">
+          <!--Invitation-->
+          <div class="col-md-4"  style="float:left">
+            <div class="dropdown" *ngIf="!selectedMeeting.is_closed" style="float:left">
+              <button class="btn btn-outline-primary dropdown-toggle" type="button" data-toggle="dropdown" (click)="getRecUsers()">
+                <span class="glyphicon glyphicon-envelope"></span> Invite
+              </button>
+              <!--Invitation list-->
+              <span class="badge badge-info" *ngFor="let user of invitationList"
+                    style="margin-left: 5px; padding-top: 4px; background-color: #3D578C;color: white" >
+                {{user.name}}
+              </span>
+              <a *ngIf="invitationList.length > 0" (click)="sendInvitation()">
+                <i class="fa fa-check" aria-hidden="true" style="color: mediumseagreen; font-size:25px;cursor: pointer;"></i>
+              </a>
+
+              <!--Dropdown-->
+              <ul class="dropdown-menu">
+                <li ><a *ngFor="let user of recommendedUsers" (click)="addInvitationList(user)">{{user.name}}</a></li>
+              </ul>
+            </div>
+          </div> <!--Invitation end-->
+
+          <!--Join / Leave Button-->
+          <div class="col-md-4" style="float:right">
+            <span style="float: right" *ngIf="!selectedMeeting.is_closed; else closed">
+              <span *ngIf="isOwner(); else notOwner">
+                <button (click)="closeMeeting()" class="btn btn-block btn-outline-primary">
+                  <i class="fa fa-times" aria-hidden="true"></i> Close
+                </button>
+              </span>
+              <br>
+              <ng-template #notOwner>
+                <span *ngIf="alreadyJoined; else canJoin">
+                  <button (click)="leaveMeeting()" class="btn btn-block btn-outline-primary">
+                    <i class="fa fa-hand-o-left" aria-hidden="true"></i> Leave
+                  </button>
+                </span>
+                <ng-template #canJoin>
+                  <button (click)="joinMeeting()" class="btn btn-block btn-outline-primary">
+                    <i class="fa fa-hand-o-right" aria-hidden="true"></i> Join
+                  </button>
+                </ng-template>
+              </ng-template>
+            </span>
+            <ng-template #closed>
+              <span class="badge bagde-info" style="background-color: #C21F39; color: white;font-size:20px; float:right" >
+                CLOSED
+              </span>
+            </ng-template>
+          </div><!--End Join / Leave -->
+        </div> <!-- End col12-->
+        <br>
+
+        <!--Description-->
+        <div class="col-md-12" style="padding-top:80px; padding-bottom: 50px; display:block; margin:0 auto">
+          <p>
+            <i class="fa fa-calendar"></i>
+            Posted on {{month[datetime.month-1]}} {{datetime.day}}, {{datetime.year}} at {{padLeft(datetime.hour, '0',2)}}:{{padLeft(datetime.minute, '0',2)}}
             <span *ngIf="datetime.afternoon;else AM">PM</span>
             <ng-template #AM>AM</ng-template>
-            on
-            {{month[comment.datetime.month-1]}} {{comment.datetime.day}}, {{comment.datetime.year}}
-          </small>
+          </p>
+          <p><i class="fa fa-map-pin" aria-hidden="true"></i>
+            {{selectedMeeting.location}}</p>
+          <p >
+            <i class="fa fa-tags"></i> Tags
+            <a *ngFor="let tag of tags" [routerLink]="['/meeting/tag']" [queryParams]="{ tag: tag.name }">
+              <span class="badge badge-info" style="background-color: #00d5d9; color: white">#{{tag.name}}</span>
+            </a>
+          </p>
 
-        </h5>
-        <span *ngIf="comment.publicity || currentUser.id===selectedMeeting.author.id || currentUser.id===comment.author.id; else private_comment">
-          <!--Content of the comment-->
-             <span *ngIf="selectedComment!==comment;else edit_mode">
+          <p class="lead" style="white-space: pre-line; font-size:18px;display:block;word-wrap: break-word;">{{selectedMeeting.description}}</p>
+        </div> <!--Descripton End-->
+
+        <!--Comments-->
+        <div class="container" *ngIf="selectedMeeting && comments && currentUser">
+          <!-- the comment box -->
+          <div class="well">
+            <h4><i class="fa fa-paper-plane-o"></i> Leave a Comment:</h4>
+            <form role="form">
+              <div class="form-group">
+                <input [(ngModel)]="newComment" class="form-control" rows="3" [ngModelOptions]="{standalone: true}">
+                <input type="checkbox" class="checkbox-inline" [checked]="isPrivate" (click)="changePrivateMode(true)"> <label>Private</label>
+              </div>
+              <button type="submit" class="btn btn-outline-primary" (click)="createComment(newComment)"><i class="fa fa-reply"></i> Submit</button>
+            </form>
+          </div>
+          <hr>
+
+          <!-- the comments -->
+          <li *ngFor="let comment of comments">
+            <!--Author of the comment-->
+            <h5><i class="fa fa-comment"></i>
+              <span style="cursor:pointer" [routerLink]="['/user', comment.author.id]">{{ comment.author.name }}</span>
+              <small style="font-size: 3px">
+                {{padLeft(comment.datetime.hour, '0',2)}}:{{padLeft(comment.datetime.minute, '0',2)}}
+                <span *ngIf="datetime.afternoon;else AM">PM</span>
+                <ng-template #AM>AM</ng-template>
+                on
+                {{month[comment.datetime.month-1]}} {{comment.datetime.day}}, {{comment.datetime.year}}
+              </small>
+            </h5>
+            <span *ngIf="comment.publicity || currentUser.id===selectedMeeting.author.id || currentUser.id===comment.author.id; else private_comment">
+              <!--Content of the comment-->
+              <span *ngIf="selectedComment!==comment;else edit_mode">
                 {{comment.content}}
                <!--Edit / Delete button-->
                 <span *ngIf="currentUser.id===comment.author.id">
-                  <button (click)="toEditMode(comment)" class="btn btn-primary btn-sm" style="margin-left:20px;" id="edit-comment-button">
+                  <button (click)="toEditMode(comment)" class="btn btn-outline-primary" style="margin-left:20px;" id="edit-comment-button">
                     <span class="glyphicon glyphicon-pencil"></span> Edit
                   </button>
-                  <button (click)="deleteComment(comment)" class="btn btn-primary btn-sm" id="delete-comment-button">
+                  <button (click)="deleteComment(comment)" class="btn btn-outline-primary" id="delete-comment-button">
                     <span class="glyphicon glyphicon-trash"></span> Delete
                   </button>
                 </span>
               </span>
 
-             <ng-template #edit_mode>
-               <input [(ngModel)]="comment.content">
-               <button (click)="editComment(comment)" class="btn btn-primary btn-sm" id="update-button">Update</button>
-               <button (click)="cancleEditMode(comment)" class="btn btn-primary btn-sm" id="cancle-edit-button">Cancle</button>
-               <input type="checkbox" class="checkbox-inline" [checked]="!comment.publicity" (click)="changePrivateMode(false)"> Private
-             </ng-template>
-        </span>
-        <ng-template #private_comment>
-          <label style="color:royalblue">Private comment</label>
-        </ng-template>
-      </li>
-    </div>
-    <br>
+              <ng-template #edit_mode>
+                <input [(ngModel)]="comment.content">
+                <button (click)="editComment(comment)" class="btn btn-outline-primary" id="update-button">Update</button>
+                <button (click)="cancleEditMode(comment)" class="btn btn-outline-primary" id="cancle-edit-button">Cancle</button>
+                <input type="checkbox" class="checkbox-inline" [checked]="!comment.publicity" (click)="changePrivateMode(false)"> Private
+              </ng-template>
+            </span>
+            <ng-template #private_comment>
+                <label style="color:royalblue">Private comment</label>
+            </ng-template>
+          </li>
+        </div> <!-- Comments end -->
 
-
-    <div class="container" *ngIf="selectedMeeting">
-      <div style="float:right">
-    <span *ngIf="!selectedMeeting.is_closed && isOwner()">
-      <button (click)="edit()" class="btn btn-primary btn-primary" id="edit-button" >
-        <span class="glyphicon glyphicon-pencil"></span> Edit
-      </button>
-      <button (click)="delete()" class="btn btn-primary btn-primary" id="delete-button">
-        <span class="glyphicon glyphicon-trash"></span> Delete
-      </button>
-    </span>
-        <button (click)="goBack()" class="btn btn-primary btn-primary" id="back-button">
-          <span class="glyphicon glyphicon-circle-arrow-left"></span> Back
-        </button>
+        <!--Buttons-->
+        <div class="container" *ngIf="selectedMeeting">
+          <div style="float:right">
+            <span *ngIf="!selectedMeeting.is_closed && isOwner()">
+              <button (click)="edit()" class="btn btn-outline-primary" id="edit-button" >
+                <span class="glyphicon glyphicon-pencil"></span> Edit
+              </button>
+              <button (click)="delete()" class="btn btn-outline-primary" id="delete-button">
+                <span class="glyphicon glyphicon-trash"></span> Delete
+              </button>
+            </span>
+            <button (click)="goBack()" class="btn btn-outline-primary" id="back-button">
+              <span class="glyphicon glyphicon-circle-arrow-left"></span> Back
+            </button>
+          </div>
+        </div> <!--Buttons end-->
       </div>
     </div>
-
-
   </div>
 </div>
+
+<!--Footer-->
+<div class="bg-primary py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 my-3">
+        <h1 class="display-4 text-white text-md-left text-center">Let's connect the world</h1>
+      </div>
+      <div class="col-md-4  text-center align-self-center">
+        <a href="/oauth/login/facebook/" target="_blank"><i class="fa fa-fw fa-facebook fa-3x text-white mx-3"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="text-white bg-secondary">
+  <div class="container">
+    <div class="row">
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 light">SNU MO-IM</h2>
+        <p class="text-white">A group who aims to ease of the lives of SNU students</p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">Mapsite</h2>
+        <ul class="list-unstyled">
+          <a href="#" class="text-white">Home</a>
+          <br>
+          <a href="#" class="text-white">About us</a>
+          <br>
+          <a href="#" class="text-white">Our services</a>
+          <br>
+          <a href="#" class="text-white">Stories</a>
+        </ul>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4">Contact</h2>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"><i class="fa d-inline mr-3 fa-envelope-o text-light"></i>SNU mail</a>
+        </p>
+        <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+        <p>
+          <a href="mailto:snumoim@snu.ac.kr" class="text-white"> </a>
+          <a href="https://goo.gl/5U1Q7X" class="text-white" target="_blank"><i class="fa d-inline mr-3 fa-map-marker text-light"></i>Seoul National University</a>
+        </p>
+      </div>
+      <div class="p-4 col-md-3">
+        <h2 class="mb-4 text-light">SNU MO-IM</h2>
+        <form>
+          <fieldset class="form-group text-white"> <label for="exampleInputEmail1">M: Matching<br>O: Of<br>I: Identical<br>M: Motives<br></label> </fieldset>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 mt-3">
+        <p class="text-center text-white">© Copyright 2017 SNUMOIM - All rights reserved. </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+</body>
+</html>
+
 
 
 
