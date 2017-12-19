@@ -38,3 +38,24 @@ This project aims to create service that can help SNU students to find other stu
 | 5 | 12/5-12/18 | [Sprint 5 report](https://github.com/swsnu/swpp17-team9/wiki/Sprint-5-Progress-Report) |
 
 Project milestone per each sprint can be seen [here](https://github.com/swsnu/swpp17-team9/wiki/Project-milestone).
+
+## How To Run
+* Angular2
+```shell
+$ cd snumeeting-front/
+$ npm install           // install dependencies
+$ npm start
+```
+* Django
+```shell
+$ cd snumeeting_back/
+$ python3 manage.py runserver --setting=snumeeting_back.settings_div.debug
+```
+
+* Dependencies
+- `$ npm install ngx-pagination --save`
+- `$ npm install ngx-chips --save`
+
+- `$ pip3 install social-auth-app-django`
+- `$ pip3 install urllib3`
+- `$ pip3 install pymysql`
