@@ -19,6 +19,8 @@ This project aims to create service that can help SNU students to find other stu
 - Comment (Private / Public)
 - Home interface
 
+More details are written in [Final Report](https://github.com/swsnu/swpp17-team9/blob/master/report/Final%20Report%20_%20Team%209.pdf)
+
 ## Project Architecture
 - Frontend : Angular2 + Typescript
 - Backend : Django + Python
@@ -53,9 +55,11 @@ $ python3 manage.py runserver --setting=snumeeting_back.settings_div.debug
 ```
 
 * Dependencies
-- `$ npm install ngx-pagination --save`
-- `$ npm install ngx-chips --save`
+```shell
+$ npm install ngx-pagination --save
+$ npm install ngx-chips --save
 
-- `$ pip3 install social-auth-app-django`
-- `$ pip3 install urllib3`
-- `$ pip3 install pymysql`
+$ pip3 install social-auth-app-django
+$ pip3 install urllib3
+$ pip3 install pymysql
+```
